@@ -1,6 +1,6 @@
 # Estado de construcción
 
-Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado en main; sin remoto configurado.
+Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 **MVP funcional en sandbox, con validación local aprobada. El Definition of Done conectado sigue bloqueado por credenciales, revisión humana y validación alojada. No es un lanzamiento de producción.**
 
@@ -53,7 +53,8 @@ Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado
 - Paquete `lovable/` generado para un spike privado: conocimiento, prompt, tokens y contexto JSON derivado de los workflows. No contiene secretos ni se presenta como importación del codebase.
 - Trece casos de aceptación nuevos cubren las cuatro rutas: propiedad/automatización, simulación completa, marca `MOCK`, confirmación antes de registro y bloqueos reales de partner/gobierno.
 - Estado comprobado: el producto cubre onboarding y preparación en sandbox. La constitución real sigue no probada y `EXTERNAL_BLOCKED`; Stripe se pospone por decisión del fundador.
-- PowerShell dispone de Git 2.53 y Git Credential Manager; GitHub CLI/token no están presentes y no hay remoto. La publicación espera exclusivamente la URL del repositorio privado.
+- PowerShell dispone de Git 2.53 y Git Credential Manager. `main` fue publicado en `Cyb3rlinx/Companysteup`; GitHub CLI no está instalado.
+- Primera ejecución alojada: application, Supabase y Regulatory integrity aprobados. Edge falló porque Deno 2.9 detectó el `package.json` del monorepo y usó `nodeModulesDir=manual` sin instalación. Se fijó Deno 2.9.6, `nodeModulesDir=auto`, lockfile y un paso explícito `deno install --frozen`. El comando exacto Edge quedó aprobado localmente; la corrección requiere nueva ejecución remota.
 
 ### Activación externa pendiente
 
@@ -63,7 +64,7 @@ El flujo local y las pruebas de aislamiento funcionan. No se afirma que el check
 2. Credenciales Stripe test, precio anual autorizado y prueba de webhook de extremo a extremo.
 3. Revisión humana de fuentes, fechas efectivas, contradicción de Delaware y publicación de reglas reales. Dos páginas de Estonia devuelven 403; el PDF de Wyoming requiere extractor revisado.
 4. Contratos y autorizaciones de agentes, ACSP/RIK, KYC, screening, firmas y correo. Los adaptadores reales siguen EXTERNAL_BLOCKED.
-5. Remoto GitHub, ejecución de los workflows y protección de rama. Los YAML no equivalen a CI aprobado.
+5. Completar la ejecución corregida de GitHub Actions y configurar protección de rama. Los YAML no equivalen por sí solos a CI aprobado.
 6. MFA, antimalware, backups/restauración, observabilidad, privacidad/términos finales y revisión profesional antes de datos reales.
 
 ## Hallazgos regulatorios

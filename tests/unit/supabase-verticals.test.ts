@@ -1,5 +1,5 @@
 import { expect,test } from 'vitest';
-import { readFileSync,readdirSync } from 'node:fs';
+import { existsSync,readFileSync,readdirSync } from 'node:fs';
 import path from 'node:path';
 
 test('Supabase vertical catalog covers every public table and Edge Function exactly as designed',()=>{
@@ -12,7 +12,8 @@ test('Supabase vertical catalog covers every public table and Edge Function exac
  expect([...mappedTables].sort()).toEqual([...migrationTables].sort());
  expect(manifest.verticals).toHaveLength(13);
  expect(manifest.environments.map(environment=>environment.code)).toEqual(['local','staging','pilot','production']);
- const deployedFunctions=readdirSync(path.join(root,'supabase','functions'),{withFileTypes:true}).filter(entry=>entry.isDirectory()&&entry.name!=='_shared').map(entry=>entry.name).sort();
+ const functionsRoot=path.join(root,'supabase','functions');
+ const deployedFunctions=readdirSync(functionsRoot,{withFileTypes:true}).filter(entry=>entry.isDirectory()&&existsSync(path.join(functionsRoot,entry.name,'index.ts'))).map(entry=>entry.name).sort();
  const mappedFunctions=[...new Set(manifest.verticals.flatMap(vertical=>vertical.functions??[]))].sort();
  expect(mappedFunctions).toEqual(deployedFunctions);
 });
