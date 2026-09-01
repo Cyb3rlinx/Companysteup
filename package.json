@@ -1,0 +1,52 @@
+{
+  "name": "company-setup-os",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "next dev apps/web --hostname 127.0.0.1",
+    "build": "pnpm edge:build && next build apps/web",
+    "start": "next start apps/web --hostname 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:unit": "vitest run tests/unit",
+    "test:rls": "vitest run tests/database",
+    "test:e2e": "node node_modules/@playwright/test/cli.js test",
+    "test:integrity": "vitest run tests/regulatory",
+    "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
+    "sources:fetch": "tsx scripts/fetch-sources.ts",
+    "lovable:export": "tsx scripts/export-lovable-context.ts",
+    "db:reset": "supabase db reset",
+    "db:test": "supabase test db",
+    "edge:build": "node scripts/build-edge.mjs"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.7.0",
+    "@supabase/supabase-js": "^2.57.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "lucide-react": "^0.468.0",
+    "next": "^16.1.6",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "server-only": "^0.0.1",
+    "stripe": "^18.5.0",
+    "zod": "^4.1.5"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.10",
+    "@eslint/js": "^9.39.1",
+    "@playwright/test": "^1.58.2",
+    "@tailwindcss/postcss": "^4.1.18",
+    "@types/node": "^24.10.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^16.1.6",
+    "tailwindcss": "^4.1.18",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18",
+    "esbuild": "^0.25.9"
+  }
+}

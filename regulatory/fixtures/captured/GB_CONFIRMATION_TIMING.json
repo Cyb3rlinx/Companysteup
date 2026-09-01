@@ -1,0 +1,11 @@
+{
+  "source_code": "GB_CONFIRMATION_TIMING",
+  "url": "https://www.gov.uk/guidance/filing-your-companys-confirmation-statement",
+  "fetched_at": "2026-08-31T17:16:26.423Z",
+  "http_status": 200,
+  "etag": "W/\"274615ab93db16765536d1b9cb56059f\"",
+  "last_modified": null,
+  "content_hash": "274615ab93db16765536d1b9cb56059f9e3eb35e9d83448eab421bc54e6bf33d",
+  "normalized_text_hash": "f9e6411c117eb8e813d31d29bd9b50cf8e19d116eb2d59a17cf7bde1fa569f06",
+  "status": "CAPTURED_NOT_APPROVED"
+}

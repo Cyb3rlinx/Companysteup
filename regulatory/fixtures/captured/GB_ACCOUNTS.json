@@ -1,0 +1,11 @@
+{
+  "source_code": "GB_ACCOUNTS",
+  "url": "https://www.gov.uk/prepare-file-annual-accounts-for-limited-company",
+  "fetched_at": "2026-08-31T17:16:27.689Z",
+  "http_status": 200,
+  "etag": "W/\"b6aa5889a87b5877803ffd3390723a7b\"",
+  "last_modified": null,
+  "content_hash": "b6aa5889a87b5877803ffd3390723a7b10af6cf29f8d695a0bfdcc29229c366a",
+  "normalized_text_hash": "e1a3d8b32bbf81d5ae2185a28c6bfee817e0544154a677da8df079fa1b21d7c5",
+  "status": "CAPTURED_NOT_APPROVED"
+}

@@ -1,0 +1,25 @@
+import { afterAll, beforeAll, expect, test } from 'vitest';
+import type { PGlite } from '@electric-sql/pglite';
+import { asUser, testDatabase } from './harness';
+let db:PGlite;
+const a='00000000-0000-4000-8000-000000000001';const b='00000000-0000-4000-8000-000000000002';
+let orgA:string;let orgB:string;
+beforeAll(async()=>{
+ db=await testDatabase();await db.query('insert into auth.users(id,email) values($1,$2),($3,$4)',[a,'a@example.test',b,'b@example.test']);
+ const orgs=await db.query<{id:string;owner_user_id:string}>('select id,owner_user_id from organizations');
+ orgA=orgs.rows.find(o=>o.owner_user_id===a)!.id;orgB=orgs.rows.find(o=>o.owner_user_id===b)!.id;
+ await db.query("insert into business_profiles(organization_id,proposed_name) values($1,'A private'),($2,'B private')",[orgA,orgB]);
+});
+afterAll(async()=>db?.close());
+test('RLS exists on every exposed table',async()=>{const result=await db.query("select tablename from pg_tables where schemaname='public' and not rowsecurity");expect(result.rows).toEqual([]);});
+test('tenant A reads own business but never tenant B',async()=>{const result=await asUser(db,a,tx=>tx.query('select proposed_name from business_profiles'));expect(result.rows).toEqual([{proposed_name:'A private'}]);});
+test('tenant B also isolated',async()=>{const result=await asUser(db,b,tx=>tx.query('select proposed_name from business_profiles'));expect(result.rows).toEqual([{proposed_name:'B private'}]);});
+test('customer can change their display name',async()=>{await asUser(db,a,tx=>tx.query("update profiles set display_name='Ana' where id=$1",[a]));const r=await db.query('select display_name from profiles where id=$1',[a]);expect(r.rows[0]).toEqual({display_name:'Ana'});});
+test('customer cannot modify app_role',async()=>{await expect(asUser(db,a,tx=>tx.exec("update profiles set app_role='superadmin'"))).rejects.toThrow(/permission denied/);});
+test('metadata cannot self-promote',async()=>{const id='00000000-0000-4000-8000-000000000003';await db.query('insert into auth.users(id,raw_user_meta_data) values($1,$2)',[id,JSON.stringify({app_role:'superadmin',role:'admin'})]);const r=await db.query('select app_role from profiles where id=$1',[id]);expect(r.rows[0]).toEqual({app_role:'customer'});});
+test('customer cannot mutate regulations',async()=>{await expect(asUser(db,a,tx=>tx.exec("insert into regulatory_rules(rule_code,jurisdiction_code,rule_type,title,severity) values('evil','GB','tax','none','CRITICAL')"))).rejects.toThrow(/permission denied/);});
+test('customer cannot read private snapshots or audit',async()=>{for(const table of ['source_snapshots','audit_logs','source_change_events'])expect((await asUser(db,a,tx=>tx.query(`select * from ${table}`))).rows).toEqual([]);});
+test('customer cannot write immutable audit logs or membership',async()=>{for(const table of ['audit_logs','organization_members','orders','identity_verifications']) await expect(asUser(db,a,tx=>tx.exec(`delete from ${table}`))).rejects.toThrow(/permission denied/);});
+test('cross-tenant FK rejected even from privileged writer',async()=>{const founder=await db.query<{id:string}>('insert into founder_profiles(organization_id) values($1) returning id',[orgB]);await expect(db.query("insert into founder_addresses(organization_id,founder_id) values($1,$2)",[orgA,founder.rows[0].id])).rejects.toThrow(/foreign key/);});
+test('append-only audit records cannot be changed by service role',async()=>{await db.exec("insert into audit_logs(action) values('test')");await expect(db.exec("update audit_logs set action='tampered'")).rejects.toThrow(/append-only/);});
+test('customer cannot read arbitrary storage objects',async()=>{await db.exec("insert into storage.objects(bucket_id,name) values('regulatory-snapshots','internal.txt')");expect((await asUser(db,a,tx=>tx.query('select * from storage.objects'))).rows).toEqual([]);});

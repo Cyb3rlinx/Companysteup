@@ -1,0 +1,65 @@
+import { afterAll,beforeAll,expect,test } from 'vitest';
+import {readFile} from 'node:fs/promises';
+import type { PGlite } from '@electric-sql/pglite';
+import {testDatabase} from './harness';
+import {LocalRepository} from '../../packages/persistence';
+import {Application,loadRegistry,type Actor,type FormationRecord} from '../../packages/application';
+import {demoQuestionnaire} from '../../packages/domain';
+import {PRODUCTS} from '../../packages/jurisdiction-engine';
+import {hashText} from '../../packages/regulatory-engine';
+import candidates from '../../regulatory/normalized/rule-candidates.json';
+import {createRuleDraft,publishCandidate} from '../../packages/regulatory-engine/service';
+import {activateSandboxSubscription,applySubscriptionEvent} from '../../packages/billing/subscriptions';
+import {regenerateCompliance} from '../../packages/application/compliance';
+import type Stripe from 'stripe';
+let db:PGlite;let app:Application;let actor:Actor;let other:Actor;let ops:Actor;
+beforeAll(async()=>{db=await testDatabase();await db.exec(await readFile('supabase/seed.sql','utf8'));const repo=new LocalRepository(db);app=new Application(repo,true);
+ const users=['00000000-0000-4000-8000-000000000011','00000000-0000-4000-8000-000000000012','00000000-0000-4000-8000-000000000013'];
+ for(const id of users)await db.query('insert into auth.users(id) values($1)',[id]);const organizations=await repo.list('organizations');
+ [actor,other,ops]=users.map((id,i)=>({id,organizationId:String(organizations.find(o=>o.owner_user_id===id)!.id),role:i===2?'compliance':'customer',displayName:'Fixture'} as Actor));await db.query("update profiles set app_role='compliance' where id=$1",[ops.id]);
+ const now=new Date().toISOString();for(const s of await repo.list('regulatory_sources')){const hash=hashText(String(s.source_code));await db.query("update regulatory_sources set status='verified',last_checked_at=$1,last_success_at=$1,last_content_hash=$2 where id=$3",[now,hash,s.id]);const snap=await db.query<{id:string}>("insert into source_snapshots(source_id,http_status,fetch_status,normalized_text_hash) values($1,200,'success',$2) returning id",[s.id,hash]);for(const c of candidates.filter(c=>c.source===s.source_code))await db.query('insert into rule_source_evidence(rule_version_id,source_id,snapshot_id,source_locator,evidence_summary) select v.id,$1,$2,$3,$4 from regulatory_rule_versions v join regulatory_rules r on r.id=v.rule_id where r.rule_code=$5',[s.id,snap.rows[0].id,c.locator,c.explanation,c.code]);}
+ await db.query("update regulatory_rule_versions set status='ACTIVE',verified_at=$1,verified_by=$2,confidence='HIGH'",[now,ops.id]);
+});afterAll(async()=>db?.close());
+test('database registry maps active official evidence correctly',async()=>{const registry=await loadRegistry(app.repo,true);expect(registry.rules.every(r=>r.status==='ACTIVE')).toBe(true);expect(registry.rules[0].effectiveFrom).toMatch(/^2026-/);expect(registry.sources.every(s=>s.lastSuccessAt?.includes('T'))).toBe(true);});
+test.each(Object.keys(PRODUCTS) as (keyof typeof PRODUCTS)[])('transactional onboarding → checkout → workflow → company → obligations → reminder: %s',async j=>{
+ const onboard=await app.onboard(actor,{...demoQuestionnaire,proposedName:`QA ${j}`},{firstName:'Test',lastName:'Founder',dateOfBirth:'1990-01-01'});const c=await app.createCase(actor,onboard.businessId,j);
+ const order=await app.prepareOrder(actor,c.id);expect(Number(order.government_fee_minor??-1)).toBe(-1);await expect(app.settleOrder(String(order.id),{mock:true},other)).rejects.toThrow(/encontrado/);await app.settleOrder(String(order.id),{mock:true},actor);expect(await app.settleOrder(String(order.id),{mock:true},actor)).toEqual({duplicate:true});
+ for(const step of PRODUCTS[j].workflow)await app.advance(ops,c.id,{stepCode:step.code,confirmed:true,mock:true,reference:'mock-evidence'});
+ const company=(await app.repo.list('companies',{formation_case_id:c.id}))[0];expect(company.registration_number).toMatch(/^MOCK-/);const obligations=await app.repo.list('company_obligations',{company_id:company.id});expect(obligations.length).toBeGreaterThan(0);expect(obligations.some(o=>o.due_at)).toBe(true);
+ const due=new Date(String(obligations.find(o=>o.due_at)!.due_at));due.setUTCDate(due.getUTCDate()-30);const day=due.toISOString().slice(0,10);await app.notifications(actor,day);const before=(await app.repo.list('notifications')).length;await app.notifications(actor,day);expect((await app.repo.list('notifications')).length).toBe(before);
+ const state=(await app.repo.list<FormationRecord>('formation_cases',{id:c.id}))[0];expect(state.status).toBe('ACTIVE_COMPLIANCE');expect(state.workflow_state.revision).toBe(state.revision);
+});
+test('onboarding and case creation cannot attach another tenant business',async()=>{const o=await app.onboard(actor,demoQuestionnaire);await expect(app.createCase(other,o.businessId,'GB')).rejects.toThrow(/encontrado/);});
+test('database denies overlapping active periods and mutation of published facts',async()=>{const rule=(await app.repo.list('regulatory_rule_versions'))[0];await expect(db.query("update regulatory_rule_versions set outcome_json='{}' where id=$1",[rule.id])).rejects.toThrow(/immutable/);await expect(db.query("insert into regulatory_rule_versions(rule_id,version,status,effective_from,verified_at,verified_by,explanation_template) values($1,2,'ACTIVE','2026-08-31',now(),$2,'Conflict')",[rule.rule_id,ops.id])).rejects.toThrow(/Overlapping/);});
+test('unreviewed source change invalidates ACTIVE database rule versions',async()=>{const source=(await app.repo.list('regulatory_sources'))[0];const snapshot=(await app.repo.list('source_snapshots',{source_id:source.id}))[0];await db.query("insert into source_change_events(source_id,new_snapshot_id,severity) values($1,$2,'CRITICAL')",[source.id,snapshot.id]);const evidence=await app.repo.list('rule_source_evidence',{source_id:source.id});for(const e of evidence)expect((await app.repo.list('regulatory_rule_versions',{id:e.rule_version_id}))[0].status).toBe('NEEDS_REVIEW');});
+test('atomic operation rollback and optimistic concurrency',async()=>{const business=(await app.repo.list('business_profiles'))[0];const before=(await app.repo.list('support_tickets')).length;await expect(app.repo.atomic([{kind:'insert',table:'support_tickets',data:{organization_id:actor.organizationId,subject:'rollback',message:'must disappear'}},{kind:'update',table:'business_profiles',where:{id:business.id,proposed_name:'wrong revision'},data:{proposed_name:'should not update'}}])).rejects.toThrow(/Concurrent/);expect((await app.repo.list('support_tickets')).length).toBe(before);});
+test('editorial draft → same-day publication preserves immutable evidence and supersedes predecessor',async()=>{
+ const r=(await app.repo.list('regulatory_rules',{rule_code:'GB_FORMATION_FEE'}))[0];const v=(await app.repo.list('regulatory_rule_versions',{rule_id:r.id}))[0];const e=(await app.repo.list('rule_source_evidence',{rule_version_id:v.id}))[0];
+ const input={versionId:v.id,effectiveFrom:new Date().toISOString().slice(0,10),outcome:v.outcome_json,explanation:String(v.explanation_template),evidence:[{snapshotId:e.snapshot_id,locator:'Registration fee section',summary:'Human QA reviewer checked the official source snapshot and the structured fee.'}]};
+ await expect(createRuleDraft(app.repo,actor,input)).rejects.toThrow();const draft=await createRuleDraft(app.repo,ops,input);await publishCandidate(app.repo,ops,draft.id,'QA: source snapshot compared with every field; publication explicitly reviewed.',true);
+ expect((await app.repo.list('regulatory_rule_versions',{id:v.id}))[0].status).toBe('SUPERSEDED');expect((await app.repo.list('regulatory_rule_versions',{id:draft.id}))[0].status).toBe('ACTIVE');await expect(db.query("update rule_source_evidence set evidence_summary='tampered' where rule_version_id=$1",[draft.id])).rejects.toThrow(/immutable/);
+ await expect(db.query("update source_snapshots set normalized_text_hash='tampered' where id=$1",[e.snapshot_id])).rejects.toThrow(/append-only/);
+});
+test('subscription activation is tenant scoped, explicitly simulated and idempotent',async()=>{
+ const company=(await app.repo.list('companies'))[0];await expect(activateSandboxSubscription(app.repo,other,String(company.id),true)).rejects.toThrow(/encontrado/);await expect(activateSandboxSubscription(app.repo,actor,String(company.id),false)).rejects.toThrow(/deshabilitada/);
+ await activateSandboxSubscription(app.repo,actor,String(company.id),true);expect((await activateSandboxSubscription(app.repo,actor,String(company.id),true)).duplicate).toBe(true);expect((await app.repo.list('subscriptions',{company_id:company.id}))).toHaveLength(1);
+});
+test('subscription webhook checks identity, price, replay and event ordering',async()=>{
+ const local=(await app.repo.list('subscriptions'))[0];const event={id:'evt_subscription_qa',type:'customer.subscription.updated',created:2000,livemode:false,data:{object:{id:'sub_test_qa',customer:'cus_test_qa',status:'active',metadata:{local_subscription_id:local.id,organization_id:local.organization_id,company_id:local.company_id},items:{data:[{price:{id:'price_test_annual'},current_period_end:1900000000}]}}}} as unknown as Stripe.Event;
+ await expect(applySubscriptionEvent(app.repo,event,'hash','price_wrong')).rejects.toThrow(/precio/);await applySubscriptionEvent(app.repo,event,'hash','price_test_annual');expect((await applySubscriptionEvent(app.repo,event,'hash','price_test_annual')).duplicate).toBe(true);
+ await expect(applySubscriptionEvent(app.repo,{...event,id:'evt_same_second'},'hash','price_test_annual')).rejects.toThrow(/reconciliación/);
+ await applySubscriptionEvent(app.repo,{...event,id:'evt_old',created:1000,type:'customer.subscription.deleted'} as Stripe.Event,'hash','price_test_annual');expect((await app.repo.list('subscriptions',{id:local.id}))[0].status).toBe('active');
+ await applySubscriptionEvent(app.repo,{...event,id:'evt_deleted',created:3000,type:'customer.subscription.deleted'} as Stripe.Event,'hash','price_test_annual');await applySubscriptionEvent(app.repo,{...event,id:'evt_late_update',created:4000},'hash','price_test_annual');expect((await app.repo.list('subscriptions',{id:local.id}))[0].status).toBe('canceled');
+});
+test('reviewed compliance recalculation preserves row identity and rejects customer authority',async()=>{
+ const company=(await app.repo.list('companies',{jurisdiction_code:'GB'}))[0];const input={companyId:company.id,periodStart:String(company.incorporation_date).slice(0,10),periodEnd:'2026-12-31',reason:'QA reviewer confirms the accounting period against company records.'};
+ await expect(regenerateCompliance(app.repo,actor,input,true)).rejects.toThrow();const before=await app.repo.list('company_obligations',{company_id:company.id});await regenerateCompliance(app.repo,ops,input,true);const after=await app.repo.list('company_obligations',{company_id:company.id});expect(after.map(o=>o.id).sort()).toEqual(before.map(o=>o.id).sort());expect((await app.repo.list('obligation_events')).length).toBeGreaterThan(0);
+});
+test('stale source suppresses current obligation dates, amounts and reminders',async()=>{
+ const source=(await app.repo.list('regulatory_sources',{source_code:'WY_ANNUAL_REPORT'}))[0];const company=(await app.repo.list('companies',{jurisdiction_code:'US-WY'}))[0];const obligations=await app.repo.list('company_obligations',{company_id:company.id});const obligation=obligations.find(o=>o.obligation_code==='WY_ANNUAL_REPORT')!;
+ await db.query("update regulatory_sources set last_success_at=now()-interval '25 hours' where id=$1",[source.id]);const {verifiedObligations}=await import('../../packages/application/obligations');const projected=verifiedObligations([obligation],await loadRegistry(app.repo,true));expect(projected[0].due_at).toBeNull();expect(projected[0].amount_minor).toBeNull();const before=(await app.repo.list('notifications')).length;await app.notifications(actor,String(obligation.due_at).slice(0,10));expect((await app.repo.list('notifications')).length).toBe(before);
+});
+
+test('archiving cannot make published regulatory history mutable',async()=>{
+ const r=(await app.repo.list('regulatory_rules',{rule_code:'GB_FORMATION_FEE'}))[0];const v=(await app.repo.list('regulatory_rule_versions',{rule_id:r.id,status:'ACTIVE'}))[0];await db.query("update regulatory_rule_versions set status='ARCHIVED' where id=$1",[v.id]);await expect(db.query("update regulatory_rule_versions set outcome_json='{}' where id=$1",[v.id])).rejects.toThrow(/immutable/);await expect(db.query("update regulatory_rule_versions set status='DRAFT' where id=$1",[v.id])).rejects.toThrow(/reset/);await expect(db.query("update rule_source_evidence set evidence_summary='tampered' where rule_version_id=$1",[v.id])).rejects.toThrow(/immutable/);
+});

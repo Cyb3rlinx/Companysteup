@@ -1,0 +1,5 @@
+import {NextResponse,type NextRequest} from 'next/server';
+import {createServerClient} from '@supabase/ssr';
+import {isPublicPath,PUBLIC_PAGE_HEADER} from './lib/public-locale';
+export async function proxy(request:NextRequest){request.headers.set(PUBLIC_PAGE_HEADER,String(isPublicPath(request.nextUrl.pathname)));let response=NextResponse.next({request});if(process.env.APP_MODE==='sandbox'||!process.env.NEXT_PUBLIC_SUPABASE_URL||!process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY)return response;const client=createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL,process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY,{cookies:{getAll:()=>request.cookies.getAll(),setAll:items=>{for(const item of items)request.cookies.set(item.name,item.value);response=NextResponse.next({request});for(const item of items)response.cookies.set(item.name,item.value,item.options);}}});await client.auth.getUser();return response;}
+export const config={matcher:['/((?!_next/static|_next/image|icon.svg|favicon.ico).*)']};

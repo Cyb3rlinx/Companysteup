@@ -1,0 +1,27 @@
+name: Regulatory integrity
+on:
+  pull_request:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  evidence-boundaries:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test:integrity
+      - run: pnpm test:rls
+      - name: Seed is reproducible and does not publish rules
+        run: |
+          node scripts/generate-seed.mjs
+          git diff --exit-code -- supabase/seed.sql
+          node -e "const fs=require('node:fs');if(/'ACTIVE'/.test(fs.readFileSync('supabase/seed.sql','utf8')))process.exit(1)"

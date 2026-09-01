@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "colors": {"ink":"#203b38","muted":"#75817c","green":"#224b42","lime":"#d9ed93","paper":"#f6f7f3","line":"#e3e7de","white":"#ffffff","amber":"#9b6626"},
+  "typography": {"sans":"Arial, Helvetica, sans-serif","display":"Georgia, serif","baseSize":"14px","lineHeight":1.55},
+  "shape": {"radius":"14px"},
+  "principles":["calm","precise","editorial","accessible","no fabricated trust badges","visible sandbox state"]
+}

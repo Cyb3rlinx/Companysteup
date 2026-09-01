@@ -1,0 +1,11 @@
+{
+  "source_code": "DE_FAQ",
+  "url": "https://corp.delaware.gov/faqs/",
+  "fetched_at": "2026-08-31T17:16:00.464Z",
+  "http_status": 200,
+  "etag": null,
+  "last_modified": null,
+  "content_hash": "aad8d5854558d370dc80b310c2d8fc6c95e0037e5fd9b1f6c7dbcf1679d42704",
+  "normalized_text_hash": "6625a704d7a59376f361930bb70a4e532aadd37dba6c4a794ae9d34efcf796d6",
+  "status": "CAPTURED_NOT_APPROVED"
+}

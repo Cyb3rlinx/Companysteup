@@ -1,0 +1,11 @@
+{
+  "source_code": "FINCEN_BOI",
+  "url": "https://www.fincen.gov/boi",
+  "fetched_at": "2026-08-31T17:16:12.878Z",
+  "http_status": 200,
+  "etag": null,
+  "last_modified": null,
+  "content_hash": "ad50c86e3c08ae788846bc4b64547798662149157c7b00611be8d942e535941f",
+  "normalized_text_hash": "8aa2c226253049ea11dd81edd32d44294daac779a66005877926c47ae54d5fdc",
+  "status": "CAPTURED_NOT_APPROVED"
+}

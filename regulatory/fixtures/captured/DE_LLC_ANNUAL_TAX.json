@@ -1,0 +1,11 @@
+{
+  "source_code": "DE_LLC_ANNUAL_TAX",
+  "url": "https://corp.delaware.gov/alt-entitytaxinstructions/",
+  "fetched_at": "2026-08-31T17:15:55.844Z",
+  "http_status": 200,
+  "etag": null,
+  "last_modified": null,
+  "content_hash": "8393c7d896726b0e7b2049dab2449a65aa7e56bdbd7d3b79219107451cb7dacd",
+  "normalized_text_hash": "5a95d92f4e2c21976bd612d4335b6c5d5f38d6c05678b22c67bbcf425a340c78",
+  "status": "CAPTURED_NOT_APPROVED"
+}

@@ -1,0 +1,11 @@
+{
+  "source_code": "HMRC_CORPORATION_TAX",
+  "url": "https://www.gov.uk/corporation-tax",
+  "fetched_at": "2026-08-31T17:16:29.032Z",
+  "http_status": 200,
+  "etag": "W/\"b7b9d61ee62a8664d51562e472690699\"",
+  "last_modified": null,
+  "content_hash": "b7b9d61ee62a8664d51562e472690699523fd8c5871164428c6ecaf8c9d0bb9f",
+  "normalized_text_hash": "b4e4924b5a05f318aa3f8905081433446b2673fd6e9a6fd3a736132d125f3510",
+  "status": "CAPTURED_NOT_APPROVED"
+}

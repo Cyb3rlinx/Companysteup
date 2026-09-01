@@ -1,0 +1,11 @@
+{
+  "source_code": "GB_CONFIRMATION",
+  "url": "https://www.gov.uk/file-your-confirmation-statement-with-companies-house",
+  "fetched_at": "2026-08-31T17:16:25.096Z",
+  "http_status": 200,
+  "etag": "W/\"e7670fe46a74eacd23542623e079b434\"",
+  "last_modified": null,
+  "content_hash": "e7670fe46a74eacd23542623e079b43477ef643b14657d37ed197e3c09a6eab9",
+  "normalized_text_hash": "1a157db6bc9903439ccf4eae5f9c58dab0d8cd259a16e728338bb83fb7621d23",
+  "status": "CAPTURED_NOT_APPROVED"
+}

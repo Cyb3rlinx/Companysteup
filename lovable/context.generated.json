@@ -1,0 +1,751 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Lovable generation context only; not runtime configuration or regulatory evidence",
+  "canonicalSources": {
+    "schema": "supabase/migrations",
+    "domain": "packages",
+    "workflows": "jurisdictions",
+    "regulatory": "regulatory/source-manifests and regulatory/normalized"
+  },
+  "jurisdictions": {
+    "US-DE": {
+      "product": {
+        "code": "US_DE_LLC",
+        "name": "Delaware LLC",
+        "country": "Estados Unidos",
+        "entity": "LLC",
+        "currency": "USD"
+      },
+      "workflow": [
+        {
+          "code": "DE_001",
+          "title": "Revisión de elegibilidad",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": []
+        },
+        {
+          "code": "DE_010",
+          "title": "Información de fundadores",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "DE_001"
+          ]
+        },
+        {
+          "code": "DE_020",
+          "title": "Titularidad y beneficiarios finales",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "DE_010"
+          ]
+        },
+        {
+          "code": "DE_030",
+          "title": "Agente registrado",
+          "actor": "PARTNER",
+          "gate": "agent",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "DE_020"
+          ]
+        },
+        {
+          "code": "DE_040",
+          "title": "Nombre de la compañía",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "DE_030"
+          ]
+        },
+        {
+          "code": "DE_050",
+          "title": "Preparar certificado de constitución",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "DE_040"
+          ]
+        },
+        {
+          "code": "DE_060",
+          "title": "Presentación al registro",
+          "actor": "GOVERNMENT",
+          "gate": "filing",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "DE_050"
+          ]
+        },
+        {
+          "code": "DE_070",
+          "title": "Confirmación de constitución",
+          "actor": "GOVERNMENT",
+          "gate": "confirmation",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "DE_060"
+          ]
+        },
+        {
+          "code": "DE_080",
+          "title": "Preparación y confirmación de EIN",
+          "actor": "GOVERNMENT",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "DE_070"
+          ]
+        },
+        {
+          "code": "DE_090",
+          "title": "Clasificación y revisión fiscal federal",
+          "actor": "PARTNER",
+          "gate": "tax",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "DE_080"
+          ]
+        },
+        {
+          "code": "DE_100",
+          "title": "Revisión de BOI vigente",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "DE_090"
+          ]
+        },
+        {
+          "code": "DE_110",
+          "title": "Impuesto anual de Delaware",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "DE_100"
+          ]
+        },
+        {
+          "code": "DE_120",
+          "title": "Preparación para banca",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "DE_110"
+          ]
+        },
+        {
+          "code": "DE_130",
+          "title": "Activar calendario de cumplimiento",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "DE_120"
+          ]
+        }
+      ],
+      "coverage": {
+        "totalSteps": 14,
+        "byActor": {
+          "YOU": 4,
+          "WE_PREPARE": 5,
+          "PARTNER": 2,
+          "GOVERNMENT": 3
+        },
+        "byAutomation": {
+          "A_FULLY_AUTOMATABLE": 0,
+          "B_AUTOMATABLE_WITH_REVIEW": 5,
+          "C_EXTERNAL_API": 0,
+          "D_LICENSED_PARTNER": 2,
+          "E_CUSTOMER_ACTION": 4,
+          "F_GOVERNMENT_OR_BANK": 3
+        },
+        "externalSteps": 5,
+        "requiresLicensedPartner": true,
+        "requiresGovernment": true,
+        "canFinishWithoutExternalAuthority": false
+      }
+    },
+    "US-WY": {
+      "product": {
+        "code": "US_WY_LLC",
+        "name": "Wyoming LLC",
+        "country": "Estados Unidos",
+        "entity": "LLC",
+        "currency": "USD"
+      },
+      "workflow": [
+        {
+          "code": "WY_001",
+          "title": "Revisión de elegibilidad",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": []
+        },
+        {
+          "code": "WY_010",
+          "title": "Información de fundadores",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "WY_001"
+          ]
+        },
+        {
+          "code": "WY_020",
+          "title": "Titularidad y beneficiarios finales",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "WY_010"
+          ]
+        },
+        {
+          "code": "WY_030",
+          "title": "Agente registrado",
+          "actor": "PARTNER",
+          "gate": "agent",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "WY_020"
+          ]
+        },
+        {
+          "code": "WY_040",
+          "title": "Nombre de la compañía",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "WY_030"
+          ]
+        },
+        {
+          "code": "WY_050",
+          "title": "Preparar Articles of Organization",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "WY_040"
+          ]
+        },
+        {
+          "code": "WY_060",
+          "title": "Presentación al registro",
+          "actor": "GOVERNMENT",
+          "gate": "filing",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "WY_050"
+          ]
+        },
+        {
+          "code": "WY_070",
+          "title": "Confirmación de constitución",
+          "actor": "GOVERNMENT",
+          "gate": "confirmation",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "WY_060"
+          ]
+        },
+        {
+          "code": "WY_080",
+          "title": "Preparación y confirmación de EIN",
+          "actor": "GOVERNMENT",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "WY_070"
+          ]
+        },
+        {
+          "code": "WY_090",
+          "title": "Revisión fiscal federal",
+          "actor": "PARTNER",
+          "gate": "tax",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "WY_080"
+          ]
+        },
+        {
+          "code": "WY_100",
+          "title": "Revisión de BOI vigente",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "WY_090"
+          ]
+        },
+        {
+          "code": "WY_110",
+          "title": "Informe anual y licencia",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "WY_100"
+          ]
+        },
+        {
+          "code": "WY_120",
+          "title": "Preparación para banca",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "WY_110"
+          ]
+        },
+        {
+          "code": "WY_130",
+          "title": "Activar calendario de cumplimiento",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "WY_120"
+          ]
+        }
+      ],
+      "coverage": {
+        "totalSteps": 14,
+        "byActor": {
+          "YOU": 4,
+          "WE_PREPARE": 5,
+          "PARTNER": 2,
+          "GOVERNMENT": 3
+        },
+        "byAutomation": {
+          "A_FULLY_AUTOMATABLE": 0,
+          "B_AUTOMATABLE_WITH_REVIEW": 5,
+          "C_EXTERNAL_API": 0,
+          "D_LICENSED_PARTNER": 2,
+          "E_CUSTOMER_ACTION": 4,
+          "F_GOVERNMENT_OR_BANK": 3
+        },
+        "externalSteps": 5,
+        "requiresLicensedPartner": true,
+        "requiresGovernment": true,
+        "canFinishWithoutExternalAuthority": false
+      }
+    },
+    "EE": {
+      "product": {
+        "code": "EE_OU",
+        "name": "Estonia OÜ",
+        "country": "Estonia",
+        "entity": "OU",
+        "currency": "EUR"
+      },
+      "workflow": [
+        {
+          "code": "EE_001",
+          "title": "Revisión de elegibilidad",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": []
+        },
+        {
+          "code": "EE_010",
+          "title": "Estado de e-Residency",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_001"
+          ]
+        },
+        {
+          "code": "EE_020",
+          "title": "Información de fundadores",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_010"
+          ]
+        },
+        {
+          "code": "EE_030",
+          "title": "Titularidad y junta directiva",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_020"
+          ]
+        },
+        {
+          "code": "EE_040",
+          "title": "Domicilio y persona de contacto",
+          "actor": "PARTNER",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "EE_030"
+          ]
+        },
+        {
+          "code": "EE_050",
+          "title": "Confirmar ruta guiada o partner",
+          "actor": "WE_PREPARE",
+          "gate": "eregistry",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "EE_040"
+          ]
+        },
+        {
+          "code": "EE_060",
+          "title": "Nombre de la compañía",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_050"
+          ]
+        },
+        {
+          "code": "EE_070",
+          "title": "Preparar solicitud",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "EE_060"
+          ]
+        },
+        {
+          "code": "EE_080",
+          "title": "Firmas digitales",
+          "actor": "YOU",
+          "gate": "signatures",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_070"
+          ]
+        },
+        {
+          "code": "EE_090",
+          "title": "Pago de tasa estatal",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_080"
+          ]
+        },
+        {
+          "code": "EE_100",
+          "title": "Presentación al registro",
+          "actor": "GOVERNMENT",
+          "gate": "filing",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "EE_090"
+          ]
+        },
+        {
+          "code": "EE_110",
+          "title": "Confirmación de inscripción",
+          "actor": "GOVERNMENT",
+          "gate": "confirmation",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "EE_100"
+          ]
+        },
+        {
+          "code": "EE_120",
+          "title": "Revisión fiscal internacional",
+          "actor": "PARTNER",
+          "gate": "tax",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "EE_110"
+          ]
+        },
+        {
+          "code": "EE_130",
+          "title": "Informe anual",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "EE_120"
+          ]
+        },
+        {
+          "code": "EE_140",
+          "title": "Preparación para banca",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "EE_130"
+          ]
+        },
+        {
+          "code": "EE_150",
+          "title": "Contabilidad y cumplimiento",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "EE_140"
+          ]
+        }
+      ],
+      "coverage": {
+        "totalSteps": 16,
+        "byActor": {
+          "YOU": 7,
+          "WE_PREPARE": 5,
+          "PARTNER": 2,
+          "GOVERNMENT": 2
+        },
+        "byAutomation": {
+          "A_FULLY_AUTOMATABLE": 0,
+          "B_AUTOMATABLE_WITH_REVIEW": 5,
+          "C_EXTERNAL_API": 0,
+          "D_LICENSED_PARTNER": 2,
+          "E_CUSTOMER_ACTION": 7,
+          "F_GOVERNMENT_OR_BANK": 2
+        },
+        "externalSteps": 4,
+        "requiresLicensedPartner": true,
+        "requiresGovernment": true,
+        "canFinishWithoutExternalAuthority": false
+      }
+    },
+    "GB": {
+      "product": {
+        "code": "GB_LTD",
+        "name": "UK Ltd",
+        "country": "Reino Unido",
+        "entity": "LTD_PRIVATE_SHARES",
+        "currency": "GBP"
+      },
+      "workflow": [
+        {
+          "code": "GB_001",
+          "title": "Revisión de elegibilidad",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": []
+        },
+        {
+          "code": "GB_010",
+          "title": "Información del negocio",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "GB_001"
+          ]
+        },
+        {
+          "code": "GB_020",
+          "title": "Titularidad y PSC",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "GB_010"
+          ]
+        },
+        {
+          "code": "GB_030",
+          "title": "Domicilio registrado",
+          "actor": "PARTNER",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "GB_020"
+          ]
+        },
+        {
+          "code": "GB_040",
+          "title": "Directores",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "GB_030"
+          ]
+        },
+        {
+          "code": "GB_050",
+          "title": "Verificación de identidad de directores y PSC",
+          "actor": "PARTNER",
+          "gate": "identity",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "GB_040"
+          ]
+        },
+        {
+          "code": "GB_060",
+          "title": "Nombre de la compañía",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "GB_050"
+          ]
+        },
+        {
+          "code": "GB_070",
+          "title": "Preparar solicitud de constitución",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "GB_060"
+          ]
+        },
+        {
+          "code": "GB_080",
+          "title": "Autopresentación o ACSP verificado",
+          "actor": "GOVERNMENT",
+          "gate": "filing",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "GB_070"
+          ]
+        },
+        {
+          "code": "GB_090",
+          "title": "Confirmación de constitución",
+          "actor": "GOVERNMENT",
+          "gate": "confirmation",
+          "automation": "F_GOVERNMENT_OR_BANK",
+          "prerequisites": [
+            "GB_080"
+          ]
+        },
+        {
+          "code": "GB_100",
+          "title": "Estado de Corporation Tax",
+          "actor": "PARTNER",
+          "gate": "tax",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "GB_090"
+          ]
+        },
+        {
+          "code": "GB_110",
+          "title": "Confirmation statement",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "GB_100"
+          ]
+        },
+        {
+          "code": "GB_120",
+          "title": "Cuentas y declaraciones fiscales",
+          "actor": "PARTNER",
+          "automation": "D_LICENSED_PARTNER",
+          "prerequisites": [
+            "GB_110"
+          ]
+        },
+        {
+          "code": "GB_130",
+          "title": "Preparación para banca",
+          "actor": "YOU",
+          "automation": "E_CUSTOMER_ACTION",
+          "prerequisites": [
+            "GB_120"
+          ]
+        },
+        {
+          "code": "GB_140",
+          "title": "Activar cumplimiento",
+          "actor": "WE_PREPARE",
+          "automation": "B_AUTOMATABLE_WITH_REVIEW",
+          "prerequisites": [
+            "GB_130"
+          ]
+        }
+      ],
+      "coverage": {
+        "totalSteps": 15,
+        "byActor": {
+          "YOU": 5,
+          "WE_PREPARE": 4,
+          "PARTNER": 4,
+          "GOVERNMENT": 2
+        },
+        "byAutomation": {
+          "A_FULLY_AUTOMATABLE": 0,
+          "B_AUTOMATABLE_WITH_REVIEW": 4,
+          "C_EXTERNAL_API": 0,
+          "D_LICENSED_PARTNER": 4,
+          "E_CUSTOMER_ACTION": 5,
+          "F_GOVERNMENT_OR_BANK": 2
+        },
+        "externalSteps": 6,
+        "requiresLicensedPartner": true,
+        "requiresGovernment": true,
+        "canFinishWithoutExternalAuthority": false
+      }
+    }
+  },
+  "integrations": [
+    {
+      "code": "supabase",
+      "name": "Supabase Auth y Storage",
+      "environment": "NEXT_PUBLIC_SUPABASE_URL",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "stripe",
+      "name": "Stripe Checkout y Billing",
+      "environment": "STRIPE_SECRET_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "openai",
+      "name": "OpenAI (servidor)",
+      "environment": "OPENAI_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "identity",
+      "name": "KYC y screening",
+      "environment": "KYC_PROVIDER_SECRET",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "email",
+      "name": "Notificaciones por correo",
+      "environment": "EMAIL_PROVIDER_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "delaware",
+      "name": "Partner Delaware",
+      "environment": "DELAWARE_PARTNER_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "wyoming",
+      "name": "Partner Wyoming",
+      "environment": "WYOMING_PARTNER_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "estonia",
+      "name": "RIK / partner Estonia",
+      "environment": "ESTONIA_PARTNER_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    },
+    {
+      "code": "uk",
+      "name": "ACSP Reino Unido",
+      "environment": "UK_ACSP_PARTNER_API_KEY",
+      "status": "EXTERNAL_BLOCKED"
+    }
+  ],
+  "supabase": {
+    "verticalsVersion": 1,
+    "verticalCount": 13,
+    "manifest": "supabase/verticals.json"
+  },
+  "regulatory": {
+    "officialSourceCandidates": 22,
+    "ruleCandidates": 22,
+    "status": "UNTRUSTED_UNTIL_HUMAN_REVIEW"
+  },
+  "acceptance": {
+    "document": "docs/AGENT_ACCEPTANCE.md",
+    "realFormationProven": false,
+    "sandboxOrchestrationProven": true
+  }
+}

@@ -1,0 +1,226 @@
+[
+  {
+    "source_code": "DE_LLC_ANNUAL_TAX",
+    "url": "https://corp.delaware.gov/alt-entitytaxinstructions/",
+    "fetched_at": "2026-08-31T17:15:55.844Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "8393c7d896726b0e7b2049dab2449a65aa7e56bdbd7d3b79219107451cb7dacd",
+    "normalized_text_hash": "5a95d92f4e2c21976bd612d4335b6c5d5f38d6c05678b22c67bbcf425a340c78",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "DE_LLC_STATUTE",
+    "url": "https://delcode.delaware.gov/title6/c018/sc11/index.html",
+    "fetched_at": "2026-08-31T17:15:57.514Z",
+    "http_status": 200,
+    "etag": "\"f1e36c74634dd1:0\"",
+    "last_modified": "Mon, 24 Aug 2026 20:23:41 GMT",
+    "content_hash": "fe394ea173e7904410b1ccbb80213561cd958e38e31c2f15c9da42d874342ecd",
+    "normalized_text_hash": "7c493440d73127265a2332d357d5fcbc84d4b5dd86de2bd9c8951d93ff920f45",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "DE_FAQ",
+    "url": "https://corp.delaware.gov/faqs/",
+    "fetched_at": "2026-08-31T17:16:00.464Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "aad8d5854558d370dc80b310c2d8fc6c95e0037e5fd9b1f6c7dbcf1679d42704",
+    "normalized_text_hash": "6625a704d7a59376f361930bb70a4e532aadd37dba6c4a794ae9d34efcf796d6",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "DE_FORMATION",
+    "url": "https://corp.delaware.gov/howtoform/",
+    "fetched_at": "2026-08-31T17:16:00.881Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "b887781fc76b6015b94ad754f19248421e45973d692ac33556f76eb00e9629c0",
+    "normalized_text_hash": "200c3091045d5bf996685b0b29957df9acc5527b6aad7e30a2b24edd77a09d52",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "WY_ANNUAL_REPORT",
+    "url": "https://sos.wyo.gov/FAQS.aspx?root=BUS",
+    "fetched_at": "2026-08-31T17:16:02.439Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "a61651b6aa78d7e3bc999d811f415d6e470d2b23770727927a4a4e2e8582181c",
+    "normalized_text_hash": "6c910d9dc7f691f13fcf994f818c602ac018790eb274244a454d5edddf1ffee0",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "WY_FORMATION",
+    "status": "EXTERNAL_BLOCKED",
+    "error": "PDF requiere extracción verificada; se mantiene bloqueado"
+  },
+  {
+    "source_code": "IRS_EIN",
+    "url": "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number",
+    "fetched_at": "2026-08-31T17:16:03.916Z",
+    "http_status": 200,
+    "etag": "\"1788196266-gzip\"",
+    "last_modified": "Mon, 31 Aug 2026 17:11:06 GMT",
+    "content_hash": "df698007f0afeee7ef851b98afd7fecdfcb01220393902201dc62bef3012ed74",
+    "normalized_text_hash": "b84457337f08b99772649f24ba208c236115d346e2c22a58bd7df511b92e4214",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "IRS_5472",
+    "url": "https://www.irs.gov/instructions/i5472",
+    "fetched_at": "2026-08-31T17:16:04.454Z",
+    "http_status": 200,
+    "etag": "\"1788196491-gzip\"",
+    "last_modified": "Mon, 31 Aug 2026 17:14:51 GMT",
+    "content_hash": "a96dc09d0374adccb0ac54917945dc95b904892169a4dccd44a6471907b38d0c",
+    "normalized_text_hash": "8d9b6f635d402bc9dfd5938a59a53bfed905c3f704d005c64c242bfe19519481",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "FINCEN_BOI",
+    "url": "https://www.fincen.gov/boi",
+    "fetched_at": "2026-08-31T17:16:12.878Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "ad50c86e3c08ae788846bc4b64547798662149157c7b00611be8d942e535941f",
+    "normalized_text_hash": "8aa2c226253049ea11dd81edd32d44294daac779a66005877926c47ae54d5fdc",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "EE_ERESIDENCY",
+    "url": "https://www.e-resident.gov.ee/become-an-e-resident/",
+    "fetched_at": "2026-08-31T17:16:14.538Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "95589388018f82552e4e233233b1888f108eecf3f094b8b9d1b32831cc8a7771",
+    "normalized_text_hash": "8226c5637e927ad6a767f9dc32e03f0d6493a2699f0af3f1ed428600d5f77c46",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "EE_FORMATION",
+    "url": "https://www.e-resident.gov.ee/start-a-company/",
+    "fetched_at": "2026-08-31T17:16:15.764Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "7c90573cdbf2a7a1d5f94636bf8e4fa40b6aa0d8e13e0be8f1a8a3887494b333",
+    "normalized_text_hash": "00a04c79cd0c0a77c24697e4bb4a327815336e7779cd544588dcb1b9b985a8ba",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "EE_CONTACT",
+    "status": "EXTERNAL_BLOCKED",
+    "error": "Fuente respondió HTTP 403"
+  },
+  {
+    "source_code": "EE_API",
+    "url": "https://www.rik.ee/en/other-services/company-registration-api",
+    "fetched_at": "2026-08-31T17:16:18.032Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "94c69f15f23104f81d39be4d7015a17dd62a790f74a4ddf83a3b20fb058e212f",
+    "normalized_text_hash": "a33d12cbe96219f1334a65331ddf2ca114b6677bd5b1bdd0f594f57a13f98826",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "EE_ANNUAL_REPORT",
+    "status": "EXTERNAL_BLOCKED",
+    "error": "Fuente respondió HTTP 403"
+  },
+  {
+    "source_code": "EE_TAX",
+    "url": "https://www.emta.ee/en/business-client/registration-business/non-residents-e-residents/tax-liabilities-companies",
+    "fetched_at": "2026-08-31T17:16:19.427Z",
+    "http_status": 200,
+    "etag": null,
+    "last_modified": "Mon, 31 Aug 2026 16:53:50 GMT",
+    "content_hash": "a7ada09f9e6ce2324cbe9c796cfac964b5afde2863687ca77dde2878fc8e1336",
+    "normalized_text_hash": "bb7076ba37dcb406caba39cea67e935325cf48061948856d54b0b77a513ac9fc",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_FORMATION",
+    "url": "https://www.gov.uk/limited-company-formation/register-your-company",
+    "fetched_at": "2026-08-31T17:16:21.028Z",
+    "http_status": 200,
+    "etag": "W/\"59a540f739c57cc47658e11065437555\"",
+    "last_modified": null,
+    "content_hash": "59a540f739c57cc47658e11065437555e0d7e4280101d89e543b6b21fd4527dc",
+    "normalized_text_hash": "5e26f6cb415aab46fdba7a7d39b37582daf997a87a858f1698108319bb093f86",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_IDENTITY",
+    "url": "https://www.gov.uk/government/news/companies-house-confirms-identity-verification-rollout-from-18-november-2025",
+    "fetched_at": "2026-08-31T17:16:22.362Z",
+    "http_status": 200,
+    "etag": "W/\"7ac7a7ad492d23ec7b7516cb9a9396b7\"",
+    "last_modified": null,
+    "content_hash": "7ac7a7ad492d23ec7b7516cb9a9396b7c68aa43f47773f87cca0d9b3892a05b6",
+    "normalized_text_hash": "8fc794a04ecbc64b2e70638200464d0492fc14aff1c099c9664011156602c502",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_ACSP",
+    "url": "https://www.gov.uk/guidance/being-an-authorised-corporate-service-provider",
+    "fetched_at": "2026-08-31T17:16:23.829Z",
+    "http_status": 200,
+    "etag": "W/\"5fa95900c2396b5cb14605ce69632810\"",
+    "last_modified": null,
+    "content_hash": "5fa95900c2396b5cb14605ce6963281002e51a9181c7dab8c508780a64166465",
+    "normalized_text_hash": "3b6223f84812c93fb5a32783943a5280963c07af3385807ed32ed452067987e9",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_CONFIRMATION",
+    "url": "https://www.gov.uk/file-your-confirmation-statement-with-companies-house",
+    "fetched_at": "2026-08-31T17:16:25.096Z",
+    "http_status": 200,
+    "etag": "W/\"e7670fe46a74eacd23542623e079b434\"",
+    "last_modified": null,
+    "content_hash": "e7670fe46a74eacd23542623e079b43477ef643b14657d37ed197e3c09a6eab9",
+    "normalized_text_hash": "1a157db6bc9903439ccf4eae5f9c58dab0d8cd259a16e728338bb83fb7621d23",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_CONFIRMATION_TIMING",
+    "url": "https://www.gov.uk/guidance/filing-your-companys-confirmation-statement",
+    "fetched_at": "2026-08-31T17:16:26.423Z",
+    "http_status": 200,
+    "etag": "W/\"274615ab93db16765536d1b9cb56059f\"",
+    "last_modified": null,
+    "content_hash": "274615ab93db16765536d1b9cb56059f9e3eb35e9d83448eab421bc54e6bf33d",
+    "normalized_text_hash": "f9e6411c117eb8e813d31d29bd9b50cf8e19d116eb2d59a17cf7bde1fa569f06",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "GB_ACCOUNTS",
+    "url": "https://www.gov.uk/prepare-file-annual-accounts-for-limited-company",
+    "fetched_at": "2026-08-31T17:16:27.689Z",
+    "http_status": 200,
+    "etag": "W/\"b6aa5889a87b5877803ffd3390723a7b\"",
+    "last_modified": null,
+    "content_hash": "b6aa5889a87b5877803ffd3390723a7b10af6cf29f8d695a0bfdcc29229c366a",
+    "normalized_text_hash": "e1a3d8b32bbf81d5ae2185a28c6bfee817e0544154a677da8df079fa1b21d7c5",
+    "status": "CAPTURED_NOT_APPROVED"
+  },
+  {
+    "source_code": "HMRC_CORPORATION_TAX",
+    "url": "https://www.gov.uk/corporation-tax",
+    "fetched_at": "2026-08-31T17:16:29.032Z",
+    "http_status": 200,
+    "etag": "W/\"b7b9d61ee62a8664d51562e472690699\"",
+    "last_modified": null,
+    "content_hash": "b7b9d61ee62a8664d51562e472690699523fd8c5871164428c6ecaf8c9d0bb9f",
+    "normalized_text_hash": "b4e4924b5a05f318aa3f8905081433446b2673fd6e9a6fd3a736132d125f3510",
+    "status": "CAPTURED_NOT_APPROVED"
+  }
+]

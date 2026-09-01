@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "version": 1,
+  "authority": "supabase/migrations",
+  "deploymentModel": "one isolated Supabase project per environment; verticals share transactional data but not secrets",
+  "environments": [
+    {"code":"local","mode":"SANDBOX","data":"synthetic","remote":false},
+    {"code":"staging","mode":"SANDBOX","data":"synthetic","remote":true},
+    {"code":"pilot","mode":"EXTERNAL_BLOCKED","data":"no real PII until operational approval","remote":true},
+    {"code":"production","mode":"EXTERNAL_BLOCKED","data":"blocked until connected Definition of Done","remote":true}
+  ],
+  "verticals": [
+    {"code":"identity_tenancy","tables":["profiles","organizations","organization_members"],"functions":[],"owner":"platform","risk":"critical"},
+    {"code":"catalog_authorities","tables":["jurisdictions","entity_types","authorities","partners"],"functions":["jurisdiction-recommend"],"owner":"compliance","risk":"high"},
+    {"code":"founder_onboarding","tables":["founder_profiles","founder_addresses","founder_tax_residencies","business_profiles","business_owners","questionnaire_answers","consents"],"functions":["jurisdiction-recommend"],"owner":"product","risk":"critical"},
+    {"code":"identity_risk","tables":["identity_verifications","screening_results","risk_assessments"],"functions":[],"owner":"compliance","risk":"critical","integration":"EXTERNAL_BLOCKED"},
+    {"code":"formation_orchestration","tables":["formation_cases","case_participants","workflow_templates","workflow_template_steps","case_steps","case_tasks","case_events","case_escalations"],"functions":["case-create","case-advance"],"owner":"operations","risk":"critical"},
+    {"code":"documents","tables":["case_documents","document_extractions","company_documents"],"buckets":["customer-documents","company-documents"],"functions":[],"owner":"operations","risk":"critical"},
+    {"code":"company_registry","tables":["companies","company_owners","company_officers","company_addresses","company_registrations"],"functions":["case-advance"],"owner":"operations","risk":"critical","integration":"EXTERNAL_BLOCKED"},
+    {"code":"regulatory_evidence","tables":["regulatory_sources","source_snapshots","source_change_events","regulatory_rules","regulatory_rule_versions","rule_source_evidence","regulatory_alerts","source_monitor_runs"],"buckets":["regulatory-snapshots"],"functions":["source-ingest","source-monitor","regulatory-answer"],"owner":"compliance","risk":"critical"},
+    {"code":"ongoing_compliance","tables":["obligation_templates","company_obligations","obligation_events"],"functions":["compliance-generate","notify"],"owner":"compliance","risk":"critical"},
+    {"code":"partner_coordination","tables":["partner_services","partner_referrals"],"functions":[],"owner":"operations","risk":"critical","integration":"EXTERNAL_BLOCKED"},
+    {"code":"billing","tables":["billing_products","billing_prices","orders","subscriptions","webhook_events"],"functions":["checkout-create","stripe-webhook"],"owner":"finance","risk":"critical","integration":"EXTERNAL_BLOCKED"},
+    {"code":"communications","tables":["notifications","support_tickets"],"functions":["notify"],"owner":"support","risk":"high","integration":"EXTERNAL_BLOCKED"},
+    {"code":"platform_controls","tables":["audit_logs","rate_limits"],"buckets":["public-assets"],"functions":[],"owner":"security","risk":"critical"}
+  ]
+}

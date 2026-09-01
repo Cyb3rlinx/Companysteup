@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "@supabase/supabase-js": "npm:@supabase/supabase-js@2.112.4",
+    "stripe": "npm:stripe@18.5.0",
+    "zod": "npm:zod@4.5.4"
+  },
+  "compilerOptions": { "allowJs": true, "checkJs": false, "strict": true }
+}

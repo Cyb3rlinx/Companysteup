@@ -1,0 +1,3 @@
+export interface NotificationAdapter {status:'SANDBOX'|'EXTERNAL_BLOCKED'|'LIVE';send(input:{id:string;recipient:string;subject:string;body:string}):Promise<{status:'recorded'|'sent';reference:string}>;}
+export class SandboxNotificationAdapter implements NotificationAdapter {readonly status='SANDBOX' as const;async send(input:{id:string;recipient:string;subject:string;body:string}){return{status:'recorded' as const,reference:`MOCK-NOTIFICATION-${input.id}`};}}
+export class BlockedEmailAdapter implements NotificationAdapter {readonly status='EXTERNAL_BLOCKED' as const;async send():Promise<never>{throw new Error('Email provider, sender domain and consent must be configured before delivery');}}

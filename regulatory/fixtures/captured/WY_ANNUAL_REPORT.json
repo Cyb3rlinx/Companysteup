@@ -1,0 +1,11 @@
+{
+  "source_code": "WY_ANNUAL_REPORT",
+  "url": "https://sos.wyo.gov/FAQS.aspx?root=BUS",
+  "fetched_at": "2026-08-31T17:16:02.439Z",
+  "http_status": 200,
+  "etag": null,
+  "last_modified": null,
+  "content_hash": "a61651b6aa78d7e3bc999d811f415d6e470d2b23770727927a4a4e2e8582181c",
+  "normalized_text_hash": "6c910d9dc7f691f13fcf994f818c602ac018790eb274244a454d5edddf1ffee0",
+  "status": "CAPTURED_NOT_APPROVED"
+}

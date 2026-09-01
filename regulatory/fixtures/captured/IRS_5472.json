@@ -1,0 +1,11 @@
+{
+  "source_code": "IRS_5472",
+  "url": "https://www.irs.gov/instructions/i5472",
+  "fetched_at": "2026-08-31T17:16:04.454Z",
+  "http_status": 200,
+  "etag": "\"1788196491-gzip\"",
+  "last_modified": "Mon, 31 Aug 2026 17:14:51 GMT",
+  "content_hash": "a96dc09d0374adccb0ac54917945dc95b904892169a4dccd44a6471907b38d0c",
+  "normalized_text_hash": "8d9b6f635d402bc9dfd5938a59a53bfed905c3f704d005c64c242bfe19519481",
+  "status": "CAPTURED_NOT_APPROVED"
+}

@@ -1,0 +1,11 @@
+{
+  "source_code": "IRS_EIN",
+  "url": "https://www.irs.gov/businesses/small-businesses-self-employed/get-an-employer-identification-number",
+  "fetched_at": "2026-08-31T17:16:03.916Z",
+  "http_status": 200,
+  "etag": "\"1788196266-gzip\"",
+  "last_modified": "Mon, 31 Aug 2026 17:11:06 GMT",
+  "content_hash": "df698007f0afeee7ef851b98afd7fecdfcb01220393902201dc62bef3012ed74",
+  "normalized_text_hash": "b84457337f08b99772649f24ba208c236115d346e2c22a58bd7df511b92e4214",
+  "status": "CAPTURED_NOT_APPROVED"
+}
