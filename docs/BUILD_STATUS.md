@@ -54,17 +54,17 @@ Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado
 - Trece casos de aceptación nuevos cubren las cuatro rutas: propiedad/automatización, simulación completa, marca `MOCK`, confirmación antes de registro y bloqueos reales de partner/gobierno.
 - Estado comprobado: el producto cubre onboarding y preparación en sandbox. La constitución real sigue no probada y `EXTERNAL_BLOCKED`; Stripe se pospone por decisión del fundador.
 - PowerShell dispone de Git 2.53 y Git Credential Manager. `main` fue publicado en `Cyb3rlinx/Companysteup`; GitHub CLI no está instalado.
-- Primera ejecución alojada: application, Supabase y Regulatory integrity aprobados. Edge falló porque Deno 2.9 detectó el `package.json` del monorepo y usó `nodeModulesDir=manual` sin instalación. Se fijó Deno 2.9.6, `nodeModulesDir=auto`, lockfile y un paso explícito `deno install --frozen`. El comando exacto Edge quedó aprobado localmente; la corrección requiere nueva ejecución remota.
+- Primera ejecución alojada: application, Supabase y Regulatory integrity aprobaron; Edge falló porque Deno 2.9 detectó el `package.json` del monorepo y usó `nodeModulesDir=manual` sin instalación. Se fijó Deno 2.9.6, `nodeModulesDir=auto`, lockfile y un paso explícito `deno install --frozen`. La ejecución corregida `33526706477` aprobó application, Edge y Supabase; Regulatory integrity aprobó en `33526706237`.
 
 ### Activación externa pendiente
 
-El flujo local y las pruebas de aislamiento funcionan. No se afirma que el checkout haya cobrado en Stripe test externo, que Supabase Auth/Storage alojado esté validado ni que CI remoto haya pasado. Se requieren:
+El flujo local, las pruebas de aislamiento y GitHub Actions funcionan. No se afirma que el checkout haya cobrado en Stripe test externo ni que Supabase Auth/Storage alojado esté validado. Se requieren:
 
 1. Proyecto y credenciales Supabase; Docker operativo para reset, pgTAP y gateway/GoTrue/Storage completos.
 2. Credenciales Stripe test, precio anual autorizado y prueba de webhook de extremo a extremo.
 3. Revisión humana de fuentes, fechas efectivas, contradicción de Delaware y publicación de reglas reales. Dos páginas de Estonia devuelven 403; el PDF de Wyoming requiere extractor revisado.
 4. Contratos y autorizaciones de agentes, ACSP/RIK, KYC, screening, firmas y correo. Los adaptadores reales siguen EXTERNAL_BLOCKED.
-5. Completar la ejecución corregida de GitHub Actions y configurar protección de rama. Los YAML no equivalen por sí solos a CI aprobado.
+5. Configurar protección de `main` con los workflows aprobados como checks requeridos.
 6. MFA, antimalware, backups/restauración, observabilidad, privacidad/términos finales y revisión profesional antes de datos reales.
 
 ## Hallazgos regulatorios
