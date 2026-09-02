@@ -1,6 +1,6 @@
 # Estado de construcción
 
-Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
+Actualizado: 2026-09-02. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 **MVP funcional en sandbox, con validación local aprobada. El Definition of Done conectado sigue bloqueado por credenciales, revisión humana y validación alojada. No es un lanzamiento de producción.**
 
@@ -55,6 +55,19 @@ Actualizado: 2026-09-01. Repositorio inicialmente vacío. Git local inicializado
 - Estado comprobado: el producto cubre onboarding y preparación en sandbox. La constitución real sigue no probada y `EXTERNAL_BLOCKED`; Stripe se pospone por decisión del fundador.
 - PowerShell dispone de Git 2.53 y Git Credential Manager. `main` fue publicado en `Cyb3rlinx/Companysteup`; GitHub CLI no está instalado.
 - Primera ejecución alojada: application, Supabase y Regulatory integrity aprobaron; Edge falló porque Deno 2.9 detectó el `package.json` del monorepo y usó `nodeModulesDir=manual` sin instalación. Se fijó Deno 2.9.6, `nodeModulesDir=auto`, lockfile y un paso explícito `deno install --frozen`. La ejecución corregida `33526706477` aprobó application, Edge y Supabase; Regulatory integrity aprobó en `33526706237`.
+
+### Región y candidatas asiáticas: 2026-09-02
+
+- Se recibió el project ref de Supabase; el fundador reporta región Japón. No se autenticó ni se desplegó el proyecto en este hito. La recomendación provisional para un staging nuevo es Singapore (`ap-southeast-1`), por el entorno inicial de pruebas y captación en Bangkok; producción exige mediciones y revisión de datos.
+- La investigación oficial respalda evaluar SG Pte. Ltd. y HK private company limited by shares con partners y controles humanos. Continúan `EXTERNAL_BLOCKED` como candidatas de expansión, sin activar nuevas jurisdicciones ni reglas por interpretación de IA. Ver `REGION_AND_ASIA_FEASIBILITY.md` para fuentes, límites y condiciones.
+- Cambio documental; `pnpm test` aprobó 79 pruebas existentes y `pnpm typecheck` aprobó. No se añadieron pruebas ni flujos de SG/HK: este resultado no valida la expansión operativa.
+
+### Preparación de staging Singapur: 2026-09-02
+
+- Nuevo destino autorizado `keboldglfjonxcdnmyee`, región Singapur reportada por el fundador. Descriptor sin secretos en `supabase/environments/staging.json`; región pendiente de verificación autenticada. No se enlazó ni modificó el remoto.
+- Supabase CLI 2.116.0 instalada como dependencia fija; `pnpm supabase --version` verificado. La CLI confirmó ausencia de sesión. Se inició login oficial y se espera intervención del titular en navegador/terminal; no se pidieron tokens ni contraseñas por chat.
+- Seed corregido para no duplicar ni reemplazar precios de catálogo en reintentos. Tres pruebas adicionales verifican repetición, ausencia de identidades/aprobaciones/evidencia y denegación anónima de reglas pendientes. `pnpm check` aprobado: lint, typecheck, 82 pruebas y build; instalación congelada y check Deno aprobados para las diez Edge Functions. Estos resultados locales no equivalen a despliegue alojado.
+- Checklist y consulta SQL de lectura preparados en `STAGING_SETUP.md` y `supabase/operations/staging-verification.sql`. El sandbox local se mantiene sin cambios de modo; Supabase alojado sigue `EXTERNAL_BLOCKED` hasta completar login, despliegue y pruebas.
 
 ### Activación externa pendiente
 

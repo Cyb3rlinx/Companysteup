@@ -27,6 +27,8 @@ La evidencia sintética caduca a las 24 horas. No se refresca sola ni se confund
 
 ## Supabase
 
+Destino de staging y procedimiento de conexión actual: `STAGING_SETUP.md`. Supabase CLI está fijada en el proyecto; usar `pnpm supabase <comando>` para los ejemplos siguientes. No volver a ejecutar `init` sobre esta configuración existente.
+
 1. Crear un proyecto de prueba separado y configurar sus credenciales en `apps/web/.env.local`, con `APP_MODE=supabase` y APP_ORIGIN exacto. No colocar service_role en NEXT_PUBLIC.
 2. Con Supabase CLI y Docker disponibles, ejecutar `supabase start`, `supabase db reset`, `supabase test db` y `supabase db lint --level error`. Los comandos reset son destructivos para la base **local de pruebas**; nunca aplicarlos a un proyecto con datos que se quieran conservar.
 3. Para el remoto, enlazar el proyecto correcto y revisar las migraciones antes de `supabase db push`. Importar el seed de forma controlada. No insertar aprobaciones sintéticas.
@@ -76,6 +78,6 @@ Alertar sobre source_monitor_runs fallidos, reglas sin evidencia vigente, colas 
 
 ## CI y aceptación
 
-GitHub Actions define lint, TypeScript, pruebas, build, navegador, Deno y Supabase reset/RLS. Marcar esos jobs como checks requeridos en protección de rama; los archivos YAML por sí solos no impiden un merge. No existe remoto configurado ni se afirma que CI alojado haya pasado. Docker no estaba operativo en la máquina de construcción; las pruebas SQL ejecutadas localmente usan PGlite.
+GitHub Actions define lint, TypeScript, pruebas, build, navegador, Deno y Supabase reset/RLS. Marcar esos jobs como checks requeridos en protección de rama; los archivos YAML por sí solos no impiden un merge. El remoto está configurado y CI alojado aprobó el commit publicado documentado en `BUILD_STATUS.md`; eso no verifica todavía el proyecto Supabase staging. Docker no estaba operativo en la máquina de construcción; las pruebas SQL ejecutadas localmente usan PGlite.
 
 Eventos distintos de suscripción con el mismo timestamp se bloquean con SUBSCRIPTION_RECONCILIATION: revisar el estado canónico en Stripe antes de aplicar una actualización administrativa auditada. Un evento posterior no reactiva una suscripción cancelada. Las escrituras usan precondición de versión para que los reintentos no reviertan eventos concurrentes.

@@ -19,6 +19,7 @@
     "lovable:export": "tsx scripts/export-lovable-context.ts",
     "db:reset": "supabase db reset",
     "db:test": "supabase test db",
+    "supabase": "node node_modules/supabase/dist/supabase.js",
     "edge:build": "node scripts/build-edge.mjs"
   },
   "dependencies": {
@@ -43,6 +44,7 @@
     "@types/react-dom": "^19.2.0",
     "eslint": "^9.39.1",
     "eslint-config-next": "^16.1.6",
+    "supabase": "2.116.0",
     "tailwindcss": "^4.1.18",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",

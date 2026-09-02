@@ -1,0 +1,12 @@
+{
+  "environment": "staging",
+  "projectRef": "keboldglfjonxcdnmyee",
+  "url": "https://keboldglfjonxcdnmyee.supabase.co",
+  "expectedRegion": "ap-southeast-1",
+  "regionVerifiedViaManagementApi": false,
+  "dataPolicy": "synthetic-only",
+  "integrationStatus": "EXTERNAL_BLOCKED",
+  "excludedProjectRefs": ["uvmijrapoezpvtsyhhoj"],
+  "externalPayments": "EXTERNAL_BLOCKED",
+  "externalFilings": "EXTERNAL_BLOCKED"
+}
