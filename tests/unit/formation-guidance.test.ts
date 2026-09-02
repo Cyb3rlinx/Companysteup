@@ -81,6 +81,13 @@ test('hosted customers cannot access draft guidance regardless of input flags', 
   expect(() => assertLabAccess(false, 'compliance')).not.toThrow();
 });
 
+test('even hosted internal operators cannot publish research traces in customer case histories', async () => {
+  const actor: Actor = {id: 'reviewer', organizationId: 'org-a', role: 'compliance', displayName: 'Reviewer'};
+  const repo = {list: async () => { throw new Error('No customer records should be read'); }, atomic: async () => { throw new Error('No records should be written'); }} as unknown as Repository;
+  await expect(evaluateCaseGuide(repo, actor, false, {guideId: 'US-WY', scenario: 'base', caseId: '00000000-0000-4000-8000-000000000123'})).rejects.toMatchObject({code: 'LAB_CASE_WRITE_DISABLED'});
+  expect(await evaluateCaseGuide(repo, actor, false, {guideId: 'US-WY', scenario: 'base'})).toMatchObject({persisted: false, registered: false});
+});
+
 test('case audit enforces tenant and jurisdiction before writing; never mutates workflow', async () => {
   const operations: Operation[] = [];
   const caseId = '00000000-0000-4000-8000-000000000123';

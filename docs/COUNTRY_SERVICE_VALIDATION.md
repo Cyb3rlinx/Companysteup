@@ -48,7 +48,7 @@ El catálogo `packages/formation-guidance/catalog.ts` conserva los destinos exac
 - Cada ruta tiene un perfil versionado y escenarios predefinidos. Son pruebas de un supervisor determinista; no entrenamiento ni evaluación de un LLM conectado.
 - `pnpm test:agents`: 22 escenarios, informe `.local/qa/agent-journeys.json`, sin red ni datos personales. CI conserva solo ese archivo explícito como artifact; no incluye otros archivos `.local`.
 - `pnpm test:e2e`: usuario ficticio con onboarding, tres expedientes US-WY/US-DE/EE y 22 evaluaciones. Se comprueba aislamiento, CSRF, rechazo de permisos/URLs inyectados, vinculación a jurisdicción correcta, mapa de información, móvil e informe descargable.
-- Las evaluaciones vinculadas agregan `AGENT_LAB_EVALUATED` a `case_events`; nunca actualizan workflow, pago, compañía ni estado de registro. Las rutas nuevas se prueban sin crear expedientes comerciales.
+- Las evaluaciones vinculadas agregan `AGENT_LAB_EVALUATED` a `case_events` solo en sandbox local; nunca actualizan workflow, pago, compañía ni estado de registro. En Supabase se rechaza vincular incluso a operadores internos, porque el dueño puede leer su historial y no debe recibir trazas regulatorias sin revisión. Las rutas nuevas se prueban sin crear expedientes comerciales.
 - Un usuario de otra organización no puede ejecutar ni leer esos eventos. No se modifica RLS ni se agregan tablas/migraciones.
 - El mapa no acepta documentos ni credenciales. Las páginas externas son enlaces para lectura humana; no existe un ejecutor de formularios externos.
 
