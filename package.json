@@ -13,6 +13,8 @@
     "test:unit": "vitest run tests/unit",
     "test:rls": "vitest run tests/database",
     "test:e2e": "node node_modules/@playwright/test/cli.js test",
+    "test:staging": "tsx scripts/test-staging.ts --synthetic-only",
+    "start:staging": "node scripts/start-staging.mjs",
     "test:integrity": "vitest run tests/regulatory",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "sources:fetch": "tsx scripts/fetch-sources.ts",

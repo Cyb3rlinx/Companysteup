@@ -5,6 +5,7 @@
 | Entorno | Uso | Lo que NO representa |
 |---|---|---|
 | Sandbox local | Demostración con datos ficticios y PostgreSQL embebido | Supabase alojado, cobro o registro real |
+| Staging Singapur | Supabase real, datos sintéticos, frontend local en 3100 | Hosting público, pago, identidad o registro real |
 | Supabase + Stripe test | Validación de infraestructura, Auth, Storage y pagos de prueba | Autorización regulada ni lanzamiento comercial |
 | Producción | Bloqueado hasta revisión y activación formal | No se habilita cambiando una sola variable |
 
@@ -28,6 +29,8 @@ La evidencia sintética caduca a las 24 horas. No se refresca sola ni se confund
 ## Supabase
 
 Destino de staging y procedimiento de conexión actual: `STAGING_SETUP.md`. Supabase CLI está fijada en el proyecto; usar `pnpm supabase <comando>` para los ejemplos siguientes. No volver a ejecutar `init` sobre esta configuración existente.
+
+El proyecto Singapur ya está desplegado y validado: `pnpm start:staging` inicia el frontend en 127.0.0.1:3100 después del build; `pnpm test:staging` ejecuta pruebas sintéticas explícitas. No reaplicar seed, resetear ni publicar reglas para repetirlas. Los secretos permanecen en `.local/staging`, ignorado. Revisar `STAGING_VALIDATION.md` para la cobertura y los límites comprobados.
 
 1. Crear un proyecto de prueba separado y configurar sus credenciales en `apps/web/.env.local`, con `APP_MODE=supabase` y APP_ORIGIN exacto. No colocar service_role en NEXT_PUBLIC.
 2. Con Supabase CLI y Docker disponibles, ejecutar `supabase start`, `supabase db reset`, `supabase test db` y `supabase db lint --level error`. Los comandos reset son destructivos para la base **local de pruebas**; nunca aplicarlos a un proyecto con datos que se quieran conservar.

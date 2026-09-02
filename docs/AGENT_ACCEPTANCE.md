@@ -1,6 +1,6 @@
 # Aceptación de agentes y formación empresarial
 
-Actualizado: 2026-09-01. “Agente” puede significar un agente de software o un agente registrado/proveedor autorizado. Este documento los separa explícitamente.
+Actualizado: 2026-09-02. “Agente” puede significar un agente de software o un agente registrado/proveedor autorizado. Este documento los separa explícitamente.
 
 ## Afirmación actualmente permitida
 
@@ -30,7 +30,7 @@ El sistema ayuda al usuario durante onboarding, comparación, preparación del e
 - que en modo no simulado un partner sin contrato y toda transición gubernamental quedan bloqueados;
 - que una definición con automatización incompatible se rechaza.
 
-Los E2E existentes agregan signup, cuestionario, las cuatro recomendaciones, cuatro workflows, aislamiento de tenant, documentos, compañía, obligaciones y recordatorios. Cuando Supabase staging exista, se debe ejecutar la misma suite contra Auth/Storage/Edge reales, sin acceso sandbox de operaciones.
+Los E2E locales agregan signup, cuestionario, las cuatro recomendaciones, cuatro workflows simulados, aislamiento de tenant, documentos, compañía, obligaciones y recordatorios. `pnpm test:staging` aprobó 14 grupos contra Auth/Postgres/Storage/Edge reales: onboarding, expedientes GUIDED, documentos y bloqueos operativos, sin acceso sandbox de operaciones. El navegador completó el formulario y persistió su caso. No se ejecuta en remoto la parte que requiere aprobaciones o pagos ficticios; ver `STAGING_VALIDATION.md`.
 
 ## Puertas restantes
 

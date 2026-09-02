@@ -1,6 +1,6 @@
 # Roadmap: qué necesitamos del fundador
 
-Fecha: 2026-09-01. Punto de partida: MVP local validado; infraestructura alojada y operación comercial aún pendientes. Este documento no activa cuentas, suscripciones, pagos ni publicaciones.
+Actualizado: 2026-09-02. Punto de partida: MVP local y Supabase staging sintético validados; hosting de frontend y operación comercial aún pendientes. Este documento no activa suscripciones, pagos ni publicaciones regulatorias.
 
 La secuencia propuesta es **GitHub + Supabase de pruebas → hosting de staging → integraciones de prueba → revisión operativa → piloto autorizado**. El nombre comercial puede decidirse en paralelo; no bloquea las pruebas técnicas.
 
@@ -23,7 +23,7 @@ La primera opción de hosting a evaluar será Lovable conforme a la decisión de
 
 ## Actualización: región y expansión asiática (2026-09-02)
 
-GitHub ya está conectado y CI aprobado para el último commit publicado. El fundador creó el reemplazo en Singapur y compartió `keboldglfjonxcdnmyee`; la autenticación, verificación de región y despliegue alojado siguen pendientes. El proyecto anterior de Japón queda excluido. Ver `STAGING_SETUP.md` para los pasos preparados; producción se reevaluará con usuarios y requisitos de datos reales.
+GitHub está conectado. El fundador completó el login de Supabase y el reemplazo `keboldglfjonxcdnmyee` fue verificado en Singapur: diez migraciones y diez funciones desplegadas, 14/14 grupos de pruebas alojadas aprobados. El proyecto anterior de Japón queda excluido y no fue modificado. Ver `STAGING_VALIDATION.md`; producción se reevaluará con usuarios y requisitos de datos reales.
 
 Singapur Pte. Ltd. y Hong Kong private company limited by shares entran en evaluación de expansión a petición del fundador. No están activas en el producto: requieren revisión profesional, reglas aprobadas, providers verificados e integración validada. Ver `REGION_AND_ASIA_FEASIBILITY.md`. No bloquean el staging de las cuatro rutas existentes.
 
@@ -47,14 +47,14 @@ El spike debe vivir en un proyecto Lovable privado y exportarse a un repositorio
 
 ## Qué podemos terminar sin tus accesos
 
-Código, interfaz, traducciones, motores, migraciones, pruebas, adaptadores simulados, contratos de API y documentación. GitHub/CI remoto ya están validados; Supabase alojado y las conexiones reales permanecen `EXTERNAL_BLOCKED` hasta su configuración y validación. Las simulaciones se mantienen `SANDBOX`; no se presenta ninguna como `LIVE`.
+Código, interfaz, traducciones, motores, migraciones, pruebas, adaptadores simulados, contratos de API y documentación. GitHub/CI y Supabase alojado ya tienen evidencia de validación. Supabase se utiliza como `SANDBOX` con datos sintéticos; las conexiones de partners, pagos, KYC y autoridades continúan `EXTERNAL_BLOCKED`. No se presenta ninguna simulación como operación `LIVE`.
 
 No se necesitan hoy tarjetas reales, documentos de identidad, credenciales de producción ni autorización para constituir compañías. Tampoco es necesario tener un dominio definitivo para probar el staging.
 
 ## Primer paquete que puedes proporcionar
 
 - GitHub: repositorio recibido, publicado y CI aprobado; falta protección de rama.
-- Supabase: destino Singapur recibido; falta completar login autorizado y comprobar el estado del proyecto antes de escribir. No hacen falta más URLs ni claves por chat.
+- Supabase: acceso, región, despliegue y pruebas sintéticas completados. No hace falta repetir login ni compartir claves por chat.
 - Enlace del proyecto Lovable privado cuando se cree y presupuesto mensual máximo.
 - Nombre y dominio permanecen diferidos por decisión del fundador.
 - Quién asumirá revisión de cumplimiento y acuerdos con partners; si aún no existe, queda identificado como pendiente.
