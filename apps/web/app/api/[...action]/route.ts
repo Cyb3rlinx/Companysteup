@@ -16,6 +16,7 @@ import {regenerateCompliance} from '../../../../../packages/application/complian
 import { application,isSandbox,serverRepository,appOrigin } from '../../../lib/runtime';
 import { signup,login,logout,requireActor,userRepository,sandboxOps,supabaseAuth } from '../../../lib/auth';
 import { uploadDocument,signedDocument,downloadDocument } from '../../../lib/documents';
+import { evaluateCaseGuide } from '../../../../../packages/formation-guidance/service';
 export const runtime='nodejs';export const dynamic='force-dynamic';
 const uuid=z.uuid();
 function errorResponse(error:unknown){if(error instanceof SyntaxError)return NextResponse.json({error:'JSON inválido',code:'INVALID_JSON'},{status:400});if(error instanceof z.ZodError)return NextResponse.json({error:'Revisa los campos del formulario',code:'VALIDATION',details:error.issues.map(i=>({path:i.path,message:i.message}))},{status:400});if(error instanceof DomainError)return NextResponse.json({error:error.message,code:error.code},{status:error.status});console.error('Request failed',error instanceof Error?error.message:'unknown');return NextResponse.json({error:'No se pudo completar la operación. Intenta nuevamente.',code:'INTERNAL_ERROR'},{status:500});}
@@ -37,6 +38,7 @@ export async function POST(request:NextRequest,context:{params:Promise<{action:s
  if(action==='upload'){const bytes=await limitedBytes(request,11*1024*1024);const form=await new Response(bytes,{headers:{'Content-Type':request.headers.get('content-type')||''}}).formData();const file=form.get('file');if(!(file instanceof File))throw new DomainError('FILE_REQUIRED','Selecciona un archivo');return NextResponse.json(await uploadDocument(actor,uuid.parse(form.get('caseId')),file));}
  const raw=Buffer.from(await limitedBytes(request)).toString('utf8');const body=raw?JSON.parse(raw):{};const app=await application();
  if(action==='logout'){await logout();return NextResponse.json({ok:true});}
+ if(action==='agent-lab-evaluate')return NextResponse.json(await evaluateCaseGuide(service,actor,isSandbox(),body),{headers:{'Cache-Control':'no-store'}});
  if(action==='onboard'){const input=z.object({questionnaire:z.unknown(),founder:founderSchema}).parse(body);return NextResponse.json(await app.onboard(actor,input.questionnaire,{firstName:input.founder.legalFirstName,lastName:input.founder.legalLastName,dateOfBirth:input.founder.dateOfBirth}));}
  if(action==='case-create'){const input=z.object({businessId:uuid,jurisdiction:z.enum(JURISDICTIONS)}).parse(body);return NextResponse.json(await app.createCase(actor,input.businessId,input.jurisdiction));}
  if(action==='case-advance'){const input=z.object({caseId:uuid,stepCode:z.string().min(1).max(20),reference:z.string().max(300).optional(),confirmed:z.boolean(),mock:z.boolean().optional()}).parse(body);return NextResponse.json(await app.advance(actor,input.caseId,input));}

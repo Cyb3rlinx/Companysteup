@@ -1,6 +1,14 @@
 # Aceptación de agentes y formación empresarial
 
-Actualizado: 2026-09-02. “Agente” puede significar un agente de software o un agente registrado/proveedor autorizado. Este documento los separa explícitamente.
+Actualizado: 2026-09-03. “Agente” puede significar un agente de software o un agente registrado/proveedor autorizado. Este documento los separa explícitamente.
+
+## Laboratorio de alcance por jurisdicción
+
+Se agregó `/laboratorio-agentes` con siete perfiles internos versionados, 22 escenarios sintéticos y mapa de información a fuentes oficiales. US-WY/US-DE/EE usan las rutas existentes; LT/Dubái/SG/HK permanecen en investigación. GB se conserva sin incluirlo en esta campaña. Detalle: `COUNTRY_SERVICE_VALIDATION.md`.
+
+`pnpm test:agents` genera un informe auditable local. El nuevo E2E registra un usuario ficticio, crea tres expedientes y comprueba 22 escenarios, aislamiento entre organizaciones y ausencia de cambios en estados, órdenes o compañías. Las evaluaciones se pueden guardar como eventos sintéticos del expediente. El ensayo no interactúa con formularios autenticados oficiales ni evalúa un LLM.
+
+La aceptación comercial sigue pendiente: los agentes no “aprenden” por leer páginas o pasar fixtures. Hace falta revisión de conocimiento, evaluación conversacional del modelo conectado y entrega autorizada a proveedores. Ningún perfil se considera habilitado para constituir compañías reales.
 
 ## Afirmación actualmente permitida
 

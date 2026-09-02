@@ -1,8 +1,18 @@
 # Roadmap: qué necesitamos del fundador
 
-Actualizado: 2026-09-02. Punto de partida: MVP local y Supabase staging sintético validados; hosting de frontend y operación comercial aún pendientes. Este documento no activa suscripciones, pagos ni publicaciones regulatorias.
+Actualizado: 2026-09-03. Punto de partida: MVP local y Supabase staging sintético validados; laboratorio de siete rutas implementado. Hosting de frontend y operación comercial aún pendientes. Este documento no activa suscripciones, pagos ni publicaciones regulatorias.
 
-La secuencia propuesta es **GitHub + Supabase de pruebas → hosting de staging → integraciones de prueba → revisión operativa → piloto autorizado**. El nombre comercial puede decidirse en paralelo; no bloquea las pruebas técnicas.
+La secuencia actual es **validar el servicio por jurisdicción → revisión y entrega a proveedor → pruebas de agente/modelo y formularios permitidos → admin de seguimiento → piloto supervisado**. GitHub y Supabase ya están conectados. El nombre, dominio y Stripe siguen diferidos; el spike de Lovable puede avanzar en paralelo, sin bloquear estas pruebas.
+
+## Prioridad actual: saber qué podemos cumplir
+
+Ya se implementó un laboratorio interno con las siete rutas solicitadas, información/destino/responsable, fuentes y 22 escenarios sintéticos. Las pruebas distinguen preparación de constitución real. LT, Dubái, SG y HK siguen en investigación; GB se conserva fuera de esta evaluación. Ver `COUNTRY_SERVICE_VALIDATION.md`.
+
+Continuar primero con US-WY, US-DE y EE: revisión del expediente y validación de entrega con proveedor. SG/HK van después de confirmar cargos/proveedores locales; Dubái necesita autoridad específica; Lituania necesita confirmar el procedimiento digital vigente. Este orden es una prioridad de ingeniería, no una certificación legal ni recomendación fiscal.
+
+Lo que falta del fundador para superar los límites externos, sin bloquear más desarrollo: responsable de revisión profesional; proveedor/contrato y acceso de pruebas; proyecto del modelo de IA con presupuesto cuando se quiera medir conversación autónoma; y proyecto privado Lovable/presupuesto para el spike. No enviar secretos por chat.
+
+El admin básico ya existe. La siguiente ampliación mostrará agente y versión por expediente, etapa/responsable, bloqueo y próxima acción, historial/evidencia y derivaciones humanas. No se mostrará un avance jurídico solo porque una prueba de software haya aprobado.
 
 ## Entregables del fundador, en orden
 

@@ -6,7 +6,7 @@ Investigación: 2026-09-02. Estado: evaluación de arquitectura y viabilidad pre
 
 Recomendación: **Southeast Asia (Singapore), `ap-southeast-1`, para staging**. Aún no hay usuarios ni una distribución geográfica comprobada. El fundador trabaja desde Tailandia y contempla captación presencial en Bangkok, además de X y Reddit. Esta elección favorece el entorno inicial de pruebas; no demuestra la menor latencia mundial. La región de producción se decidirá con mediciones, mercado inicial y revisión de tratamiento de datos.
 
-El usuario compartió inicialmente el project ref `uvmijrapoezpvtsyhhoj` y reportó que Supabase eligió Japón. Luego creó un reemplazo en Singapur: `keboldglfjonxcdnmyee`. Ese es ahora el único destino autorizado de staging. La región no se ha verificado mediante Management API; la URL pública por sí sola no permite determinarla. Ver `STAGING_SETUP.md` para la conexión pendiente.
+El usuario compartió inicialmente el project ref `uvmijrapoezpvtsyhhoj` y reportó que Supabase eligió Japón. Luego creó un reemplazo: `keboldglfjonxcdnmyee`, único destino autorizado de staging. La conexión posterior confirmó Singapur (`ap-southeast-1`) y validó diez migraciones, diez funciones y 14 grupos de integración sintética. El proyecto de Japón quedó excluido y no fue modificado. Ver `STAGING_VALIDATION.md`. La URL pública por sí sola no determina región.
 
 | Contexto | Región a considerar | Decisión |
 |---|---|---|

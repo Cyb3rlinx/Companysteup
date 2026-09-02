@@ -1,6 +1,6 @@
 # Estado de construcción
 
-Actualizado: 2026-09-02. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
+Actualizado: 2026-09-03. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 **MVP funcional local y Supabase staging validado con datos sintéticos. El Definition of Done de operación real sigue bloqueado por partners, revisión humana, hosting y controles operativos. No es un lanzamiento de producción.**
 
@@ -26,6 +26,18 @@ Actualizado: 2026-09-02. Repositorio inicialmente vacío. Git local inicializado
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
 | M19 QA/CI | 82 pruebas unitarias/SQL, ocho E2E locales, 14 grupos de integración alojada | APROBADO; VER EVIDENCIA DEL HITO ACTUAL |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
+| M21 Laboratorio por jurisdicción | Siete perfiles de investigación, 22 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
+
+## Hito actual: alcance de agentes y ensayo por jurisdicción (2026-09-03)
+
+- Laboratorio autenticado en `/laboratorio-agentes`, con acceso desde el espacio privado. Clientes únicamente en sandbox; en Supabase solo roles internos. No es publicación de guías regulatorias para clientes reales.
+- Siete perfiles versionados: US-WY, US-DE, EE, LT, AE-DU, SG, HK. Las cuatro candidatas nuevas permanecen fuera del catálogo comercial; GB se conserva fuera de esta campaña. Fuentes públicas revisadas y excepciones documentadas en `COUNTRY_SERVICE_VALIDATION.md`.
+- Supervisor determinista: campos y destinos, responsables, límite de entrega y fuente, con revisión humana pendiente. No se activó modelo externo, entrenamiento automático ni navegación autenticada en registros.
+- 22 escenarios sintéticos; contempla datos faltantes, Wyoming/nombre A, EIN con domicilio principal extranjero, firma/API RIK, autoridad de Dubái, director SG y secretario HK. Fuentes trasladadas/vencidas bloquean; jamás se marca un registro real.
+- Nuevo E2E con usuario ficticio, onboarding, tres expedientes y auditoría de evaluaciones. Verifica casos ajenos, CSRF, permisos/URLs inyectados, jurisdicción incorrecta y que no cambian workflow, órdenes ni compañías. Escritorio, móvil y descarga del informe comprobados.
+- Validación: 106 pruebas unitarias/SQL y nueve E2E aprobados; repetición específica del laboratorio aprobada. TypeScript, lint y build optimizado aprobados. `pnpm test:agents` genera `.local/qa/agent-journeys.json`; CI ejecuta ese comando y conserva solo ese informe sintético como artifact.
+- Sin cambios de migraciones, RLS, credenciales ni despliegue de Supabase. La validación alojada de 14 grupos del hito anterior sigue siendo evidencia histórica, no una prueba nueva de estas guías.
+- Siguiente puerta: revisión humana del paquete US-WY/US-DE/EE y entrega a proveedores autorizados; después evaluación conversacional del modelo y ampliación del admin existente. Stripe, marca y dominio continúan diferidos.
 
 ## Evidencia ejecutada
 
