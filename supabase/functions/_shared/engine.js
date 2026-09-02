@@ -700,18 +700,31 @@ var schema_catalog_default = [
 ];
 
 // packages/persistence/index.ts
+function listOptions(options) {
+  if (options && (!Number.isInteger(options.limit ?? 1e3) || (options.limit ?? 1e3) < 1 || (options.limit ?? 1e3) > 1e3)) throw new DomainError("INVALID_LIMIT", "L\xEDmite de consulta inv\xE1lido");
+  return options?.limit ?? 1e3;
+}
 function tableName(table) {
   if (!schema_catalog_default.includes(table)) throw new DomainError("INVALID_TABLE", "Tabla no autorizada");
   return table;
+}
+function identifier(value) {
+  if (!/^[a-z_][a-z0-9_]*$/.test(value)) throw new Error("Invalid identifier");
+  return `"${value}"`;
 }
 var SupabaseRepository = class {
   constructor(client) {
     this.client = client;
   }
-  async list(table, where = {}) {
+  async list(table, where = {}, options) {
+    const limit = listOptions(options);
     let query = this.client.from(tableName(table)).select("*");
     for (const [k, v] of Object.entries(where)) query = v === null ? query.is(k, null) : query.eq(k, v);
-    const { data, error } = await query.limit(1e3);
+    if (options) {
+      identifier(options.orderBy);
+      query = query.order(options.orderBy, { ascending: !options.descending });
+    }
+    const { data, error } = await query.limit(limit);
     if (error) throw new DomainError("DB_ERROR", "No se pudo consultar el recurso", 500);
     return data;
   }

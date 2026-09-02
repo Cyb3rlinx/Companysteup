@@ -1,5 +1,16 @@
 # Validación de Supabase alojado
 
+## Revalidación: seguimiento y Google (2026-09-03, Bangkok)
+
+Ejecución `2026-09-02T21:06:57.058Z`, run `17976268-efa1-40d1-9fb7-cfc77f1fde70`: **16/16 grupos aprobados** con la nueva compilación Next.js conectada al mismo staging autorizado. Incluye los 14 grupos históricos y dos nuevos:
+
+- Seguimiento privado de cuatro expedientes GUIDED, preparación UK con eventos reales de inicio/finalización en Postgres, borrador no presentable y workflow/revisión intactos. Accesos ajenos/anónimos e inyección de estado rechazados.
+- Google sin configurar devuelve `EXTERNAL_BLOCKED`; CSRF y destinos inyectados rechazados. Clientes alojados no acceden al laboratorio regulatorio pendiente de revisión.
+
+Se crearon dos nuevas cuentas ficticias; no se enviaron emails, pagos ni trámites. El objeto de Storage de esta ejecución se eliminó. Ninguna compañía ni regla publicada. Google externo sigue sin probar; las funciones Edge desplegadas no cambiaron en esta revalidación. Los límites operativos descritos abajo permanecen vigentes.
+
+## Evidencia histórica inicial
+
 Fecha: 2026-09-02. Ejecución final: `2026-09-02T14:30:25.219Z`, run `60df332c-aa18-4717-bc42-7561bf1e2d52`. Proyecto autorizado: `keboldglfjonxcdnmyee`, Singapur (`ap-southeast-1`). Uso `SANDBOX` con infraestructura real; no producción.
 
 Resultado: **14/14 grupos de integración aprobados** mediante `pnpm test:staging`. El runner está en `scripts/test-staging.ts`; el reporte completo saneado queda localmente en `.local/staging/report.json`. No se usó el acceso de operaciones sandbox ni se aprobaron reglas regulatorias para hacer pasar los recorridos.

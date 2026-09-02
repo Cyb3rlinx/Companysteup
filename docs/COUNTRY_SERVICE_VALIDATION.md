@@ -4,7 +4,7 @@ Investigación: 2026-09-03, Asia/Bangkok. Estado: `PENDING_REVIEW`. Ninguna obse
 
 ## Decisión de alcance
 
-Se evaluaron las siete rutas solicitadas: Wyoming, Delaware, Estonia, Lituania, Dubái, Singapur y Hong Kong. El catálogo comercial sigue con US-DE LLC, US-WY LLC, EE OÜ y GB Ltd. GB se conserva para no eliminar funcionalidad existente; queda fuera de esta nueva campaña. LT, AE-DU, SG y HK son perfiles internos de investigación, sin productos, recomendaciones ni casos comerciales nuevos.
+Se evaluaron las ocho rutas solicitadas: Wyoming, Delaware, Estonia, Reino Unido, Lituania, Dubái, Singapur y Hong Kong. El catálogo comercial sigue con US-DE LLC, US-WY LLC, EE OÜ y GB Ltd. UK se incluye expresamente en esta campaña y en la primera tanda de validación. LT, AE-DU, SG y HK son perfiles internos de investigación, sin productos, recomendaciones ni casos comerciales nuevos.
 
 El servicio comprobado hoy es onboarding, organización de información, orientación mediante enlaces y preparación/seguimiento de expedientes en pruebas. No está comprobada la apertura real de empresas por software autónomo. Tampoco se ha certificado que cualquier fundador extranjero pueda completar cada ruta a distancia.
 
@@ -15,6 +15,7 @@ El servicio comprobado hoy es onboarding, organización de información, orienta
 | Wyoming LLC | Nombre, direcciones, organizador, datos del agente y mapa Articles/EIN | Consentimiento del agente, firma, presentación, pago y resolución. Nombre que empieza con A: ruta manual | Aceptación del paquete y canal de entrega de un agente registrado |
 | Delaware LLC | Paquete de certificado, contactos, agente y entrega Document Upload/EIN | Documento autorizado, procesamiento del registro y evidencia oficial | Certificado/carta revisados; conciliación de tarifas y obligaciones |
 | Estonia OÜ | Identidades admitidas, selección de OÜ y requisitos de expediente | Firma del usuario; proveedor y API sin habilitación | Domicilio/contacto según caso y elegibilidad contractual/técnica RIK |
+| UK Ltd | Nombre, SIC, directores/PSC, capital, documentos y domicilio | Identidades/códigos, declaraciones, presentación y certificado oficial | Autopresentación permitida o ACSP verificado, con roles PSC y domicilio revisados |
 | Lituania | Inventario de preguntas y enlaces de investigación | Guía trasladada y ruta digital para extranjeros no comprobada | Formulario vigente; forma jurídica, identidad, domicilio, capital y notaría |
 | Dubái | Actividad, mercado, selección mainland/zona franca y documentos por investigar | Autoridad y licencia concretas sin validar | Elegir mainland o una zona franca identificada y verificar su flujo |
 | Singapur | Mapa de información para Bizfile y participantes | CSP habilitado, director residente local, identidad y endorsements | Proveedor, cargos, domicilio, alcance y entregable de constitución |
@@ -32,6 +33,8 @@ Los pasos de autoridad nunca se sustituyen por una respuesta del asistente. La l
 
 **Estonia.** El [portal RIK](https://www.rik.ee/en/e-business-register/e-business-register-portal) exige medios de identidad/firma admitidos. La [Company Registration API](https://www.rik.ee/en/other-services/company-registration-api) existe: requiere habilitación, X-Road, acuerdos/pruebas y requisitos de proveedor. Su modalidad simplificada contempla un único fundador persona física y restricciones adicionales. No hay integración autorizada configurada en este proyecto.
 
+**Reino Unido.** La [guía de registro](https://www.gov.uk/limited-company-formation/register-your-company) distingue la solicitud y el certificado de incorporación. La [verificación Companies House](https://www.gov.uk/guidance/verifying-your-identity-for-companies-house) requiere atender cada rol: verificar a un director no completa automáticamente el vínculo PSC. El [domicilio registrado](https://www.gov.uk/limited-company-formation/company-address) debe cumplir las condiciones y estar en la nación de registro correspondiente. Los códigos personales solo van a canales autorizados, nunca al laboratorio. El perfil y sus cinco escenarios se mantienen pendientes de revisión humana.
+
 **Lituania.** La [FAQ de constitución consultada](https://info.registrucentras.lt/content/144433) redirige a la sección genérica DUK, sin permitir verificar el procedimiento vigente. El [sitio oficial de identificación electrónica](https://migracija.lrv.lt/en/activities/identity-documents/electronic-identification-and-electronic-signature-tool/electronic-identification-and-electronic-signature-tool-2021/) describe una herramienta de identidad y firma; eso no prueba el recorrido de constitución. No se certifica UAB ni MB con esa evidencia.
 
 **Dubái.** La [guía gubernamental](https://www.dubai.ae/starting-a-business) separa mainland y zonas francas. Actividad y autoridad determinan el camino; no se usa una plantilla universal de licencia. La [FTA](https://tax.gov.ae/en/media.centre/news/federal.tax.authority.issues.corporate.tax.guide.on.free.zone.persons.aspx) explica condiciones fiscales para zonas francas: no se promete “cero impuestos”.
@@ -46,15 +49,15 @@ El catálogo `packages/formation-guidance/catalog.ts` conserva los destinos exac
 
 - `/laboratorio-agentes`: acceso autenticado, habilitado a clientes solo en sandbox local; en Supabase únicamente roles internos verificados por servidor. No está publicado como guía comercial.
 - Cada ruta tiene un perfil versionado y escenarios predefinidos. Son pruebas de un supervisor determinista; no entrenamiento ni evaluación de un LLM conectado.
-- `pnpm test:agents`: 22 escenarios, informe `.local/qa/agent-journeys.json`, sin red ni datos personales. CI conserva solo ese archivo explícito como artifact; no incluye otros archivos `.local`.
-- `pnpm test:e2e`: usuario ficticio con onboarding, tres expedientes US-WY/US-DE/EE y 22 evaluaciones. Se comprueba aislamiento, CSRF, rechazo de permisos/URLs inyectados, vinculación a jurisdicción correcta, mapa de información, móvil e informe descargable.
+- `pnpm test:agents`: 27 escenarios, informe `.local/qa/agent-journeys.json`, sin red ni datos personales. CI conserva solo ese archivo explícito como artifact; no incluye otros archivos `.local`.
+- `pnpm test:e2e`: usuario ficticio con onboarding, cuatro expedientes US-WY/US-DE/EE/GB y 27 evaluaciones. Se comprueba aislamiento, CSRF, rechazo de permisos/URLs inyectados, vinculación a jurisdicción correcta, mapa de información, móvil e informe descargable.
 - Las evaluaciones vinculadas agregan `AGENT_LAB_EVALUATED` a `case_events` solo en sandbox local; nunca actualizan workflow, pago, compañía ni estado de registro. En Supabase se rechaza vincular incluso a operadores internos, porque el dueño puede leer su historial y no debe recibir trazas regulatorias sin revisión. Las rutas nuevas se prueban sin crear expedientes comerciales.
 - Un usuario de otra organización no puede ejecutar ni leer esos eventos. No se modifica RLS ni se agregan tablas/migraciones.
 - El mapa no acepta documentos ni credenciales. Las páginas externas son enlaces para lectura humana; no existe un ejecutor de formularios externos.
 
 ## Próximas puertas de aceptación
 
-1. Revisor humano: validar campos, fuentes, vigencia, instrucciones y excepciones de US-WY, US-DE y EE. Después revisar candidatas, sin publicar interpretaciones automáticamente.
+1. Revisor humano: validar campos, fuentes, vigencia, instrucciones y excepciones de US-WY, US-DE, EE y GB. Después revisar candidatas, sin publicar interpretaciones automáticamente.
 2. Proveedor: confirmar por contrato quién presenta, qué devuelve, qué errores maneja y qué evidencia permite marcar el registro. Solicitar acceso de pruebas por canales autorizados; no contactar terceros sin autorización.
 3. Modelo de IA: conectar un proyecto/credencial por gestor de secretos y presupuesto; evaluar conversaciones multivuelta en español, extracción de campos, citas, ambigüedad, inyección de instrucciones y derivación humana. El supervisor debe seguir negando firmas, pagos y presentaciones.
 4. Navegación supervisada: probar formularios autenticados únicamente en un entorno que permita datos sintéticos. Cuando no exista, documentar el límite; no inventar personas, documentos, firmas o declaraciones en registros reales.

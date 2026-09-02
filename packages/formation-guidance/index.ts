@@ -6,14 +6,14 @@ export { COUNTRY_GUIDES, GUIDE_VERSION, GUIDE_IDS } from './catalog';
 // Evidence dates describe research observations, never an effective law or approval.
 export const OBSERVED_AT = '2026-09-03T00:00:00+07:00';
 export const RECHECK_AFTER = '2026-09-17T00:00:00+07:00';
-export const SCENARIOS = ['base', 'missing', 'wy-name-a', 'us-foreign-office', 'ee-no-id', 'ee-multiple-founders', 'dubai-no-authority', 'sg-no-director', 'hk-secretary-conflict'] as const;
+export const SCENARIOS = ['base', 'missing', 'wy-name-a', 'us-foreign-office', 'ee-no-id', 'ee-multiple-founders', 'gb-no-director-id', 'gb-psc-unlinked', 'gb-address-mismatch', 'dubai-no-authority', 'sg-no-director', 'hk-secretary-conflict'] as const;
 export type Scenario = typeof SCENARIOS[number];
 export const evaluationSchema = z.object({guideId: z.enum(GUIDE_IDS), scenario: z.enum(SCENARIOS), caseId: z.uuid().optional()}).strict();
 export function assertLabAccess(sandbox: boolean, role: Role) {
   if (!sandbox && !['ops', 'compliance', 'admin', 'superadmin'].includes(role)) throw new DomainError('LAB_INTERNAL_ONLY', 'Investigación interna: no disponible para clientes fuera del sandbox', 403);
 }
 export function scenariosFor(id: GuideId): readonly Scenario[] {
-  return ['base', 'missing', ...({ 'US-WY': ['wy-name-a', 'us-foreign-office'], 'US-DE': ['us-foreign-office'], EE: ['ee-no-id', 'ee-multiple-founders'], LT: [], 'AE-DU': ['dubai-no-authority'], SG: ['sg-no-director'], HK: ['hk-secretary-conflict'] } as const)[id]];
+  return ['base', 'missing', ...({ 'US-WY': ['wy-name-a', 'us-foreign-office'], 'US-DE': ['us-foreign-office'], EE: ['ee-no-id', 'ee-multiple-founders'], GB: ['gb-no-director-id', 'gb-psc-unlinked', 'gb-address-mismatch'], LT: [], 'AE-DU': ['dubai-no-authority'], SG: ['sg-no-director'], HK: ['hk-secretary-conflict'] } as const)[id]];
 }
 export const scenarioLabels: Record<Scenario, string> = {
   base: 'Expediente ficticio base', missing: 'Faltan datos del fundador',
@@ -21,6 +21,9 @@ export const scenarioLabels: Record<Scenario, string> = {
   'ee-no-id': 'Estonia: firmante sin identidad digital admitida', 'ee-multiple-founders': 'Estonia: API con dos fundadores',
   'dubai-no-authority': 'Dubái: sin elegir mainland o zona franca', 'sg-no-director': 'Singapur: sin director residente local',
   'hk-secretary-conflict': 'Hong Kong: director único también secretario único',
+  'gb-no-director-id': 'UK: director sin verificación de identidad',
+  'gb-psc-unlinked': 'UK: director verificado, rol PSC pendiente',
+  'gb-address-mismatch': 'UK: domicilio fuera de la nación de registro',
 };
 export type Trace = { stage: string; owner: 'PLATFORM' | 'USER' | 'PROVIDER' | 'GOVERNMENT' | 'REVIEWER'; result: 'PREPARED' | 'BLOCKED' | 'NOT_ATTEMPTED'; reason: string };
 export type DraftIntake = {
@@ -28,9 +31,10 @@ export type DraftIntake = {
   principalOfficeInUS: boolean | null; acceptedEstonianIdentity: boolean | null;
   founders: number | null; dubaiAuthority: 'MAINLAND' | 'NAMED_FREE_ZONE' | null;
   residentSingaporeDirector: boolean | null; hkSoleDirectorAlsoSecretary: boolean | null;
+  ukDirectorsVerified: boolean | null; ukPscLinked: boolean | null; ukAddressMatchesNation: boolean | null;
 };
 export function fixtureFor(scenario: Scenario): DraftIntake {
-  const base: DraftIntake = {proposedName: 'Orbit QA', residenceDeclared: true, ownershipDeclared: true, principalOfficeInUS: true, acceptedEstonianIdentity: true, founders: 1, dubaiAuthority: 'MAINLAND', residentSingaporeDirector: true, hkSoleDirectorAlsoSecretary: false};
+  const base: DraftIntake = {proposedName: 'Orbit QA', residenceDeclared: true, ownershipDeclared: true, principalOfficeInUS: true, acceptedEstonianIdentity: true, founders: 1, dubaiAuthority: 'MAINLAND', residentSingaporeDirector: true, hkSoleDirectorAlsoSecretary: false, ukDirectorsVerified: true, ukPscLinked: true, ukAddressMatchesNation: true};
   if (scenario === 'missing') return {...base, residenceDeclared: false, ownershipDeclared: false};
   if (scenario === 'wy-name-a') return {...base, proposedName: 'Andes QA'};
   if (scenario === 'us-foreign-office') return {...base, principalOfficeInUS: false};
@@ -39,6 +43,9 @@ export function fixtureFor(scenario: Scenario): DraftIntake {
   if (scenario === 'dubai-no-authority') return {...base, dubaiAuthority: null};
   if (scenario === 'sg-no-director') return {...base, residentSingaporeDirector: false};
   if (scenario === 'hk-secretary-conflict') return {...base, hkSoleDirectorAlsoSecretary: true};
+  if (scenario === 'gb-no-director-id') return {...base, ukDirectorsVerified: false};
+  if (scenario === 'gb-psc-unlinked') return {...base, ukPscLinked: false};
+  if (scenario === 'gb-address-mismatch') return {...base, ukAddressMatchesNation: false};
   return base;
 }
 /** Draft screening only: declarations cannot establish identity, eligibility or registration. */
@@ -57,6 +64,11 @@ export function screenDraftIntake(id: GuideId, intake: DraftIntake): string[] {
   if (id === 'AE-DU' && !intake.dubaiAuthority) issues.push('LICENSING_AUTHORITY_UNSELECTED');
   if (id === 'SG' && intake.residentSingaporeDirector !== true) issues.push('LOCAL_RESIDENT_DIRECTOR_MISSING');
   if (id === 'HK' && intake.hkSoleDirectorAlsoSecretary !== false) issues.push('SOLE_DIRECTOR_SECRETARY_CONFLICT');
+  if (id === 'GB') {
+    if (intake.ukDirectorsVerified !== true) issues.push('UK_DIRECTOR_IDENTITY_PENDING');
+    if (intake.ukPscLinked !== true) issues.push('UK_PSC_ROLE_LINK_PENDING');
+    if (intake.ukAddressMatchesNation !== true) issues.push('UK_REGISTERED_OFFICE_REVIEW');
+  }
   return issues;
 }
 export type Evaluation = {
@@ -82,6 +94,7 @@ export function evaluateJourney(id: GuideId, scenario: Scenario, now = new Date(
   if (id === 'HK') blockers.push('SECRETARY_PROVIDER_UNVERIFIED');
   if (id === 'US-WY' || id === 'US-DE') blockers.push('REGISTERED_AGENT_UNVERIFIED');
   if (id === 'AE-DU') blockers.push('AUTHORITY_SPECIFIC_FLOW_UNVERIFIED');
+  if (id === 'GB') blockers.push('UK_FILING_ROUTE_UNVALIDATED');
   const maximumStage = scenario === 'missing' ? 'INTAKE_INCOMPLETE' : !fresh || guide.scope === 'RESEARCH_ONLY' ? 'RESEARCH_ESCALATION' : 'DRAFT_HANDOFF';
   return {
     guideId: id, agent: guide.agent, version: GUIDE_VERSION, scenario, evaluatedAt: Number.isFinite(now.getTime()) ? now.toISOString() : 'INVALID_CLOCK',

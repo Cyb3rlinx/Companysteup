@@ -1,5 +1,5 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
-import { demoQuestionnaire } from '../../packages/domain';
+import { demoQuestionnaire, JURISDICTIONS } from '../../packages/domain';
 import { GUIDE_IDS, scenariosFor } from '../../packages/formation-guidance';
 const headers = {Origin: 'http://127.0.0.1:3000'};
 async function post(request: APIRequestContext, action: string, data: unknown) {
@@ -20,7 +20,7 @@ test('synthetic user: all country guides, real case audit, no external writes or
   await post(page.request, 'signup', {email: `agent-lab-${Date.now()}@example.test`, password: 'Synthetic-Lab-2026-only', displayName: 'Fundadora QA ficticia'});
   const onboarding = await post(page.request, 'onboard', {questionnaire: demoQuestionnaire, founder: {legalFirstName: 'Test', legalLastName: 'Founder', dateOfBirth: '1990-01-01', nationality: 'MX', residence: 'MX', taxResidences: ['MX']}});
   const caseIds: Record<string,string> = {};
-  for (const id of ['US-WY', 'US-DE', 'EE']) {
+  for (const id of JURISDICTIONS) {
     caseIds[id] = (await post(page.request, 'case-create', {businessId: onboarding.businessId, jurisdiction: id})).id;
   }
   const initial = await (await page.request.get('/api/workspace')).json();
@@ -46,11 +46,11 @@ test('synthetic user: all country guides, real case audit, no external writes or
   expect(final.records.formation_cases).toEqual(initial.records.formation_cases);
   expect(final.records.companies).toHaveLength(0);
   expect(final.records.orders).toHaveLength(0);
-  expect(final.records.case_events.filter((event: {event_type: string}) => event.event_type === 'AGENT_LAB_EVALUATED')).toHaveLength(11);
+  expect(final.records.case_events.filter((event: {event_type: string}) => event.event_type === 'AGENT_LAB_EVALUATED')).toHaveLength(JURISDICTIONS.reduce((total,id)=>total+scenariosFor(id).length,0));
   await page.goto('/laboratorio-agentes');
   await expect(page.getByRole('heading', {name: 'Laboratorio de agentes'})).toBeVisible();
-  await page.getByRole('button', {name: 'Evaluar las 7 rutas'}).click();
-  await expect(page.getByRole('region', {name: 'Comparación de resultados'}).locator('tbody tr')).toHaveCount(7);
+  await page.getByRole('button', {name: `Evaluar las ${GUIDE_IDS.length} rutas`}).click();
+  await expect(page.getByRole('region', {name: 'Comparación de resultados'}).locator('tbody tr')).toHaveCount(GUIDE_IDS.length);
   await page.getByLabel('Escenario de prueba').selectOption('wy-name-a');
   await page.getByLabel('Expediente para registrar la evaluación').selectOption(caseIds['US-WY']);
   await page.getByRole('button', {name: 'Probar este escenario'}).click();
@@ -58,7 +58,7 @@ test('synthetic user: all country guides, real case audit, no external writes or
   await page.getByText('Códigos de bloqueo para auditoría').click();
   await expect(page.getByText('WY_PAPER_MANUAL_REVIEW', {exact: true})).toBeVisible();
   await page.screenshot({path: '.local/qa/agent-lab-desktop.png', fullPage: true});
-  for (const name of ['Estonia', 'Lituania', 'Dubái', 'Singapur', 'Hong Kong', 'Delaware']) {
+  for (const name of ['Estonia', 'Reino Unido', 'Lituania', 'Dubái', 'Singapur', 'Hong Kong', 'Delaware']) {
     await page.getByRole('button', {name: new RegExp(name)}).click();
     await expect(page.getByRole('heading', {name: 'Qué información va en cada sitio'})).toBeVisible();
     expect(await page.getByRole('link', {name: 'Fuente oficial ↗', exact: true}).count()).toBeGreaterThan(1);

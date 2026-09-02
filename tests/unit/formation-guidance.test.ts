@@ -25,6 +25,14 @@ test('international EIN routing depends on principal office; unknown cannot assu
   }
 });
 
+test('UK verifies director identity, PSC linkage and registered-office nation independently',()=>{
+  expect(screenDraftIntake('GB',fixtureFor('gb-no-director-id'))).toContain('UK_DIRECTOR_IDENTITY_PENDING');
+  const psc=screenDraftIntake('GB',fixtureFor('gb-psc-unlinked'));
+  expect(psc).toContain('UK_PSC_ROLE_LINK_PENDING');expect(psc).not.toContain('UK_DIRECTOR_IDENTITY_PENDING');
+  expect(screenDraftIntake('GB',fixtureFor('gb-address-mismatch'))).toContain('UK_REGISTERED_OFFICE_REVIEW');
+  expect(screenDraftIntake('GB',{...fixtureFor('base'),ukDirectorsVerified:null,ukPscLinked:null,ukAddressMatchesNation:null})).toHaveLength(3);
+});
+
 test.each(GUIDE_IDS)('%s: all scenarios stop before external filing or evidence of registration', id => {
   for (const scenario of scenariosFor(id)) {
     const result = evaluateJourney(id, scenario, now);
@@ -71,7 +79,7 @@ test('research scope never expands the commercial product catalog or accepts app
   for (const extra of [{registered: true}, {role: 'admin'}, {url: 'https://evil.test'}, {mock: false}, {humanApproved: true}, {passport: 'real-data'}]) {
     expect(evaluationSchema.safeParse({guideId: 'SG', scenario: 'base', ...extra}).success).toBe(false);
   }
-  expect(evaluationSchema.safeParse({guideId: 'GB', scenario: 'base'}).success).toBe(false);
+  expect(evaluationSchema.safeParse({guideId: 'XX', scenario: 'base'}).success).toBe(false);
   expect(authorizeResearchAction('LT', 'OPEN_PUBLIC_SOURCE', COUNTRY_GUIDES.find(g => g.id === 'LT')!.sources[0].url).allowed).toBe(false);
 });
 

@@ -1,18 +1,20 @@
 # Roadmap: qué necesitamos del fundador
 
-Actualizado: 2026-09-03. Punto de partida: MVP local y Supabase staging sintético validados; laboratorio de siete rutas implementado. Hosting de frontend y operación comercial aún pendientes. Este documento no activa suscripciones, pagos ni publicaciones regulatorias.
+Actualizado: 2026-09-03. Punto de partida: MVP local y Supabase staging sintético validados; laboratorio de ocho rutas implementado. Hosting de frontend y operación comercial aún pendientes. Este documento no activa suscripciones, pagos ni publicaciones regulatorias.
 
 La secuencia actual es **validar el servicio por jurisdicción → revisión y entrega a proveedor → pruebas de agente/modelo y formularios permitidos → admin de seguimiento → piloto supervisado**. GitHub y Supabase ya están conectados. El nombre, dominio y Stripe siguen diferidos; el spike de Lovable puede avanzar en paralelo, sin bloquear estas pruebas.
 
 ## Prioridad actual: saber qué podemos cumplir
 
-Ya se implementó un laboratorio interno con las siete rutas solicitadas, información/destino/responsable, fuentes y 22 escenarios sintéticos. Las pruebas distinguen preparación de constitución real. LT, Dubái, SG y HK siguen en investigación; GB se conserva fuera de esta evaluación. Ver `COUNTRY_SERVICE_VALIDATION.md`.
+Ya se implementó un laboratorio interno con las ocho rutas solicitadas, información/destino/responsable, fuentes y 27 escenarios sintéticos. Las pruebas distinguen preparación de constitución real. LT, Dubái, SG y HK siguen en investigación; UK se incluye en la primera tanda de validación. Ver `COUNTRY_SERVICE_VALIDATION.md`.
 
-Continuar primero con US-WY, US-DE y EE: revisión del expediente y validación de entrega con proveedor. SG/HK van después de confirmar cargos/proveedores locales; Dubái necesita autoridad específica; Lituania necesita confirmar el procedimiento digital vigente. Este orden es una prioridad de ingeniería, no una certificación legal ni recomendación fiscal.
+Continuar primero con US-WY, US-DE, EE y GB: revisión del expediente y validación de entrega con proveedor. SG/HK van después de confirmar cargos/proveedores locales; Dubái necesita autoridad específica; Lituania necesita confirmar el procedimiento digital vigente. Este orden es una prioridad de ingeniería, no una certificación legal ni recomendación fiscal.
 
 Lo que falta del fundador para superar los límites externos, sin bloquear más desarrollo: responsable de revisión profesional; proveedor/contrato y acceso de pruebas; proyecto del modelo de IA con presupuesto cuando se quiera medir conversación autónoma; y proyecto privado Lovable/presupuesto para el spike. No enviar secretos por chat.
 
-El admin básico ya existe. La siguiente ampliación mostrará agente y versión por expediente, etapa/responsable, bloqueo y próxima acción, historial/evidencia y derivaciones humanas. No se mostrará un avance jurídico solo porque una prueba de software haya aprobado.
+El panel del usuario y el admin ya muestran asistente por ruta, versión, ejecución del preparador, etapa/responsable, bloqueos, siguiente acción e historial. Se actualizan consultando datos persistidos; no simulan actividad autónoma. La conciliación de evidencia de registro, asignación de profesionales y SLA siguen pendientes del siguiente hito operativo.
+
+Google Auth está implementado con PKCE y bloqueo explícito hasta configurar el proveedor. El fundador debe aportar un cliente OAuth Web en Google y configurar Client ID/Secret dentro de Supabase, sin compartir secretos por chat. La prueba completa con Google sigue pendiente. Ver `GOOGLE_AUTH.md`; ingresar con Google no equivale a verificación de identidad empresarial.
 
 ## Entregables del fundador, en orden
 

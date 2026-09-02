@@ -24,11 +24,23 @@ Actualizado: 2026-09-03. Repositorio inicialmente vacío. Git local inicializado
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 82 pruebas unitarias/SQL, ocho E2E locales, 14 grupos de integración alojada | APROBADO; VER EVIDENCIA DEL HITO ACTUAL |
+| M19 QA/CI | 127 pruebas unitarias/SQL y 11 E2E locales; integración alojada detallada abajo | APROBADO; VER EVIDENCIA DEL HITO ACTUAL |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Siete perfiles de investigación, 22 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
+| M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 
-## Hito actual: alcance de agentes y ensayo por jurisdicción (2026-09-03)
+## Hito actual: UK, acceso Google y seguimiento privado (2026-09-03)
+
+- UK se incorpora al laboratorio y a la primera tanda de validación: US-WY, US-DE, EE, GB. Cinco escenarios UK distinguen datos faltantes, verificación de directores, vínculo PSC y nación del domicilio. Fuentes GOV.UK consultadas; observaciones pendientes de revisión, sin publicar reglas regulatorias.
+- Google OAuth implementado mediante Supabase SSR/PKCE, cookies HttpOnly, retorno fijo, scopes mínimos, control de origen y límites. El botón permanece deshabilitado en PGlite y en el staging actual: la consulta autenticada de configuración confirma Google deshabilitado. Falta Client ID/Secret en el proveedor y ensayo externo con cuenta de prueba; no se simula identidad Google. Ver `GOOGLE_AUTH.md`.
+- Panel privado, detalle del expediente y admin muestran pasos, responsable, bloqueos, asistente por ruta y actividad persistida. La actualización cada 25 segundos sincroniza también las tarjetas existentes; no es Supabase Realtime. Solo se presenta una ejecución en curso cuando existe un inicio registrado reciente.
+- Preparar resumen ejecuta el motor determinista con datos ya guardados y registra inicio/final/fallo, versión y revisión. No llama a un LLM, no paga, no envía información externa y no cambia el workflow. Los resúmenes anteriores se marcan desactualizados. No se confirma constitución real sin la futura integración y conciliación de evidencia.
+- Repositorio permite ordenar antes de limitar resultados: hasta 100 casos/100 eventos recientes por caso. Prueba SQL con más de 1.000 eventos verifica lectura reciente y RLS. Metadatos OAuth falsificados no elevan roles ni conceden otra organización.
+- Validación local: lint, TypeScript, 127 pruebas unitarias/SQL, 11 E2E y build aprobados. Laboratorio: 27 escenarios/8 perfiles; cero presentaciones. El navegador verifica renovación automática, aislamiento, callbacks inválidos, CSRF y vistas de escritorio/móvil.
+- Revalidación alojada con la compilación actual: 16/16 grupos aprobados en Singapur, incluidos seguimiento, preparación UK persistida, aislamiento y bloqueos Google/laboratorio. Ver run y límites en `STAGING_VALIDATION.md`. No equivale a Google OAuth externo completado ni a constitución real.
+- Sin migraciones nuevas, habilitación de pagos, publicación de reglas ni modificaciones de proveedores. El siguiente paso es revisar los paquetes de las cuatro rutas con un responsable humano y validar el canal autorizado de entrega; en paralelo se puede configurar Google. Stripe, marca y dominio siguen diferidos.
+
+## Hito anterior: alcance de agentes y ensayo por jurisdicción (2026-09-03)
 
 - Laboratorio autenticado en `/laboratorio-agentes`, con acceso desde el espacio privado. Clientes únicamente en sandbox; en Supabase solo roles internos. No es publicación de guías regulatorias para clientes reales.
 - Siete perfiles versionados: US-WY, US-DE, EE, LT, AE-DU, SG, HK. Las cuatro candidatas nuevas permanecen fuera del catálogo comercial; GB se conserva fuera de esta campaña. Fuentes públicas revisadas y excepciones documentadas en `COUNTRY_SERVICE_VALIDATION.md`.

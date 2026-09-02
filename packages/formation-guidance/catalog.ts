@@ -1,6 +1,6 @@
 /** Internal research only. These profiles are not published regulatory rules. */
-export const GUIDE_VERSION = '2026-09-03.1';
-export const GUIDE_IDS = ['US-WY', 'US-DE', 'EE', 'LT', 'AE-DU', 'SG', 'HK'] as const;
+export const GUIDE_VERSION = '2026-09-03.2';
+export const GUIDE_IDS = ['US-WY', 'US-DE', 'EE', 'GB', 'LT', 'AE-DU', 'SG', 'HK'] as const;
 export type GuideId = typeof GUIDE_IDS[number];
 export type GuideSource = {
   id: string; title: string; url: string;
@@ -51,6 +51,15 @@ export const COUNTRY_GUIDES: readonly CountryGuide[] = [
     nextResearch: 'Validar elegibilidad del proveedor para licencia, X-Road y contrato RIK; ensayar en entorno autorizado antes de integrar.',
     sources: [source('ee-portal', 'RIK: acceso y firma en e-Business Register', 'https://www.rik.ee/en/e-business-register/e-business-register-portal'), source('ee-start', 'RIK: selección de forma jurídica', 'https://ariregister.rik.ee/eng/application/start', 'PUBLIC_PORTAL_ONLY'), source('ee-api', 'RIK: Company Registration API', 'https://www.rik.ee/en/other-services/company-registration-api')],
     fields: [field('Forma jurídica y nombre propuesto', 'e-Business Register: nueva solicitud OÜ', 'ee-start'), field('Domicilio, actividad, capital, fundador y miembros del consejo', 'API simplificada: datos de solicitud; no extrapolar al formulario completo', 'ee-api', true), field('Identidad digital y firma de las personas correspondientes', 'Portal oficial, con las credenciales bajo control del usuario', 'ee-portal', true)],
+  },
+  {
+    id: 'GB', name: 'Reino Unido', agent: 'Guía UK Ltd', route: 'Private company limited by shares', scope: 'EXISTING_ROUTE',
+    opportunity: 'Registro digital mediante Companies House, con información societaria y certificado oficial de incorporación.',
+    limitation: 'La identidad de directores y los pasos de PSC se revisan por separado. Registrarse en nuestra plataforma, incluso con Google, no verifica identidad para Companies House.',
+    handoff: 'Usuario o proveedor autorizado completa identidad, códigos personales, declaraciones y presentación. El certificado oficial confirma la incorporación; no la cuenta de usuario ni un pago.',
+    nextResearch: 'Revisar directores/PSC, domicilio apropiado en la nación de registro, documentos, SIC y ruta de presentación. Validar ACSP cuando se contrate uno; no es obligatorio para toda autopresentación.',
+    sources: [source('gb-register', 'GOV.UK: registrar una compañía', 'https://www.gov.uk/limited-company-formation/register-your-company'), source('gb-identity', 'Companies House: verificación de identidad', 'https://www.gov.uk/guidance/verifying-your-identity-for-companies-house'), source('gb-address', 'GOV.UK: domicilio registrado y correo', 'https://www.gov.uk/limited-company-formation/company-address')],
+    fields: [field('Nombre, actividad SIC, capital y accionistas', 'Solicitud de constitución en Companies House', 'gb-register'), field('Memorandum y Articles of Association', 'Documentos societarios de la solicitud', 'gb-register'), field('Directores, PSC y códigos personales correspondientes', 'Verificación de identidad y vinculación de cada rol; no introducir códigos aquí', 'gb-identity', true), field('Domicilio registrado apropiado y correo de la compañía', 'Solicitud; domicilio en la misma nación del Reino Unido donde se registra', 'gb-address'), field('Identidad y acceso al servicio gubernamental', 'GOV.UK One Login / servicio oficial según la acción; control exclusivo del usuario', 'gb-identity', true)],
   },
   {
     id: 'LT', name: 'Lituania', agent: 'Investigación Lituania', route: 'Forma jurídica por confirmar', scope: 'RESEARCH_ONLY',

@@ -107,6 +107,26 @@ try{
   assert((await post(a.web,'sandbox-ops')).status()===404,'Sandbox operator bypass exposed');
   const stranger=await b.client.from('formation_cases').select('id');assert(!stranger.error&&stranger.data.length===0,'Case RLS failed');
  });
+ await check('hosted case tracking and recorded preparation stay private and do not advance registration',async()=>{
+  const tracking=await ok(await a.web.get('/api/case-tracking'),'Case tracking');
+  assert(tracking.cases.length===4&&tracking.cases.every((c:{mode:string;registrationConfirmed:boolean})=>c.mode==='GUIDED'&&!c.registrationConfirmed),'Tracking claimed registration or lost cases');
+  const before=await a.client.from('formation_cases').select('revision,workflow_state').eq('id',a.cases.GB!).single();assert(!before.error,'UK case missing');
+  const brief=await ok(await post(a.web,'case-brief',{caseId:a.cases.GB}),'UK case brief');
+  assert(brief.draft.status==='DRAFT_NOT_FOR_FILING'&&brief.tracking.agent.runStatus==='COMPLETED'&&brief.tracking.registrationConfirmed===false,'Preparation result incorrect');
+  const events=await a.client.from('case_events').select('event_type').eq('case_id',a.cases.GB!).in('event_type',['CASE_BRIEF_STARTED','CASE_BRIEF_COMPLETED']);assert(!events.error&&events.data.length===2,'Preparation events missing');
+  const after=await a.client.from('formation_cases').select('revision,workflow_state').eq('id',a.cases.GB!).single();assert(!after.error&&JSON.stringify(before.data)===JSON.stringify(after.data),'Preparation changed case state');
+  assert((await b.web.get(`/api/case-tracking?caseId=${a.cases.GB}`)).status()===404,'Other tenant read tracking');
+  assert((await post(b.web,'case-brief',{caseId:a.cases.GB})).status()===404,'Other tenant prepared brief');
+  assert((await ok(await b.web.get('/api/case-tracking'),'Other tenant tracking')).cases.length===0,'Other tenant saw cases');
+  assert((await post(a.web,'case-brief',{caseId:a.cases.GB,registered:true})).status()===400,'Untrusted case fields accepted');
+  assert((await anonWeb.get('/api/case-tracking')).status()===401,'Anonymous read tracking');
+ });
+ await check('unconfigured Google and unreviewed laboratory remain blocked in hosted customer sessions',async()=>{
+  const google=await post(anonWeb,'oauth-google');assert(google.status()===503&&(await google.json()).code==='EXTERNAL_BLOCKED','Unconfigured Google accepted');
+  assert((await anonWeb.post('/api/oauth-google',{headers:{Origin:'https://evil.test'},data:{}})).status()===403,'Google CSRF allowed');
+  assert((await post(anonWeb,'oauth-google',{redirectTo:'https://evil.test',role:'admin'})).status()===400,'Google redirect input accepted');
+  assert((await post(a.web,'agent-lab-evaluate',{})).status()===403,'Customer accessed unreviewed laboratory');
+ });
  await check('Edge gateway rejects missing, malformed and tampered JWTs',async()=>{
   for(const token of [undefined,'not-a-jwt',`${a.token.slice(0,a.token.lastIndexOf('.')+1)}invalid-signature`]){const r=await edge('jurisdiction-recommend',token,{businessId:a.business});assert(r.status===401,'Invalid JWT accepted');}
  });

@@ -41,6 +41,8 @@ Consulta [RUNBOOK](docs/RUNBOOK.md) para Auth, Storage, Edge Functions, Stripe, 
 
 Para los próximos pasos del fundador, consulta [roadmap de accesos y servicios](docs/LAUNCH_ROADMAP.md) y [propuesta de nombres de marca](docs/BRAND_NAMING.md). Lovable es opcional y no sustituye este repositorio ni sus migraciones.
 
+El [acceso Google y seguimiento privado](docs/GOOGLE_AUTH.md) incluye configuración pendiente, límites y pruebas. El panel muestra progreso y actividad registrada por ruta; preparar un resumen no constituye una compañía ni ejecuta un agente autónomo. Google permanece bloqueado hasta configurar el proveedor.
+
 La activación por dominios está definida en [verticales Supabase](docs/SUPABASE_VERTICALS.md); la diferencia entre una simulación completa y una constitución real está en [aceptación de agentes](docs/AGENT_ACCEPTANCE.md). Para evaluar hosting sin reescribir a ciegas, usa el [spike de Lovable](docs/LOVABLE_EVALUATION.md) y el paquete de contexto en `lovable/`.
 
 ## Estructura
