@@ -2,6 +2,8 @@
 
 Actualizado: 2026-09-03. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito `c9d0ef7` aprobó CI application/edge/supabase ([33683581914](https://github.com/Cyb3rlinx/Companysteup/actions/runs/33683581914)) y Regulatory integrity ([33683581953](https://github.com/Cyb3rlinx/Companysteup/actions/runs/33683581953)). Guardar este estado solo agrega documentación; no representa otra ejecución de las pruebas funcionales.
+
 **MVP funcional local y Supabase staging validado con datos sintéticos. El Definition of Done de operación real sigue bloqueado por partners, revisión humana, hosting y controles operativos. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
