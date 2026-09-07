@@ -54,7 +54,8 @@ export function screenDraftIntake(id: GuideId, intake: DraftIntake): string[] {
   if (!intake.proposedName.trim() || !intake.residenceDeclared || !intake.ownershipDeclared || !intake.founders || !Number.isInteger(intake.founders) || intake.founders < 1) issues.push('FOUNDER_RESIDENCE_OWNERSHIP_MISSING');
   if (id === 'US-WY' && /^a/i.test(intake.proposedName.trim())) issues.push('WY_PAPER_MANUAL_REVIEW');
   if (id === 'US-WY' || id === 'US-DE') {
-    if (intake.principalOfficeInUS === false) issues.push('IRS_INTERNATIONAL_EIN_CHANNEL');
+    // This legacy intake lacks the other IRS presence criteria; never infer a definitive channel.
+    if (intake.principalOfficeInUS === false) issues.push('IRS_EIN_CHANNEL_REVIEW_REQUIRED');
     if (intake.principalOfficeInUS === null) issues.push('IRS_PRINCIPAL_OFFICE_UNCONFIRMED');
   }
   if (id === 'EE') {

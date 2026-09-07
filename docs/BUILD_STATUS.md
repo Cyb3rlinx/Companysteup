@@ -1,15 +1,15 @@
 # Estado de construcción
 
-Actualizado: 2026-09-03. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
+Actualizado: 2026-09-07. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito `c9d0ef7` aprobó CI application/edge/supabase ([33683581914](https://github.com/Cyb3rlinx/Companysteup/actions/runs/33683581914)) y Regulatory integrity ([33683581953](https://github.com/Cyb3rlinx/Companysteup/actions/runs/33683581953)). Guardar este estado solo agrega documentación; no representa otra ejecución de las pruebas funcionales.
 
-**MVP funcional local y Supabase staging validado con datos sintéticos. El Definition of Done de operación real sigue bloqueado por partners, revisión humana, hosting y controles operativos. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y confirmación explícita; aún falta evaluar lenguaje natural con un modelo real y repetir la aceptación por ruta. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
 | M1 Foundation | Next.js, TypeScript, pnpm, entorno, Git y estructura modular | IMPLEMENTADO |
-| M2 Supabase + RLS | 55 tablas, diez migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
+| M2 Supabase + RLS | 57 tablas, once migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
 | M3 Fuentes | 22 fuentes, 19 capturas directas, hashes, snapshots privados y monitor | IMPLEMENTADO; 3 FUENTES BLOQUEADAS |
 | M4 Reglas | Versiones, fechas, evidencia, edición, publicación humana, supersesión y bloqueo por cambios | VALIDADO |
 | M5 Onboarding | Cuenta, fundador, residencia, negocio, titularidad declarada, cuestionario y consentimiento | VALIDADO LOCAL Y SUPABASE ALOJADO |
@@ -26,12 +26,54 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 127 pruebas unitarias/SQL y 11 E2E locales; integración alojada detallada abajo | APROBADO; VER EVIDENCIA DEL HITO ACTUAL |
+| M19 QA/CI | 162 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y EN STAGING; CI NUEVO NO EJECUTADO |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
+| M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
+| M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; OPENAI REAL EXTERNAL_BLOCKED |
 
-## Hito actual: UK, acceso Google y seguimiento privado (2026-09-03)
+## Hito M24: conversación persistente Wyoming (2026-09-07, Asia/Bangkok)
+
+- El contexto maestro aportado por el fundador se contrastó con el código y el alcance canónico. Se aplicó su patrón de lenguaje con LLM, decisiones deterministas, reglas versionadas, adaptadores y auditoría; sus afirmaciones de mercado/proveedores no se importaron como conocimiento regulatorio ni ampliaron las cuatro jurisdicciones.
+- Nueva vertical `packages/onboarding-agent`: entrevista sobre los 21 campos Wyoming, filtro de datos sensibles, parche propuesto con evidencia literal, confirmación o rechazo explícitos, control de revisión, idempotencia y pregunta adaptativa. Solo después de aceptar se actualiza el estado conversacional; la conversación no modifica workflow, orden, compañía ni supuesto registro.
+- Nueva migración `202609070011_agent_conversations.sql`: `agent_conversations` y turnos append-only, RLS por organización, claves compuestas de tenant y mutación únicamente mediante servicio. Los mensajes permanecen en la tabla privada; los eventos del caso contienen metadatos y nombres de campos, nunca sus valores.
+- Adaptador de OpenAI Responses preparado en servidor con una única herramienta estructurada forzada, esquema estricto, `store: false`, evidencia verificada localmente y sin aceptar prosa libre del modelo. Sin `OPENAI_API_KEY` y `OPENAI_MODEL`, el fallback solo interpreta `Campo: valor`; una respuesta natural queda `EXTERNAL_BLOCKED`. La documentación oficial usada fue [Responses create](https://developers.openai.com/api/reference/cli/resources/responses/methods/create) y [Evals create](https://developers.openai.com/api/reference/resources/evals/methods/create).
+- Interfaz autenticada en `/laboratorio-agentes`: selección de expediente sintético US-WY, progreso 0–21, historial, propuesta pendiente, confirmar/rechazar y reanudación después de recargar. Los clientes alojados no pueden usar este laboratorio.
+- Regresión local limpia: `pnpm check` aprobó lint, TypeScript, 162 pruebas en 20 archivos, diez bundles Edge y build Next.js; `pnpm test:e2e` aprobó 13/13 recorridos. Se observó que Playwright quedaba esperando al apagar un servidor que él mismo levantó; al reutilizar un servidor temporal separado, los 13 casos terminaron con salida 0. No se dejó el proceso como evidencia implícita.
+- Supabase Singapur `keboldglfjonxcdnmyee`: dry-run mostró solo la migración 011; se aplicó sin seed y el historial local/remoto quedó alineado en once migraciones. La ejecución alojada final `211090ab-d408-4125-8635-3ae21e2bccd9`, `2026-09-07T08:59:20Z`, aprobó 17/17 grupos, incluidas RLS real, turnos sin escritura directa y rechazo de una relación caso/organización falsificada. Solo datos sintéticos; ningún cobro, publicación regulatoria, compañía o trámite.
+- Límite: el contrato del modelo se probó con transporte falso y respuestas estructuradas controladas; no es una evaluación de un LLM real ni demuestra que un agente pueda constituir una empresa. El siguiente hito es conectar un modelo con presupuesto acotado y ejecutar la rúbrica adversarial de conversaciones Wyoming.
+- Continuidad: `brain:sync` detectó ocho enlaces legacy propios hacia dependencias genéricas y se negó a escribir. La reparación acotada eliminó solo esos enlaces, preservó 8.748 nodos ajenos, creó respaldos atómicos y la sincronización posterior quedó `SYNCED`. Se agregó una prueba que conserva el rechazo de propietarios falsificados; `brain:status` conserva la hora canónica.
+
+## Ajuste actual: agencia con conocimiento propio (2026-09-03, Asia/Bangkok)
+
+- Se registró la aclaración del fundador: onboarding y acompañamiento operados internamente por agentes, sin exigir un profesional externo por cada caso estándar. `AGENCY_MVP_SCOPE.md` define capacidades, límites y aceptación pendiente; roadmap y memorias cambian el siguiente paso a conversación Wyoming persistente.
+- Se conserva revisión humana de publicación, aislamiento, evidencia, modos externos y bloqueo de acciones no habilitadas. No se modificó código ni se aprobó ninguna regla por este ajuste documental. El adaptador de IA actual solo enruta consultas; no es todavía la entrevista requerida.
+- Se consultaron formulario oficial Wyoming, registro directo GOV.UK y guía HMRC TCSP para distinguir funciones del cliente, roles exigidos y obligaciones potenciales del operador. Observaciones con fuentes en el nuevo documento; no constituyen una aprobación regulatoria ni presuponen jurisdicción de la agencia.
+- Validación nueva: `pnpm typecheck`, `pnpm test` (155/155 en 18 archivos, ejecución 16:51 Asia/Bangkok) y `git diff --check` aprobados. No se añadieron pruebas para este cambio documental ni se repitieron E2E/build/staging. La evidencia siguiente es del hito anterior, no una evaluación nueva del agente conversacional.
+
+## Hito funcional anterior: paquete de revisión Wyoming (2026-09-03, Asia/Bangkok)
+
+- `packages/formation-packet` y formulario en `/laboratorio-agentes`: datos ficticios, 21 campos con destino/responsable/fuente, descarga JSON, bloqueos, hash de contenido/revisión y acuse SANDBOX. No sustituye Articles firmados ni SS-4 completo. `WYOMING_REVIEW_PACKET.md` define qué falta para una entrega autorizada.
+- Observación pública de Articles/consentimiento, portal estatal e instrucciones IRS; ninguna regla publicada. Ventana interna de 24 horas, fechas efectivas desconocidas y revisión profesional pendiente. Al vencer, se suspenden orientaciones de canal. No se prometen tarifas, plazos ni aprobación.
+- EIN: presencia pertinente, identificador disponible y solicitud previa se distinguen. Se corrigió el evaluador anterior para que la oficina principal extranjera por sí sola derive a revisión, sin decidir automáticamente el canal internacional. Guías versión `2026-09-03.3`.
+- Acceso de investigación conservado: clientes solo en PGlite; usuarios internos alojados sin asociación a casos. Caso local propio, US-WY, revisión vigente y no terminal para guardar auditoría. Solo metadatos en `WY_PACKET_PREPARED`; sin direcciones/cuestionario ni modificaciones de workflow, órdenes, compañías o permisos.
+- Validación ejecutada: `pnpm check` (lint, TypeScript, 155 pruebas y build) aprobado; `pnpm test:e2e` 12/12 aprobado; `pnpm test:agents` 27 escenarios y `pnpm test:wyoming` 11 escenarios. Capturas de escritorio/móvil revisadas. Primer E2E Wyoming detectó etiqueta accesible mezclada con texto de ayuda; se separaron nombre/descripción y la regresión completa aprobó. Primera prueba SQL usaba solo el ID devuelto en lugar del registro completo; corregida sin relajar la aserción.
+- Revalidación Supabase Singapur: 16/16 grupos aprobados, run `918be960-cf70-48f8-b7e8-c137707b0cf9` (`2026-09-03T08:24:58.775Z`), con rechazo real del endpoint Wyoming para clientes alojados. Dos cuentas ficticias y eliminación del objeto Storage de esta ejecución; cero compañías/pagos/reglas publicadas. Detalle en `STAGING_VALIDATION.md`.
+- No se agregaron migraciones, habilitaron credenciales ni desplegaron funciones. Cambios de Graphify que ya existían se conservaron. Sin commit/push en este hito; resultados CI del commit anterior siguen siendo históricos. Nueva comprobación del paquete añadida al workflow para cuando se publique.
+- Límite de entrega del paquete: revisión humana y canal autorizado pendientes; el acuse del mock no demuestra aceptación. El siguiente paso del producto fue actualizado a conversación y acompañamiento propios, según `AGENCY_MVP_SCOPE.md`. Modelo externo, Google, hosting, Stripe y operación real mantienen sus bloqueos anteriores.
+
+## Hito de continuidad: cerebro Graphify (2026-09-03)
+
+- Company Setups incorporado al grafo existente `D:/Claude CODE/graphify-out/graph.json` mediante una partición propia: código/SQL por AST incremental de Graphify y memoria documental por extractos literales con archivo/línea. No se reconstruyó el grafo global; se conservan los 9.490 nodos y 11.020 enlaces anteriores, sus hiperenlaces y metadatos. Respaldo previo en la misma carpeta.
+- Regla persistente «Guarda el estado» en `AGENTS.md`: checkpoint, decisiones y resumen breve de sesión; luego sincronización y consulta real. Memoria canónica en `PROJECT_MEMORY.md`, `SESSION_HANDOFF.md` y `memory/`. Ficha y punto de entrada agregados también al directorio compartido de Claude.
+- Comandos `brain:query`, `brain:status` y `brain:sync`; consultas enfocadas a este proyecto, memoria primero y código después. Una sincronización sin cambios es un no-op; concurrencia, corrupción o colisiones abortan sin pisar el grafo. No se leen transcripciones completas ni se invoca un LLM.
+- Graphify 0.9.53 con MCP/SQL instalado en `.local/graphify-venv`, sin modificar uv. Se encontró además el entorno antiguo dentro del directorio virtualizado de Claude; no se alteró. El CLI nativo intenta escribir una marca de consulta; el puente usa su motor en modo solo lectura para evitar ese bloqueo del sandbox.
+- MCP configurado con el Python aislado y `-m graphify.serve`; prueba stdio aprobada: initialize, 10 herramientas, get_node y query_graph reales. La activación de las herramientas en una sesión Codex requiere recargar su configuración; CLI disponible sin reiniciar.
+- Validación nueva de este hito: `pnpm typecheck`, `pnpm lint`, `pnpm test` (136 pruebas, incluidas nueve del puente) y `git diff --check` aprobados. Casos negativos: rutas fuera de alcance/secretos, JSON inválido, IDs colisionados, propietario falsificado, enlaces ajenos, escritura concurrente y texto hostil tratado como dato. Prueba en disco de respaldo, reemplazo y no-op.
+- No se reejecutaron E2E, build ni staging remoto en este hito de memoria/herramientas; su evidencia previa sigue asociada al hito funcional. No hubo cambios de runtime del producto, reglas regulatorias, proveedores, RLS, datos de clientes, trámites, pagos, commits ni push.
+
+## Hito funcional previo: UK, acceso Google y seguimiento privado (2026-09-03)
 
 - UK se incorpora al laboratorio y a la primera tanda de validación: US-WY, US-DE, EE, GB. Cinco escenarios UK distinguen datos faltantes, verificación de directores, vínculo PSC y nación del domicilio. Fuentes GOV.UK consultadas; observaciones pendientes de revisión, sin publicar reglas regulatorias.
 - Google OAuth implementado mediante Supabase SSR/PKCE, cookies HttpOnly, retorno fijo, scopes mínimos, control de origen y límites. El botón permanece deshabilitado en PGlite y en el staging actual: la consulta autenticada de configuración confirma Google deshabilitado. Falta Client ID/Secret en el proveedor y ensayo externo con cuenta de prueba; no se simula identidad Google. Ver `GOOGLE_AUTH.md`.
@@ -76,7 +118,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 
 ### Ampliación: Supabase, Lovable y aceptación de agentes (2026-09-01)
 
-- Trece verticales Supabase catalogadas sin duplicar tablas; un proyecto separado por entorno. Una prueba garantiza cobertura de las 55 tablas y diez Edge Functions.
+- Trece verticales Supabase catalogadas sin duplicar tablas; un proyecto separado por entorno. Una prueba garantiza cobertura de las 57 tablas y diez Edge Functions.
 - Paquete `lovable/` generado para un spike privado: conocimiento, prompt, tokens y contexto JSON derivado de los workflows. No contiene secretos ni se presenta como importación del codebase.
 - Trece casos de aceptación nuevos cubren las cuatro rutas: propiedad/automatización, simulación completa, marca `MOCK`, confirmación antes de registro y bloqueos reales de partner/gobierno.
 - Estado comprobado: el producto cubre onboarding y preparación en sandbox. La constitución real sigue no probada y `EXTERNAL_BLOCKED`; Stripe se pospone por decisión del fundador.

@@ -1,0 +1,23 @@
+# Never index local databases, secrets, downloaded evidence or generated output.
+.git/
+.github/
+.local/
+.codex/
+.agents/
+node_modules/
+.pnpm-store/
+.next/
+**/.next/
+dist/
+coverage/
+test-results/
+playwright-report/
+graphify-out/
+.env*
+**/.env*
+*.log
+*lock*
+supabase/.temp/
+supabase/.branches/
+supabase/functions/
+regulatory/snapshots/

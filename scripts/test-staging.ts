@@ -107,6 +107,25 @@ try{
   assert((await post(a.web,'sandbox-ops')).status()===404,'Sandbox operator bypass exposed');
   const stranger=await b.client.from('formation_cases').select('id');assert(!stranger.error&&stranger.data.length===0,'Case RLS failed');
  });
+ await check('agent conversation tables enforce tenant RLS, append-only turns and composite ownership',async()=>{
+  const created=await admin.from('agent_conversations').insert({organization_id:a.org,case_id:a.cases['US-WY'],jurisdiction_code:'US-WY',status:'active',execution_mode:'DETERMINISTIC_MOCK',synthetic:true,state_json:{},pending_patch:{},revision:0,client_request_id:randomUUID(),created_by:a.identity.id}).select('id').single();
+  assert(!created.error&&created.data,'Synthetic agent conversation fixture failed');
+  const turn=await admin.from('agent_conversation_turns').insert({organization_id:a.org,conversation_id:created.data.id,turn_kind:'USER_MESSAGE',customer_message:'Synthetic RLS fixture',assistant_message:'Synthetic response',proposed_patch:{},model_status:'DETERMINISTIC_MOCK',client_request_id:randomUUID(),created_by:a.identity.id}).select('id').single();
+  assert(!turn.error&&turn.data,'Synthetic agent turn fixture failed');
+  const ownConversation=await a.client.from('agent_conversations').select('id').eq('id',created.data.id);
+  const ownTurn=await a.client.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
+  assert(!ownConversation.error&&ownConversation.data.length===1&&!ownTurn.error&&ownTurn.data.length===1,'Owner cannot read conversation fixture');
+  const foreignConversations=await b.client.from('agent_conversations').select('id').eq('id',created.data.id);
+  const foreignTurns=await b.client.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
+  assert(!foreignConversations.error&&foreignConversations.data.length===0&&!foreignTurns.error&&foreignTurns.data.length===0,'Conversation leaked to another authenticated tenant');
+  const anonymousConversations=await anonymous.from('agent_conversations').select('id').eq('id',created.data.id);
+  const anonymousTurns=await anonymous.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
+  assert((anonymousConversations.error||anonymousConversations.data.length===0)&&(anonymousTurns.error||anonymousTurns.data.length===0),'Conversation leaked to an anonymous client');
+  assert((await a.client.from('agent_conversations').update({status:'closed'}).eq('id',created.data.id)).error,'Customer mutated conversation directly');
+  assert((await a.client.from('agent_conversation_turns').insert({organization_id:a.org,conversation_id:created.data.id,turn_kind:'PATCH_REJECTED',assistant_message:'Unauthorized',proposed_patch:{},model_status:'DETERMINISTIC_MOCK',client_request_id:randomUUID(),created_by:a.identity.id})).error,'Customer appended a turn directly');
+  const crossTenant=await admin.from('agent_conversations').insert({organization_id:b.org,case_id:a.cases['US-WY'],jurisdiction_code:'US-WY',status:'active',execution_mode:'DETERMINISTIC_MOCK',synthetic:true,state_json:{},pending_patch:{},revision:0,client_request_id:randomUUID(),created_by:b.identity.id});
+  assert(crossTenant.error,'Composite tenant/case foreign key accepted a cross-organization row');
+ });
  await check('hosted case tracking and recorded preparation stay private and do not advance registration',async()=>{
   const tracking=await ok(await a.web.get('/api/case-tracking'),'Case tracking');
   assert(tracking.cases.length===4&&tracking.cases.every((c:{mode:string;registrationConfirmed:boolean})=>c.mode==='GUIDED'&&!c.registrationConfirmed),'Tracking claimed registration or lost cases');
@@ -126,6 +145,8 @@ try{
   assert((await anonWeb.post('/api/oauth-google',{headers:{Origin:'https://evil.test'},data:{}})).status()===403,'Google CSRF allowed');
   assert((await post(anonWeb,'oauth-google',{redirectTo:'https://evil.test',role:'admin'})).status()===400,'Google redirect input accepted');
   assert((await post(a.web,'agent-lab-evaluate',{})).status()===403,'Customer accessed unreviewed laboratory');
+  assert((await post(a.web,'wyoming-packet',{})).status()===403,'Customer accessed unreviewed Wyoming packet');
+  assert((await post(a.web,'agent-conversation-start',{caseId:a.cases['US-WY'],clientRequestId:randomUUID()})).status()===403,'Customer accessed synthetic agent conversation in hosted mode');
  });
  await check('Edge gateway rejects missing, malformed and tampered JWTs',async()=>{
   for(const token of [undefined,'not-a-jwt',`${a.token.slice(0,a.token.lastIndexOf('.')+1)}invalid-signature`]){const r=await edge('jurisdiction-recommend',token,{businessId:a.business});assert(r.status===401,'Invalid JWT accepted');}

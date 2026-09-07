@@ -17,6 +17,7 @@ const eventLabels: Record<string,string> = {
   STEP_COMPLETED: 'Paso del expediente completado', SANDBOX_STEP_COMPLETED: 'Paso completado en simulación',
   SANDBOX_PAYMENT: 'Pago simulado', PAYMENT_CONFIRMED: 'Pago de plataforma confirmado',
   AGENT_LAB_EVALUATED: 'Evaluación sintética del laboratorio',
+  WY_PACKET_PREPARED: 'Paquete Wyoming preparado en ensayo sintético',
 };
 export function trackCase(record: FormationRecord, allEvents: Row[], now = new Date()) {
   const state = record.workflow_state;

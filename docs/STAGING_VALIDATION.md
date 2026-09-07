@@ -1,5 +1,19 @@
 # Validación de Supabase alojado
 
+## Revalidación: conversaciones Wyoming y RLS (2026-09-07, Bangkok)
+
+Ejecución final `2026-09-07T08:59:20Z`, run `211090ab-d408-4125-8635-3ae21e2bccd9`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El dry-run mostró únicamente `202609070011_agent_conversations.sql`; se aplicó sin seed y la consulta posterior confirmó once migraciones locales/remotas alineadas.
+
+El grupo nuevo creó una conversación y un turno sintéticos mediante service role. El propietario autenticado pudo leerlos; otro tenant obtuvo cero filas; el cliente anónimo no obtuvo datos; los clientes no pudieron actualizar la conversación ni insertar turnos directamente; una fila con organización y caso de tenants distintos fue rechazada por la clave compuesta. El frontend alojado rechazó iniciar el laboratorio conversacional con 403 antes de procesar el mensaje. Los demás grupos volvieron a validar Auth, RLS, Edge, Storage y navegador.
+
+Se retuvieron dos cuentas ficticias y el fixture conversacional de esta ejecución para auditoría; no contienen datos personales reales. El objeto Storage creado por la prueba fue eliminado y su metadato quedó rechazado. No hubo compañía, pago, regla publicada, presentación, llamada a OpenAI ni acción ante autoridad. Los intentos intermedios que detectaron aserciones incorrectas del runner no cuentan como aprobados; la conclusión se basa en la ejecución final con salida 0.
+
+## Revalidación: frontera del paquete Wyoming (2026-09-03, Bangkok)
+
+Ejecución `2026-09-03T08:24:58.775Z`, run `918be960-cf70-48f8-b7e8-c137707b0cf9`: **16/16 grupos aprobados** contra `keboldglfjonxcdnmyee`. El grupo de laboratorio ahora verifica que el endpoint `/api/wyoming-packet` rechaza clientes alojados con 403 antes de procesar datos de investigación. No se publicó la guía ni se atribuyó revisión profesional al resultado.
+
+Se repitieron Auth, RLS, seguimiento, Edge, Storage y onboarding de navegador con dos cuentas ficticias. Se eliminó únicamente el objeto Storage de esta ejecución. Sin compañías, cobros, reglas publicadas ni captura regulatoria aprobada. Las funciones alojadas no se redesplegaron; el frontend usa la compilación actual desde localhost. Este resultado no valida un proveedor de Wyoming, un LLM ni una presentación real.
+
 ## Revalidación: seguimiento y Google (2026-09-03, Bangkok)
 
 Ejecución `2026-09-02T21:06:57.058Z`, run `17976268-efa1-40d1-9fb7-cfc77f1fde70`: **16/16 grupos aprobados** con la nueva compilación Next.js conectada al mismo staging autorizado. Incluye los 14 grupos históricos y dos nuevos:
@@ -35,7 +49,7 @@ Resultado: **14/14 grupos de integración aprobados** mediante `pnpm test:stagin
 ## Estado del despliegue
 
 - Preflight inicial: ninguna tabla pública, usuario u objeto Storage antes de aplicar las migraciones. No se reseteó ni reparó historial remoto.
-- Diez migraciones locales y remotas coinciden; 55 tablas públicas y cero sin RLS.
+- Once migraciones locales y remotas coinciden; 57 tablas públicas y cero sin RLS.
 - Diez Edge Functions `ACTIVE`. Siete conservan `verify_jwt=true`; webhook, monitor y notify usan los controles propios versionados y probados. No se usó `--no-verify-jwt`.
 - Seed: 22 versiones `PENDING_REVIEW`, cero verificadas/publicadas, un precio inicial PLATFORM_SETUP; COMPLIANCE_ANNUAL sin precio autorizado. No se duplicaron precios.
 - Siete cuentas sintéticas conservadas entre el ensayo inicial y las repeticiones. No contienen datos personales reales. Los passwords se generaron en memoria y no se guardaron en Git ni reportes; las sesiones del recorrido final se cerraron. No se enviaron correos.

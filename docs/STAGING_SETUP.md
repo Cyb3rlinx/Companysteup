@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-02. Destino proporcionado por el fundador: `keboldglfjonxcdnmyee`, URL `https://keboldglfjonxcdnmyee.supabase.co`. Región `ap-southeast-1` verificada mediante la API de administración, estado `ACTIVE_HEALTHY`. El proyecto anterior `uvmijrapoezpvtsyhhoj` queda excluido de este despliegue y no fue modificado.
 
-El descriptor público está en `supabase/environments/staging.json`. No contiene credenciales. Estado: `SANDBOX` por su uso exclusivo con datos sintéticos, sobre infraestructura Supabase real y `APP_MODE=supabase`. Las diez migraciones, el seed pendiente de revisión y las diez funciones Edge están desplegados. Esto no habilita pagos, identidad, presentaciones ni aprobaciones regulatorias reales.
+El descriptor público está en `supabase/environments/staging.json`. No contiene credenciales. Estado: `SANDBOX` por su uso exclusivo con datos sintéticos, sobre infraestructura Supabase real y `APP_MODE=supabase`. Las once migraciones, el seed pendiente de revisión y las diez funciones Edge están desplegados. Esto no habilita pagos, identidad, presentaciones ni aprobaciones regulatorias reales.
 
 ## Ejecución local contra staging
 
@@ -49,12 +49,12 @@ pnpm supabase db push --dry-run
 
 3. Si la CLI solicita contraseña de base de datos, introducirla directamente en la terminal. No ponerla en argumentos, docs ni Git.
 4. Consultar metadatos del esquema y cantidades agregadas de usuarios/objetos mediante acceso SQL autorizado. Confirmar que es el staging nuevo y que no hay tablas o migraciones desconocidas. Ante diferencias, inspeccionar antes de aplicar nada; nunca reparar historial ni resetear el remoto para forzar coincidencia.
-5. El plan esperado es aplicar las diez migraciones canónicas. El seed se revisa por separado; no usar `--include-seed` sin esa revisión. `db push --dry-run` no prueba RLS ni la aplicación, solo muestra el plan. [Referencia de db push](https://supabase.com/docs/reference/cli/supabase-db-push).
+5. El plan esperado es aplicar las once migraciones canónicas. El seed se revisa por separado; no usar `--include-seed` sin esa revisión. `db push --dry-run` no prueba RLS ni la aplicación, solo muestra el plan. [Referencia de db push](https://supabase.com/docs/reference/cli/supabase-db-push).
 
 ## Despliegue después del preflight
 
 - Aplicar migraciones hacia adelante al proyecto verificado y luego importar `supabase/seed.sql` una vez mediante SQL autorizado. El seed contiene solo catálogos/candidatos pendientes; una repetición no debe duplicar o reemplazar el precio de catálogo existente. No cargar fixtures del sandbox local.
-- Ejecutar `supabase/operations/staging-verification.sql`: lectura de cantidades, RLS, estados editoriales y buckets; no extrae identidades ni documentos. El resultado esperado inicial incluye 55 tablas públicas con RLS, reglas pendientes y cero aprobaciones/publicaciones/evidencia sintética. Esta consulta no sustituye pruebas de aislamiento con JWT reales.
+- Ejecutar `supabase/operations/staging-verification.sql`: lectura de cantidades, RLS, estados editoriales y buckets; no extrae identidades ni documentos. El resultado actual incluye 57 tablas públicas con RLS, reglas pendientes y cero aprobaciones/publicaciones/evidencia sintética. Esta consulta no sustituye pruebas de aislamiento con JWT reales.
 - Configurar Auth y las variables del servidor por canal seguro. Para el ensayo local contra staging, usar `APP_ORIGIN=http://127.0.0.1:3100`, site URL correspondiente y callback exacto `http://127.0.0.1:3000/auth/callback`. Mantener confirmación de email; no aplicar automáticamente toda la configuración local al remoto. El hosting futuro reemplazará estos orígenes de prueba con sus URL HTTPS.
 - Mantener el modo local actual hasta configurar las claves y verificar Auth. `APP_MODE=supabase` selecciona infraestructura alojada; no habilita automáticamente partners o pagos. Generar `DOCUMENT_SIGNING_SECRET` aleatorio en el servidor sin imprimirlo.
 - Generar el bundle con `pnpm edge:build` y desplegar solo las diez funciones previstas al project ref explícito. Mantener la configuración JWT versionada y comprobar compatibilidad con las claves del proyecto; no deshabilitar validación JWT como solución a un error de autorización.

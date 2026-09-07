@@ -1,5 +1,5 @@
 /** Internal research only. These profiles are not published regulatory rules. */
-export const GUIDE_VERSION = '2026-09-03.2';
+export const GUIDE_VERSION = '2026-09-03.3';
 export const GUIDE_IDS = ['US-WY', 'US-DE', 'EE', 'GB', 'LT', 'AE-DU', 'SG', 'HK'] as const;
 export type GuideId = typeof GUIDE_IDS[number];
 export type GuideSource = {

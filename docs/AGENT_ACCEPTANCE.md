@@ -2,13 +2,21 @@
 
 Actualizado: 2026-09-03. “Agente” puede significar un agente de software o un agente registrado/proveedor autorizado. Este documento los separa explícitamente.
 
+## Objetivo vigente de aceptación
+
+El MVP prioriza una agencia que opera onboarding y acompañamiento con agentes y conocimiento propios, sin exigir profesionales externos para cada caso estándar. Los criterios conversacionales pendientes y el orden Wyoming → Delaware → Estonia → UK están en `AGENCY_MVP_SCOPE.md`. La revisión humana de conocimiento puede ser interna cuando corresponda; no otorga habilitación para funciones reservadas. Las integraciones y acciones externas se validan solo según su aplicabilidad, sin detener el desarrollo de la conversación.
+
 ## Laboratorio de alcance por jurisdicción
 
 Se agregó `/laboratorio-agentes` con ocho perfiles internos versionados, 27 escenarios sintéticos y mapa de información a fuentes oficiales. US-WY/US-DE/EE/GB usan las rutas existentes; LT/Dubái/SG/HK permanecen en investigación. UK se incluye en esta campaña por indicación del fundador. Detalle: `COUNTRY_SERVICE_VALIDATION.md`.
 
 `pnpm test:agents` genera un informe auditable local. El nuevo E2E registra un usuario ficticio, crea cuatro expedientes y comprueba 27 escenarios, aislamiento entre organizaciones y ausencia de cambios en estados, órdenes o compañías. Las evaluaciones se pueden guardar como eventos sintéticos del expediente. El ensayo no interactúa con formularios autenticados oficiales ni evalúa un LLM.
 
-La aceptación comercial sigue pendiente: los agentes no “aprenden” por leer páginas o pasar fixtures. Hace falta revisión de conocimiento, evaluación conversacional del modelo conectado y entrega autorizada a proveedores. Ningún perfil se considera habilitado para constituir compañías reales.
+La aceptación conversacional y comercial siguen pendientes: los agentes no “aprenden” por leer páginas o pasar fixtures. Hace falta revisión de conocimiento, evaluación del modelo conectado y comprobación del alcance del operador. La entrega autorizada a proveedores se exige cuando el servicio/ruta la requiera; no se presupone en toda autopresentación. Ningún perfil se considera habilitado para constituir compañías reales.
+
+Wyoming tiene además un paquete de preparación con 21 campos y 11 escenarios (`pnpm test:wyoming`). La UI permite completar datos sintéticos, detectar faltantes, consultar el destino de cada campo y exportar el JSON. El acuse SANDBOX solo comprueba el sobre interno; nunca confirma aceptación por un proveedor. Las pruebas verifican aislamiento, revisión del caso, vencimiento de fuentes y ausencia de cambios de workflow/pago. Detalle y puerta humana: `WYOMING_REVIEW_PACKET.md`.
+
+La entrevista Wyoming ya persiste turnos privados, propone datos con evidencia, exige confirmación o rechazo y permite corregir un valor confirmado. Puede retomarse después de recargar y no altera el estado del trámite. El contrato OpenAI se probó con transporte controlado; hasta ejecutar evals con un modelo real, solo se acredita el fallback explícito `Campo: valor`.
 
 ## Afirmación actualmente permitida
 

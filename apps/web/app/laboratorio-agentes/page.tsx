@@ -13,5 +13,5 @@ export default async function Page() {
   const cases = isSandbox() ? await (await userRepository(actor)).list('formation_cases') : [];
   return <AgentLab name={actor.displayName} version={GUIDE_VERSION} observedAt={OBSERVED_AT} recheckAfter={RECHECK_AFTER}
     guides={COUNTRY_GUIDES.map(g => ({...g, scenarios: scenariosFor(g.id).map(id => ({id, label: scenarioLabels[id]}))}))}
-    cases={cases.map(c => ({id: String(c.id), jurisdiction: String(c.jurisdiction_code)}))}/>;
+    cases={cases.map(c => ({id: String(c.id), jurisdiction: String(c.jurisdiction_code),revision:Number(c.revision)}))}/>;
 }

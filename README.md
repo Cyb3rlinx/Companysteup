@@ -43,9 +43,19 @@ Para los próximos pasos del fundador, consulta [roadmap de accesos y servicios]
 
 El [acceso Google y seguimiento privado](docs/GOOGLE_AUTH.md) incluye configuración pendiente, límites y pruebas. El panel muestra progreso y actividad registrada por ruta; preparar un resumen no constituye una compañía ni ejecuta un agente autónomo. Google permanece bloqueado hasta configurar el proveedor.
 
+El [paquete de revisión de Wyoming](docs/WYOMING_REVIEW_PACKET.md) permite ensayar 21 campos, mapa de destinos, faltantes y descarga JSON desde el laboratorio. `pnpm test:wyoming` genera 11 escenarios adicionales. Solo datos ficticios y revisión interna: no hay entrega, aceptación ni registro externo.
+
+El mismo laboratorio incluye conversación persistente Wyoming con propuestas que el usuario debe confirmar o rechazar. Sin credencial de modelo solo acepta `Campo: valor`; no se presenta el fallback como comprensión de lenguaje natural. El estado y los límites del siguiente hito están en [AGENCY_MVP_SCOPE.md](docs/AGENCY_MVP_SCOPE.md).
+
 La activación por dominios está definida en [verticales Supabase](docs/SUPABASE_VERTICALS.md); la diferencia entre una simulación completa y una constitución real está en [aceptación de agentes](docs/AGENT_ACCEPTANCE.md). Para evaluar hosting sin reescribir a ciegas, usa el [spike de Lovable](docs/LOVABLE_EVALUATION.md) y el paquete de contexto en `lovable/`.
 
-## Estructura
+## Memoria entre conversaciones
+
+Decí **«Guarda el estado»** para actualizar el checkpoint, las decisiones y el resumen de sesión, y sincronizarlos con el grafo existente. El procedimiento persistente está en `AGENTS.md`; [operación del cerebro](docs/GRAPH_MEMORY.md) y [memoria del proyecto](docs/PROJECT_MEMORY.md) explican fuentes, límites y recuperación.
+
+Desde esta raíz: `pnpm brain:query "Company Setups punto de continuidad siguiente paso"`, `pnpm brain:status` y `pnpm brain:sync`. No se reconstruye el grafo compartido ni se ejecutan trámites reales.
+
+## Estructura del repositorio
 
 `apps/web` contiene la experiencia Next.js; `packages` los motores independientes; `jurisdictions` los cuatro adaptadores; `supabase` las migraciones, RLS, funciones y pruebas; `regulatory` el catálogo oficial y las reglas candidatas; `tests` las pruebas de dominio, PostgreSQL y navegador.
 

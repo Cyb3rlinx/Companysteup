@@ -1,0 +1,2 @@
+# Isolated development tool; do not reinstall/modify the existing uv tool.
+graphifyy[mcp,sql]==0.9.53

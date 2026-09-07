@@ -4,7 +4,7 @@ import path from 'node:path';
 
 test('Supabase vertical catalog covers every public table and Edge Function exactly as designed',()=>{
  const root=path.resolve(import.meta.dirname,'../..');
- const sql=readFileSync(path.join(root,'supabase','migrations','202608310001_foundation.sql'),'utf8');
+ const sql=readdirSync(path.join(root,'supabase','migrations')).filter(file=>file.endsWith('.sql')).sort().map(file=>readFileSync(path.join(root,'supabase','migrations',file),'utf8')).join('\n');
  const migrationTables=[...sql.matchAll(/create table public\.([a-z_]+)/g)].map(match=>match[1]);
  const manifest=JSON.parse(readFileSync(path.join(root,'supabase','verticals.json'),'utf8')) as {environments:{code:string}[];verticals:{tables:string[];functions?:string[]}[]};
  const mappedTables=manifest.verticals.flatMap(vertical=>vertical.tables);

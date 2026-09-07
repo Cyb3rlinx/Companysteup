@@ -665,6 +665,8 @@ var schema_catalog_default = [
   "case_tasks",
   "case_events",
   "case_escalations",
+  "agent_conversations",
+  "agent_conversation_turns",
   "case_documents",
   "document_extractions",
   "partners",

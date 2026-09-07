@@ -18,10 +18,10 @@ test('Wyoming name routing handles leading spaces and lowercase without applying
   expect(screenDraftIntake('US-WY', input)).toContain('WY_PAPER_MANUAL_REVIEW');
   expect(screenDraftIntake('US-DE', input)).not.toContain('WY_PAPER_MANUAL_REVIEW');
 });
-test('international EIN routing depends on principal office; unknown cannot assume online eligibility', () => {
+test('principal office alone triggers EIN review without choosing a definitive channel', () => {
   for (const id of ['US-WY', 'US-DE'] as const) {
     expect(screenDraftIntake(id, {...fixtureFor('base'), principalOfficeInUS: null})).toContain('IRS_PRINCIPAL_OFFICE_UNCONFIRMED');
-    expect(screenDraftIntake(id, {...fixtureFor('base'), principalOfficeInUS: false})).toContain('IRS_INTERNATIONAL_EIN_CHANNEL');
+    expect(screenDraftIntake(id, {...fixtureFor('base'), principalOfficeInUS: false})).toContain('IRS_EIN_CHANNEL_REVIEW_REQUIRED');
   }
 });
 
@@ -45,7 +45,7 @@ test.each(GUIDE_IDS)('%s: all scenarios stop before external filing or evidence 
 
 test('country-specific eligibility failures and alternate paths are surfaced', () => {
   expect(evaluateJourney('US-WY', 'wy-name-a', now).blockers).toContain('WY_PAPER_MANUAL_REVIEW');
-  expect(evaluateJourney('US-DE', 'us-foreign-office', now).blockers).toContain('IRS_INTERNATIONAL_EIN_CHANNEL');
+  expect(evaluateJourney('US-DE', 'us-foreign-office', now).blockers).toContain('IRS_EIN_CHANNEL_REVIEW_REQUIRED');
   expect(evaluateJourney('EE', 'ee-no-id', now).blockers).toContain('ESTONIAN_SIGNATURE_UNAVAILABLE');
   expect(evaluateJourney('EE', 'ee-multiple-founders', now).blockers).toContain('RIK_SIMPLIFIED_API_SINGLE_FOUNDER_ONLY');
   expect(evaluateJourney('AE-DU', 'dubai-no-authority', now).blockers).toContain('LICENSING_AUTHORITY_UNSELECTED');

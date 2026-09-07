@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Link from 'next/link';
+import {WyomingPacketLab} from './wyoming-packet';
+import {WyomingConversationLab} from './wyoming-conversation';
 import type { CountryGuide, GuideId } from '../../../packages/formation-guidance/catalog';
 import type { Evaluation, Scenario } from '../../../packages/formation-guidance';
 import styles from './agent-lab.module.css';
@@ -12,7 +14,7 @@ const ownerNames = {PLATFORM: 'Plataforma', USER: 'Usuario', PROVIDER: 'Proveedo
 const resultNames = {PREPARED: 'Preparado en simulación', BLOCKED: 'Bloqueado', NOT_ATTEMPTED: 'No intentado'};
 export function AgentLab({name, version, observedAt, recheckAfter, guides, cases}: {
   name: string; version: string; observedAt: string; recheckAfter: string;
-  guides: Guide[]; cases: {id: string; jurisdiction: string}[];
+  guides: Guide[]; cases: {id: string; jurisdiction: string; revision:number}[];
 }) {
   const [selected, setSelected] = useState<GuideId>('US-WY');
   const [scenario, setScenario] = useState<Scenario>('base');
@@ -57,6 +59,7 @@ export function AgentLab({name, version, observedAt, recheckAfter, guides, cases
       <div className={styles.handoff}><h3>Hasta dónde llega nuestro servicio</h3><p>Entrevista, lista de información, enlaces oficiales y borrador de entrega para revisión. La resolución del registro requiere evidencia emitida por la autoridad.</p><p><b>Entrega a usuario/proveedor:</b> {guide.handoff}</p><p><b>Para habilitar esta ruta:</b> {guide.nextResearch}</p></div>
       <h3>Fuentes y límite de verificación</h3><ul className={styles.sources}>{guide.sources.map(s => <li key={s.id}><a href={s.url} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">{s.title} ↗</a><small>{s.observation === 'RELOCATED' ? 'Enlace trasladado; información actual por confirmar' : s.observation === 'PUBLIC_PORTAL_ONLY' ? 'Solo acceso público observado; formulario autenticado no probado' : 'Contenido público consultado; aprobación profesional pendiente'}</small></li>)}</ul>
     </section>
+    {selected==='US-WY'&&<><div className={styles.content}><WyomingConversationLab cases={cases.filter(c=>c.jurisdiction==='US-WY')}/></div><div className={styles.content}><WyomingPacketLab cases={cases.filter(c=>c.jurisdiction==='US-WY')}/></div></>}
     <section className={styles.content} aria-label="Comparación de resultados"><div className={styles.header}><h2>Bitácora de esta sesión</h2><button className="btn secondary" onClick={download} disabled={!results.length || busy}>Descargar informe JSON</button></div><p>Los resultados de esta tabla se reinician al recargar. Los vinculados a un expediente permanecen en su historial.</p><div className={styles.tableWrap}><table><thead><tr><th>Agente / ruta</th><th>Escenario</th><th>Máximo alcance</th><th>Registro real</th></tr></thead><tbody>{results.map(r => <tr key={`${r.guideId}-${r.scenario}-${r.caseId}`}><td>{r.agent}</td><td>{guides.find(g => g.id === r.guideId)?.scenarios.find(s => s.id === r.scenario)?.label}</td><td>{stageNames[r.maximumStage]}</td><td>No</td></tr>)}</tbody></table></div>{!results.length && <p>Ejecuta una evaluación para comparar los límites.</p>}</section>
   </main>;
 }
