@@ -9,4 +9,5 @@ Fecha: 2026-09-07, Asia/Bangkok.
 - Validación: `pnpm check` aprobó 162 pruebas, lint, TypeScript y build; 13/13 E2E terminaron con salida 0. Staging final run `211090ab-d408-4125-8635-3ae21e2bccd9`: 17/17, incluidas negativas reales de RLS y ownership.
 - No hubo empresa, presentación, pago, publicación de reglas, llamada real a OpenAI ni mensaje externo. Google, Stripe, hosting definitivo y operadores externos conservan sus estados previos.
 - Graphify quedó sincronizado después de retirar ocho enlaces legacy propios hacia dependencias genéricas mediante reparación acotada, con respaldo y preservación de todas las particiones ajenas. El validador sigue rechazando propietarios falsificados.
+- El commit `f9a7c16` fue publicado en GitHub. CI run `34105837168` y Regulatory integrity run `34105837115` aprobaron para el mismo SHA.
 - Siguiente paso: conectar modelo y presupuesto por canal seguro y ejecutar evaluación Wyoming completa/adversarial con métricas de extracción, corrección, seguridad, costo y latencia antes de integrar acompañamiento en el panel.
