@@ -1,10 +1,10 @@
 # Estado de construcción
 
-Actualizado: 2026-09-07. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
+Actualizado: 2026-09-10. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito `f9a7c16` aprobó [CI #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837168) y [Regulatory integrity #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837115) el 2026-09-07. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y confirmación explícita; aún falta evaluar lenguaje natural con un modelo real y repetir la aceptación por ruta. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El nivel conectado está implementado, pero aún falta ejecutarlo con modelos reales y repetir la aceptación por ruta. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
@@ -26,12 +26,23 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 162 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y EN STAGING; CI NUEVO NO EJECUTADO |
+| M19 QA/CI | 165 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL; STAGING SIN CAMBIOS; CI NUEVO NO EJECUTADO |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; OPENAI REAL EXTERNAL_BLOCKED |
+| M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | NIVEL DETERMINISTA 4/4; NIVEL CONECTADO EXTERNAL_BLOCKED |
+
+## Hito M25: cliente ficticio y evaluación Wyoming (2026-09-10, Asia/Bangkok)
+
+- Nueva vertical `packages/agent-evaluation`: persona sintética canónica, cliente determinista, cliente OpenAI restringido a tres datos solicitados y evaluador exacto independiente del agente de onboarding. Una salida alterada, un campo no solicitado o un dato prohibido se rechazan antes de persistir.
+- `pnpm test:wyoming-agent` ejecutó 4/4 recorridos sobre PGlite y las migraciones reales: 21 campos completos; corrección de un valor confirmado y reanudación; prompt injection, SSN sintáctico y correo no `.test`; y abandono después de cinco campos. Todos alcanzaron el estado esperado y el estado final coincidió campo por campo con la verdad de referencia.
+- La puerta negativa consulta órdenes, suscripciones, webhooks, identidad, screening, registros de compañía y compañías. Resultado observado: cero escrituras en esas superficies, cero cambio del expediente de formación y cero paquetes para el caso incompleto.
+- `pnpm test:wyoming-agent:connected` usa dos adaptadores Responses con `store:false`, herramienta estricta y presupuesto máximo de solicitudes. Registra modelos, solicitudes, tokens y latencia; el costo queda nulo hasta fijar precios versionados. No se ejecutó porque faltan `OPENAI_API_KEY`, `OPENAI_MODEL` y `OPENAI_SIMULATOR_MODEL`; por tanto no se atribuye comprensión de lenguaje natural.
+- Regresión local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build Next.js. `pnpm test:e2e` aprobó 13/13 con salida 0 reutilizando un servidor aislado. El primer intento también mostró los 13 casos `ok`, pero se interrumpió al repetirse la espera de apagado ya documentada y no se contó como aprobación.
+- No hubo migración ni cambio de esquema; staging no se reejecutó. Sus 17/17 grupos previos siguen siendo evidencia histórica. No hubo red del runner determinista, compañía, pago, identidad, presentación, mensaje externo ni publicación regulatoria.
+- Guía reproducible: `WYOMING_AGENT_EVALUATION.md`. Referencias técnicas oficiales: [Working with evals](https://developers.openai.com/api/docs/guides/evals), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) y [Your data](https://developers.openai.com/api/docs/guides/your-data).
 
 ## Hito M24: conversación persistente Wyoming (2026-09-07, Asia/Bangkok)
 

@@ -27,6 +27,7 @@ Playwright asigna `SANDBOX_DATA_DIR` a una base PGlite aislada cuando inicia su 
 pnpm lint
 pnpm typecheck
 pnpm test
+pnpm test:wyoming-agent
 pnpm build
 pnpm test:e2e
 ```
@@ -46,6 +47,8 @@ El [acceso Google y seguimiento privado](docs/GOOGLE_AUTH.md) incluye configurac
 El [paquete de revisión de Wyoming](docs/WYOMING_REVIEW_PACKET.md) permite ensayar 21 campos, mapa de destinos, faltantes y descarga JSON desde el laboratorio. `pnpm test:wyoming` genera 11 escenarios adicionales. Solo datos ficticios y revisión interna: no hay entrega, aceptación ni registro externo.
 
 El mismo laboratorio incluye conversación persistente Wyoming con propuestas que el usuario debe confirmar o rechazar. Sin credencial de modelo solo acepta `Campo: valor`; no se presenta el fallback como comprensión de lenguaje natural. El estado y los límites del siguiente hito están en [AGENCY_MVP_SCOPE.md](docs/AGENCY_MVP_SCOPE.md).
+
+La [evaluación agéntica Wyoming](docs/WYOMING_AGENT_EVALUATION.md) ejecuta un cliente ficticio determinista contra esa conversación y deja preparado un segundo nivel con cliente y onboarding conectados a modelos. `pnpm test:wyoming-agent` no usa red; `pnpm test:wyoming-agent:connected` exige credenciales y un límite explícito de solicitudes.
 
 La activación por dominios está definida en [verticales Supabase](docs/SUPABASE_VERTICALS.md); la diferencia entre una simulación completa y una constitución real está en [aceptación de agentes](docs/AGENT_ACCEPTANCE.md). Para evaluar hosting sin reescribir a ciegas, usa el [spike de Lovable](docs/LOVABLE_EVALUATION.md) y el paquete de contexto en `lovable/`.
 

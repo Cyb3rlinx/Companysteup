@@ -11,6 +11,7 @@
 
 - Al 2026-09-03, el MVP local funciona y existe validación histórica de Supabase staging con datos sintéticos. Esto no es lanzamiento de producción ni prueba de constitución real. Fuente: `docs/BUILD_STATUS.md`.
 - Los agentes preparan expedientes y orientan con un supervisor determinista; todavía no constituyen empresas reales de forma autónoma. No hay modelo externo conectado, pagos reales ni presentación gubernamental habilitada. Fuente: `docs/AGENT_ACCEPTANCE.md`.
+- Wyoming cuenta con evaluación en dos niveles: cliente ficticio determinista ejecutable sin red y cliente/modelo conectados mediante Responses. El evaluador conserva la verdad de referencia y nunca delega al modelo su propia aprobación. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`.
 - El grafo es memoria de desarrollo, no evidencia legal vigente ni autorización de operaciones. Fuentes vencidas, contradicciones o revisión pendiente bloquean afirmaciones y exigen revisión humana. Fuente: `AGENTS.md`.
 
 ## Jurisdicciones y alcance
@@ -43,7 +44,7 @@
 
 ## Siguiente paso y bloqueos
 
-- La conversación Wyoming persistente está implementada con extracción estructurada, confirmación/rechazo, reanudación e idempotencia. Sin credenciales, el fallback exige `Campo: valor`; no simula comprensión libre. Siguiente paso: evaluar un modelo conectado con conocimiento revisado y rúbrica adversarial; después integrar acompañamiento/evidencia y repetir Delaware → Estonia → UK. Fuente: `docs/AGENCY_MVP_SCOPE.md` y `docs/SESSION_HANDOFF.md`.
+- La conversación Wyoming persistente y el cliente ficticio determinista están implementados. Cuatro recorridos comprueban finalización, corrección/reanudación, entradas adversariales y abandono sin acciones externas. Siguiente paso: ejecutar el nivel conectado con modelos y presupuesto fijados; después integrar acompañamiento/evidencia y repetir Delaware → Estonia → UK. Fuente: `docs/WYOMING_AGENT_EVALUATION.md` y `docs/SESSION_HANDOFF.md`.
 - El adaptador actual `packages/ai/openai.ts` solo enruta una pregunta a reglas verificadas; no es una entrevista conversacional. Los escenarios deterministas existentes no prueban capacidad de un modelo conectado. Sin credencial construir contrato/mock y declarar pendiente esa validación, sin rebajar controles. Fuente: `docs/AGENCY_MVP_SCOPE.md`.
 - Se necesitan proyecto y presupuesto del modelo para pruebas reales con datos ficticios; no pedir secretos por conversación. Google puede configurarse en paralelo. Para lanzamiento identificar operador y responsable interno; resolver servicios externos únicamente cuando la ruta/actividad los requiera. Fuente: `docs/SESSION_HANDOFF.md`.
 - Hosting, correo, hardening operativo y piloto supervisado siguen pendientes. No ejecutar `test:staging` como lectura de estado: crea fixtures remotos. Fuente: `docs/SESSION_HANDOFF.md`.

@@ -1,19 +1,18 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-07, 16:00 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-10, 13:20 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: conversación Wyoming implementada; evaluar modelo real
+## Checkpoint actual: cliente ficticio determinista aprobado; ejecutar nivel conectado
 
-- Se implementó la entrevista conversacional persistente US-WY sobre los 21 campos existentes: sesión privada, historial append-only, propuesta con evidencia, confirmación/rechazo, reanudación, revisión optimista e idempotencia. Solo acepta expedientes propios, sintéticos, US-WY y no terminales.
-- El modelo solo puede proponer datos explícitos mediante una herramienta con esquema estricto. El servidor verifica que la cita exista en el mensaje, genera la respuesta visible y no persiste hasta confirmación. No puede decidir elegibilidad, hechos regulatorios, pagos, firma, presentación ni registro.
-- Sin credenciales OpenAI, el modo `DETERMINISTIC_MOCK` admite exclusivamente `Campo: valor`; el lenguaje natural queda `EXTERNAL_BLOCKED`. Con credenciales, el adaptador usa Responses con `store:false`, pero solo fue validado con un transporte falso. No atribuir capacidad a un LLM real.
-- Nueva migración 011 aplicada al único Supabase autorizado en Singapur: 57 tablas públicas, once migraciones y RLS. La ejecución final `211090ab-d408-4125-8635-3ae21e2bccd9` aprobó 17/17 grupos alojados con datos sintéticos, incluida la frontera real de las tablas de conversación.
-- Validación local: `pnpm check` aprobado con 162/162 pruebas en 20 archivos y build; `pnpm test:e2e` 13/13 con salida 0; `pnpm typecheck` repetido después de ampliar staging. Ninguna compañía, cobro, regla publicada, presentación ni mensaje externo.
-- GitHub `main`: commit `f9a7c16` publicado. [CI #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837168) y [Regulatory integrity #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837115) terminaron `success` para el SHA completo `f9a7c161f1ef27c75dc013a0b835a1c44134ea39`.
-- El contexto maestro entregado por el fundador fue tratado como especificación no confiable. Sus principios compatibles se aplicaron; sus datos de competidores/proveedores no se convirtieron en conocimiento y no se añadieron jurisdicciones.
-- Siguiente paso concreto: configurar un proyecto/modelo y presupuesto por canal seguro, luego ejecutar conversaciones Wyoming completas y adversariales con una rúbrica que mida extracción, correcciones, contradicciones, prompt injection, costo, latencia y cero acciones/afirmaciones no autorizadas. Después integrar pendientes en panel y repetir US-DE → EE → GB.
+- Se implementó `packages/agent-evaluation` y `pnpm test:wyoming-agent`: cliente ficticio determinista, verdad canónica separada y cuatro recorridos sobre la persistencia real. Completa 21 campos, corrige un valor confirmado, reanuda, rechaza prompt injection/datos prohibidos y conserva un recorrido incompleto sin paquete.
+- Resultado determinista: 4/4 escenarios aprobados. La evaluación compara el estado campo por campo y verificó cero órdenes, suscripciones, webhooks, identidad, screening, registros o compañías; tampoco cambió el expediente de formación.
+- El nivel conectado está implementado mediante `pnpm test:wyoming-agent:connected`: cliente y onboarding usan Responses, `store:false`, herramientas estrictas y un máximo predeterminado de 60 solicitudes. El reporte registra modelos, tokens y latencia; el costo permanece desconocido hasta fijar precios versionados.
+- Sin `OPENAI_API_KEY`, `OPENAI_MODEL` y `OPENAI_SIMULATOR_MODEL`, el nivel conectado continúa `EXTERNAL_BLOCKED` y no fue ejecutado. La prueba determinista no acredita comprensión de lenguaje natural ni capacidad de constituir una empresa.
+- Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
+- No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.
+- Siguiente paso concreto: configurar por canal seguro los dos modelos y el límite de gasto, ejecutar el nivel conectado, revisar fallos y fijar una puerta de calidad. Solo después integrar la conversación aprobada en el panel del cliente y repetir US-DE → EE → GB.
 - Para lanzamiento continúa pendiente identificar entidad/jurisdicción operadora, alcance habilitado y responsable interno; Google externo, hosting definitivo, Stripe y partners siguen sus bloqueos. No hace falta resolverlos para evaluar el modelo de forma sintética.
-- Memoria Graphify en estado `SYNCED`. El primer intento detectó ocho enlaces legacy propios hacia dependencias genéricas; `brain:repair` retiró únicamente esos enlaces, preservó las particiones ajenas y creó respaldos antes de reintentar. Consultar `brain:status` para la hora canónica de la última sincronización.
+- Graphify quedó `SYNCED` el 2026-09-10T06:23:45Z: 1.177 nodos propios, 8.974 nodos ajenos preservados y respaldo previo. La consulta posterior recuperó este checkpoint y su siguiente paso desde `docs/SESSION_HANDOFF.md` y `docs/memory/2026-09-10-wyoming-agent-evaluation.md`.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
 

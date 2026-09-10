@@ -16,6 +16,8 @@ La aceptación conversacional y comercial siguen pendientes: los agentes no “a
 
 Wyoming tiene además un paquete de preparación con 21 campos y 11 escenarios (`pnpm test:wyoming`). La UI permite completar datos sintéticos, detectar faltantes, consultar el destino de cada campo y exportar el JSON. El acuse SANDBOX solo comprueba el sobre interno; nunca confirma aceptación por un proveedor. Las pruebas verifican aislamiento, revisión del caso, vencimiento de fuentes y ausencia de cambios de workflow/pago. Detalle y puerta humana: `WYOMING_REVIEW_PACKET.md`.
 
+`pnpm test:wyoming-agent` añade un cliente ficticio automatizado y una verdad de referencia separada del agente evaluado. Recorre finalización, corrección/reanudación, entradas adversariales y abandono incompleto contra la persistencia real. `pnpm test:wyoming-agent:connected` conserva la misma rúbrica y reemplaza el cliente y la extracción por modelos configurados, con funciones estrictas, `store:false` y límite de solicitudes. La aprobación determinista no acredita comprensión de lenguaje natural; la conectada tampoco acredita presentación o aceptación externa. Procedimiento: `WYOMING_AGENT_EVALUATION.md`.
+
 La entrevista Wyoming ya persiste turnos privados, propone datos con evidencia, exige confirmación o rechazo y permite corregir un valor confirmado. Puede retomarse después de recargar y no altera el estado del trámite. El contrato OpenAI se probó con transporte controlado; hasta ejecutar evals con un modelo real, solo se acredita el fallback explícito `Campo: valor`.
 
 ## Afirmación actualmente permitida

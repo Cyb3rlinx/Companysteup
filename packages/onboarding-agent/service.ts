@@ -5,7 +5,7 @@ import type {Repository,Row} from '../persistence';
 import {prepareWyomingPacket} from '../formation-packet/wyoming';
 import {WY_FIELDS,wyomingIntakeSchema} from '../formation-packet/catalog';
 import {applyConfirmedPatch,assistantFor,deterministicExtract,initialConversationState,nextMissing,safeSyntheticMessage,type ProposedUpdate} from './index';
-import {extractWithOpenAI} from './openai';
+import {extractWithOpenAI,type OpenAIConfiguration} from './openai';
 
 export interface ConversationRecord extends Row{id:string;organization_id:string;case_id:string;jurisdiction_code:'US-WY';status:string;execution_mode:string;model:string|null;synthetic:boolean;state_json:unknown;pending_patch:unknown;revision:number;created_by:string;created_at:string;updated_at:string}
 export interface ConversationTurn extends Row{id:string;organization_id:string;conversation_id:string;turn_kind:string;customer_message:string|null;assistant_message:string;proposed_patch:unknown;model_status:string;client_request_id:string;created_at:string}
@@ -28,7 +28,7 @@ async function checkedCase(repo:Repository,actor:Actor,id:string,revision:number
  return item;
 }
 
-export async function startWyomingConversation(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:{key:string;model:string}){
+export async function startWyomingConversation(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:OpenAIConfiguration){
  assertSandbox(sandbox);const values=startSchema.parse(input);
  const prior=(await repo.list<ConversationRecord>('agent_conversations',{organization_id:actor.organizationId,client_request_id:values.clientRequestId}))[0];
  if(prior)return response(repo,owned(prior,actor));
@@ -46,7 +46,7 @@ export async function getWyomingConversation(repo:Repository,actor:Actor,sandbox
  const items=await repo.list<ConversationRecord>('agent_conversations',{case_id:id},{orderBy:'created_at',descending:true,limit:1});return items[0]?response(repo,owned(items[0],actor)):null;
 }
 
-export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:{key:string;model:string}){
+export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:OpenAIConfiguration){
  assertSandbox(sandbox);const values=messageSchema.parse(input);const conversation=await record(repo,actor,values.conversationId);
  const duplicate=(await repo.list<ConversationTurn>('agent_conversation_turns',{conversation_id:conversation.id,client_request_id:values.clientRequestId}))[0];if(duplicate)return response(repo,conversation);
  if(conversation.revision!==values.revision)throw new DomainError('CONFLICT','La conversación cambió. Recarga antes de continuar.',409);

@@ -62,6 +62,8 @@ En local, Stripe CLI puede reenviar eventos al endpoint. No registrar cuerpos co
 
 Configurar OPENAI_API_KEY y OPENAI_MODEL del lado servidor. Se usa Responses con `store:false`, función estricta y una sola llamada. La herramienta conserva exactamente pregunta y jurisdicción y retorna los hechos del motor. Sin clave o ante error se usa el motor determinista; no se completa la respuesta con memoria del modelo. No se envían documentos ni perfiles a OpenAI.
 
+La evaluación de Wyoming tiene dos niveles. `pnpm test:wyoming-agent` ejecuta cuatro recorridos deterministas sin red. Para `pnpm test:wyoming-agent:connected`, configurar además `OPENAI_SIMULATOR_MODEL` y opcionalmente `OPENAI_EVAL_MAX_REQUESTS` entre 1 y 200; el valor por defecto es 60. El simulador recibe solo datos ficticios y cada salida se valida contra la persona canónica antes de enviarse al onboarding. El reporte local saneado queda en `.local/qa/wyoming-agent-evaluation.json`. No colocar claves en argumentos, reportes, Git ni conversaciones. Ver `WYOMING_AGENT_EVALUATION.md`.
+
 ## Monitoreo y recordatorios
 
 Crear un usuario exclusivo de automatización con rol compliance y membresía activa, y configurar AUTOMATION_USER_ID y SOURCE_MONITOR_SECRET (mínimo 32 caracteres) en Edge. Guardar URL base de funciones y secreto en Vault con los nombres del script `supabase/operations/schedule.sql`. Revisar y aplicar ese script para consultar fuentes cada 30 minutos, en lotes de tres, y generar recordatorios cada hora. No hay automatización alojada creada por este repositorio sin esas credenciales.

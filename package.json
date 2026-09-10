@@ -16,6 +16,8 @@
     "test:staging": "tsx scripts/test-staging.ts --synthetic-only",
     "test:agents": "tsx scripts/test-agent-journeys.ts",
     "test:wyoming": "tsx scripts/test-wyoming-packet.ts",
+    "test:wyoming-agent": "tsx scripts/test-wyoming-agent-evaluation.ts",
+    "test:wyoming-agent:connected": "tsx scripts/test-wyoming-agent-evaluation.ts --connected",
     "start:staging": "node scripts/start-staging.mjs",
     "test:integrity": "vitest run tests/regulatory",
     "brain:query": "tsx scripts/graph-memory.ts query",
