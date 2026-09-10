@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-10. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito `f9a7c16` aprobó [CI #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837168) y [Regulatory integrity #10](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34105837115) el 2026-09-07. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `38f49f9` aprobó [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) el 2026-09-10. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
 **Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El nivel conectado está implementado, pero aún falta ejecutarlo con modelos reales y repetir la aceptación por ruta. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 165 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL; STAGING SIN CAMBIOS; CI NUEVO NO EJECUTADO |
+| M19 QA/CI | 165 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL Y CI; STAGING SIN CAMBIOS |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -41,6 +41,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - La puerta negativa consulta órdenes, suscripciones, webhooks, identidad, screening, registros de compañía y compañías. Resultado observado: cero escrituras en esas superficies, cero cambio del expediente de formación y cero paquetes para el caso incompleto.
 - `pnpm test:wyoming-agent:connected` usa dos adaptadores Responses con `store:false`, herramienta estricta y presupuesto máximo de solicitudes. Registra modelos, solicitudes, tokens y latencia; el costo queda nulo hasta fijar precios versionados. No se ejecutó porque faltan `OPENAI_API_KEY`, `OPENAI_MODEL` y `OPENAI_SIMULATOR_MODEL`; por tanto no se atribuye comprensión de lenguaje natural.
 - Regresión local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build Next.js. `pnpm test:e2e` aprobó 13/13 con salida 0 reutilizando un servidor aislado. El primer intento también mostró los 13 casos `ok`, pero se interrumpió al repetirse la espera de apagado ya documentada y no se contó como aprobación.
+- GitHub: commit `38f49f9` publicado en `main`; CI #12 terminó `success` en 3m02s con application, Supabase y Edge aprobados, 165/165 pruebas y el artefacto sintético nuevo. Regulatory integrity #12 terminó `success`. Las advertencias visibles corresponden a la deprecación de Node 20 dentro de actions de GitHub, no a fallos de la aplicación.
 - No hubo migración ni cambio de esquema; staging no se reejecutó. Sus 17/17 grupos previos siguen siendo evidencia histórica. No hubo red del runner determinista, compañía, pago, identidad, presentación, mensaje externo ni publicación regulatoria.
 - Guía reproducible: `WYOMING_AGENT_EVALUATION.md`. Referencias técnicas oficiales: [Working with evals](https://developers.openai.com/api/docs/guides/evals), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) y [Your data](https://developers.openai.com/api/docs/guides/your-data).
 
