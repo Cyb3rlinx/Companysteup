@@ -1,17 +1,19 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-10, 13:20 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 02:45 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: cliente ficticio determinista aprobado; ejecutar nivel conectado
+## Checkpoint actual: primer run conectado diagnosticado; reejecutar con fallo rápido
 
 - Se implementó `packages/agent-evaluation` y `pnpm test:wyoming-agent`: cliente ficticio determinista, verdad canónica separada y cuatro recorridos sobre la persistencia real. Completa 21 campos, corrige un valor confirmado, reanuda, rechaza prompt injection/datos prohibidos y conserva un recorrido incompleto sin paquete.
 - Resultado determinista: 4/4 escenarios aprobados. La evaluación compara el estado campo por campo y verificó cero órdenes, suscripciones, webhooks, identidad, screening, registros o compañías; tampoco cambió el expediente de formación.
-- El nivel conectado está implementado mediante `pnpm test:wyoming-agent:connected`: cliente y onboarding usan Responses, `store:false`, herramientas estrictas y un máximo predeterminado de 60 solicitudes. El reporte registra modelos, tokens y latencia; el costo permanece desconocido hasta fijar precios versionados.
-- Sin `OPENAI_API_KEY`, `OPENAI_MODEL` y `OPENAI_SIMULATOR_MODEL`, el nivel conectado continúa `EXTERNAL_BLOCKED` y no fue ejecutado. La prueba determinista no acredita comprensión de lenguaje natural ni capacidad de constituir una empresa.
+- El fundador configuró en su PowerShell privado `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y `OPENAI_EVAL_MAX_REQUESTS`; ningún valor se copió al repositorio o a la conversación. El primer run conectado terminó `EVALUATION_BUDGET` al alcanzar 60 solicitudes y no cuenta como aprobación.
+- La falta de diagnóstico provenía de compartir el fallback seguro de producción: errores `DomainError` del modelo se convertían en extracciones vacías y el runner reintentaba. El laboratorio ahora usa fallo estricto, clasifica HTTP 401/403/404/429 sin copiar cuerpos externos, imprime progreso y guarda reporte parcial.
+- La rúbrica exige todos los campos solicitados por lote y detiene el escenario en la primera extracción vacía o parche incompleto. El presupuesto permanece en 60 hasta observar el error real; no se incrementa para ocultar fallos.
+- Validación posterior al ajuste: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista aprobó 4/4 con reporte `PASSED` y cero escrituras externas. La reejecución conectada requiere la terminal privada que conserva la clave.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
 - GitHub `main`: commit técnico `38f49f9` publicado. [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) terminaron `success` para `38f49f94533873c9303a9edda7c369d438ef589f`; CI conservó el reporte sintético como artefacto.
 - No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.
-- Siguiente paso concreto: configurar por canal seguro los dos modelos y el límite de gasto, ejecutar el nivel conectado, revisar fallos y fijar una puerta de calidad. Solo después integrar la conversación aprobada en el panel del cliente y repetir US-DE → EE → GB.
+- Siguiente paso concreto: reejecutar `corepack pnpm test:wyoming-agent:connected` en la misma sesión privada, revisar el progreso y el reporte `.local/qa/wyoming-agent-evaluation.json`, y corregir el primer fallo observado. Solo después de 4/4 integrar la conversación aprobada en el panel y repetir US-DE → EE → GB.
 - Para lanzamiento continúa pendiente identificar entidad/jurisdicción operadora, alcance habilitado y responsable interno; Google externo, hosting definitivo, Stripe y partners siguen sus bloqueos. No hace falta resolverlos para evaluar el modelo de forma sintética.
 - Graphify quedó `SYNCED` el 2026-09-10T06:23:45Z: 1.177 nodos propios, 8.974 nodos ajenos preservados y respaldo previo. La consulta posterior recuperó este checkpoint y su siguiente paso desde `docs/SESSION_HANDOFF.md` y `docs/memory/2026-09-10-wyoming-agent-evaluation.md`.
 

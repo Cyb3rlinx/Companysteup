@@ -11,27 +11,38 @@ import {WYOMING_AGENT_EVALUATION_VERSION,WYOMING_EVALUATION_SCENARIOS,assessPatc
 
 type ConversationResponse=Awaited<ReturnType<typeof startWyomingConversation>>;
 type ScenarioResult={scenario:string;passed:boolean;expectedStatus:string;actualStatus:string;messages:number;acceptedFields:number;rejectedPatches:number;blockedInputs:number;noUpdateAttacks:number;resumed:boolean;packetReady:boolean;externalWrites:number;ordersCreated:number;companiesCreated:number;failures:string[];modelStatuses:string[]};
+type RunStatus='RUNNING'|'PASSED'|'FAILED';
+type PublicFailure={code:string;message:string};
+type ScenarioProgress={scenario:string;position:number;total:number;acceptedFields:number;targetFields:number;messages:number};
 
 const connected=process.argv.includes('--connected');
 const mode:WyomingEvaluationMode=connected?'CONNECTED':'DETERMINISTIC';
 const key=process.env.OPENAI_API_KEY??'';const onboardingModel=process.env.OPENAI_MODEL??'';const simulatorModel=process.env.OPENAI_SIMULATOR_MODEL??'';
 const maxRequests=Number(process.env.OPENAI_EVAL_MAX_REQUESTS??60);
 let modelRequests=0;const modelMetrics:OpenAIModelMetrics[]=[];
+const results:ScenarioResult[]=[];let progress:ScenarioProgress|null=null;
 
-function modelConfiguration(){return connected?{key,model:onboardingModel,onMetrics:(metrics:OpenAIModelMetrics)=>modelMetrics.push(metrics)}:undefined;}
+function modelConfiguration(){return connected?{key,model:onboardingModel,failureMode:'throw' as const,onMetrics:(metrics:OpenAIModelMetrics)=>modelMetrics.push(metrics)}:undefined;}
+function reserveModelRequest(role:'simulador'|'onboarding'){
+ if(modelRequests>=maxRequests)throw new DomainError('EVALUATION_BUDGET',`La evaluación alcanzó el máximo de ${maxRequests} solicitudes configurado`,409);
+ modelRequests++;
+ console.log(`[${progress?.position??'-'}/${progress?.total??'-'} ${progress?.scenario??'inicio'}] solicitud ${modelRequests}/${maxRequests}: ${role}`);
+}
 async function clientMessage(requested:readonly WyomingFieldId[],facts:WyomingIntake){
  if(!connected)return deterministicClientMessage(requested[0],facts);
- if(++modelRequests>maxRequests)throw new DomainError('EVALUATION_BUDGET','La evaluación alcanzó el máximo de solicitudes configurado',409);
+ reserveModelRequest('simulador');
  const reply=await openAISyntheticClientMessage(requested,facts,{key,model:simulatorModel});modelMetrics.push(reply.metrics);return reply.message;
 }
 async function send(data:ConversationResponse,repo:LocalRepository,actor:Actor,message:string){
  safeSyntheticMessage(message);
- if(connected&&++modelRequests>maxRequests)throw new DomainError('EVALUATION_BUDGET','La evaluación alcanzó el máximo de solicitudes configurado',409);
+ if(connected)reserveModelRequest('onboarding');
  return sendWyomingMessage(repo,actor,true,{conversationId:data.conversation.id,revision:data.conversation.revision,message,clientRequestId:crypto.randomUUID()},modelConfiguration());
 }
 
 async function runScenario(index:number,scenario:WyomingEvaluationScenario):Promise<ScenarioResult>{
  const db=await testDatabase();const failures:string[]=[];const modelStatuses:string[]=[];let messages=0;let acceptedFields=0;let rejectedPatches=0;let blockedInputs=0;let noUpdateAttacks=0;let resumed=false;let packetReady=false;
+ progress={scenario:scenario.id,position:index+1,total:WYOMING_EVALUATION_SCENARIOS.length,acceptedFields:0,targetFields:scenario.fieldLimit,messages:0};
+ console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] iniciado; objetivo ${scenario.fieldLimit} campos.`);
  try{
   await db.exec(await readFile('supabase/seed.sql','utf8'));const repo=new LocalRepository(db);const userId=`20000000-0000-4000-8000-${String(index+1).padStart(12,'0')}`;
   await db.query('insert into auth.users(id,email) values($1,$2)',[userId,`wy-eval-${index+1}@example.test`]);
@@ -53,11 +64,11 @@ async function runScenario(index:number,scenario:WyomingEvaluationScenario):Prom
   let correctionDone=false;let resumedOnce=false;let attempts=0;
   while(acceptedFields<scenario.fieldLimit&&attempts<scenario.fieldLimit*4){
    attempts++;const remainingTarget=scenario.fieldLimit-acceptedFields;const requested=missingFields(data.conversation.state,connected?Math.min(3,remainingTarget):1);if(!requested.length)break;
-   const message=await clientMessage(requested,facts);data=await send(data,repo,actor,message);messages++;const last=data.turns.at(-1);modelStatuses.push(String(last?.model_status));
+   const message=await clientMessage(requested,facts);data=await send(data,repo,actor,message);messages++;progress={...progress,messages};const last=data.turns.at(-1);modelStatuses.push(String(last?.model_status));
    const assessment=assessPatch(facts,requested,data.conversation.pendingPatch);
-   if(!Object.keys(data.conversation.pendingPatch).length){failures.push(`Sin extracción para ${requested.join(',')}`);continue;}
+   if(!Object.keys(data.conversation.pendingPatch).length){failures.push(`Sin extracción para ${requested.join(',')}`);console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] sin extracción; se detiene el escenario para evitar gasto repetido.`);break;}
    data=await confirmWyomingPatch(repo,actor,true,{conversationId:data.conversation.id,revision:data.conversation.revision,accept:assessment.accept,clientRequestId:crypto.randomUUID()});
-   if(assessment.accept)acceptedFields+=assessment.correctFields.length;else{rejectedPatches++;failures.push(`Parche incorrecto: ${[...assessment.incorrectFields,...assessment.unexpectedFields].join(',')}`);}
+   if(assessment.accept){acceptedFields+=assessment.correctFields.length;progress={...progress,acceptedFields,messages};console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] ${acceptedFields}/${scenario.fieldLimit} campos exactos; ${modelRequests}/${maxRequests} solicitudes.`);}else{rejectedPatches++;failures.push(`Parche incompleto o incorrecto: ${[...assessment.incorrectFields,...assessment.unexpectedFields].join(',')||'faltan campos solicitados'}`);console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] parche rechazado; se detiene el escenario para evitar gasto repetido.`);break;}
 
    if(!resumedOnce&&acceptedFields>=Math.min(3,scenario.fieldLimit)){const restored=await getWyomingConversation(repo,actor,true,created.id) as ConversationResponse;resumed=JSON.stringify(restored.conversation.state)===JSON.stringify(data.conversation.state);resumedOnce=true;data=restored;}
    if(scenario.correctionAfter&&!correctionDone&&acceptedFields>=scenario.correctionAfter){
@@ -81,7 +92,9 @@ async function runScenario(index:number,scenario:WyomingEvaluationScenario):Prom
   if(JSON.stringify((await repo.list('formation_cases',{id:created.id}))[0])!==originalCase)failures.push('La conversación alteró el expediente de formación');
   if((scenario.adversarialMessages??[]).filter(item=>item.expected==='NO_UPDATE').length!==noUpdateAttacks)failures.push('No todos los ataques quedaron sin actualización');
   if((scenario.adversarialMessages??[]).filter(item=>item.expected==='REJECTED_INPUT').length!==blockedInputs)failures.push('No todas las entradas prohibidas fueron rechazadas');
-  return{scenario:scenario.id,passed:failures.length===0,expectedStatus:scenario.expectedStatus,actualStatus:final.conversation.status,messages,acceptedFields,rejectedPatches,blockedInputs,noUpdateAttacks,resumed,packetReady,externalWrites,ordersCreated,companiesCreated,failures,modelStatuses:[...new Set(modelStatuses)]};
+  const result={scenario:scenario.id,passed:failures.length===0,expectedStatus:scenario.expectedStatus,actualStatus:final.conversation.status,messages,acceptedFields,rejectedPatches,blockedInputs,noUpdateAttacks,resumed,packetReady,externalWrites,ordersCreated,companiesCreated,failures,modelStatuses:[...new Set(modelStatuses)]};
+  console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] ${result.passed?'APROBADO':'FALLÓ'}; ${acceptedFields}/${scenario.fieldLimit} campos, ${modelRequests}/${maxRequests} solicitudes acumuladas.`);
+  return result;
  }finally{await db.close();}
 }
 
@@ -90,14 +103,26 @@ async function confirmPacketPreview(repo:LocalRepository,actor:Actor,data:Conver
  const {prepareWyomingPacket}=await import('../packages/formation-packet/wyoming');return prepareWyomingPacket(state,{caseId:data.conversation.caseId,revision:0},new Date());
 }
 
-async function main(){
- if(connected&&(!key||!onboardingModel||!simulatorModel))throw new DomainError('EXTERNAL_BLOCKED','El nivel conectado exige OPENAI_API_KEY, OPENAI_MODEL y OPENAI_SIMULATOR_MODEL',503);
- if(!Number.isInteger(maxRequests)||maxRequests<1||maxRequests>200)throw new Error('OPENAI_EVAL_MAX_REQUESTS debe estar entre 1 y 200');
- const evaluatedAt=new Date().toISOString();const results:ScenarioResult[]=[];
- for(const [index,scenario] of WYOMING_EVALUATION_SCENARIOS.entries())results.push(await runScenario(index,scenario));
- const report={version:WYOMING_AGENT_EVALUATION_VERSION,evaluatedAt,mode,models:connected?{onboarding:onboardingModel,simulator:simulatorModel}:{onboarding:'DETERMINISTIC_MOCK',simulator:'DETERMINISTIC_CLIENT'},requestBudget:{maximum:maxRequests,used:modelRequests},telemetry:{completedRequests:modelMetrics.length,inputTokens:modelMetrics.reduce((sum,item)=>sum+item.inputTokens,0),outputTokens:modelMetrics.reduce((sum,item)=>sum+item.outputTokens,0),totalTokens:modelMetrics.reduce((sum,item)=>sum+item.totalTokens,0),totalLatencyMs:modelMetrics.reduce((sum,item)=>sum+item.durationMs,0),maximumLatencyMs:modelMetrics.reduce((maximum,item)=>Math.max(maximum,item.durationMs),0),observedCostUsd:null},limitation:connected?'Evaluación con modelos y datos ficticios; el costo queda nulo hasta fijar precios versionados del modelo. No constituye una empresa, no valida asesoría legal y no ejecuta trámites externos.':'Evaluación determinista con datos ficticios; no acredita comprensión de lenguaje natural ni aceptación externa.',summary:{passed:results.filter(result=>result.passed).length,total:results.length,externalWrites:results.reduce((sum,result)=>sum+result.externalWrites,0)},results};
- await mkdir('.local/qa',{recursive:true});await writeFile('.local/qa/wyoming-agent-evaluation.json',JSON.stringify(report,null,2));
- if(results.some(result=>!result.passed)||report.summary.externalWrites!==0)throw new Error('La evaluación Wyoming no alcanzó la puerta de seguridad');
- console.log(`${report.summary.passed}/${report.summary.total} recorridos Wyoming ${mode} aprobados; ${modelRequests}/${maxRequests} solicitudes de modelo; cero acciones externas. Informe: .local/qa/wyoming-agent-evaluation.json`);
+const evaluatedAt=new Date().toISOString();
+function publicFailure(error:unknown):PublicFailure{
+ if(error instanceof DomainError)return{code:error.code,message:error.message};
+ return{code:'EVALUATION_FAILED',message:'La evaluación falló; revisa el diagnóstico saneado'};
 }
-main().catch(error=>{console.error(error instanceof Error?error.message:'Wyoming agent evaluation failed');process.exitCode=1;});
+function report(runStatus:RunStatus,failure:PublicFailure|null){
+ return{version:WYOMING_AGENT_EVALUATION_VERSION,evaluatedAt,runStatus,mode,models:connected?{onboarding:onboardingModel,simulator:simulatorModel}:{onboarding:'DETERMINISTIC_MOCK',simulator:'DETERMINISTIC_CLIENT'},requestBudget:{maximum:maxRequests,used:modelRequests},telemetry:{completedRequests:modelMetrics.length,inputTokens:modelMetrics.reduce((sum,item)=>sum+item.inputTokens,0),outputTokens:modelMetrics.reduce((sum,item)=>sum+item.outputTokens,0),totalTokens:modelMetrics.reduce((sum,item)=>sum+item.totalTokens,0),totalLatencyMs:modelMetrics.reduce((sum,item)=>sum+item.durationMs,0),maximumLatencyMs:modelMetrics.reduce((maximum,item)=>Math.max(maximum,item.durationMs),0),observedCostUsd:null},limitation:connected?'Evaluación con modelos y datos ficticios; el costo queda nulo hasta fijar precios versionados del modelo. No constituye una empresa, no valida asesoría legal y no ejecuta trámites externos.':'Evaluación determinista con datos ficticios; no acredita comprensión de lenguaje natural ni aceptación externa.',summary:{passed:results.filter(result=>result.passed).length,completed:results.length,total:WYOMING_EVALUATION_SCENARIOS.length,externalWrites:results.reduce((sum,result)=>sum+result.externalWrites,0)},progress,failure,results};
+}
+async function writeReport(runStatus:RunStatus,failure:PublicFailure|null){await mkdir('.local/qa',{recursive:true});await writeFile('.local/qa/wyoming-agent-evaluation.json',JSON.stringify(report(runStatus,failure),null,2));}
+
+async function main(){
+ try{
+  if(connected&&(!key||!onboardingModel||!simulatorModel))throw new DomainError('EXTERNAL_BLOCKED','El nivel conectado exige OPENAI_API_KEY, OPENAI_MODEL y OPENAI_SIMULATOR_MODEL',503);
+  if(!Number.isInteger(maxRequests)||maxRequests<1||maxRequests>200)throw new DomainError('EVALUATION_BUDGET','OPENAI_EVAL_MAX_REQUESTS debe estar entre 1 y 200',400);
+  console.log(`Evaluación Wyoming ${mode}: ${WYOMING_EVALUATION_SCENARIOS.length} escenarios; límite ${maxRequests} solicitudes.`);
+  for(const [index,scenario] of WYOMING_EVALUATION_SCENARIOS.entries()){results.push(await runScenario(index,scenario));await writeReport('RUNNING',null);}
+  progress=null;const failed=results.some(result=>!result.passed)||results.reduce((sum,result)=>sum+result.externalWrites,0)!==0;
+  await writeReport(failed?'FAILED':'PASSED',failed?{code:'QUALITY_GATE_FAILED',message:'La evaluación Wyoming no alcanzó la puerta de seguridad'}:null);
+  if(failed)throw new DomainError('QUALITY_GATE_FAILED','La evaluación Wyoming no alcanzó la puerta de seguridad',409);
+  console.log(`${results.filter(result=>result.passed).length}/${results.length} recorridos Wyoming ${mode} aprobados; ${modelRequests}/${maxRequests} solicitudes de modelo; cero acciones externas. Informe: .local/qa/wyoming-agent-evaluation.json`);
+ }catch(error){await writeReport('FAILED',publicFailure(error));throw error;}
+}
+main().catch(error=>{const failure=publicFailure(error);console.error(`${failure.code}: ${failure.message}. Informe: .local/qa/wyoming-agent-evaluation.json`);process.exitCode=1;});

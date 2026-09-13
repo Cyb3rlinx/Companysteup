@@ -1,6 +1,6 @@
 # Evaluación agéntica del recorrido Wyoming
 
-Actualizado: 2026-09-10. Este procedimiento usa exclusivamente identidades y expedientes ficticios. No presenta formularios, contrata un agente registrado, verifica identidad, firma, cobra ni constituye una compañía.
+Actualizado: 2026-09-14. Este procedimiento usa exclusivamente identidades y expedientes ficticios. No presenta formularios, contrata un agente registrado, verifica identidad, firma, cobra ni constituye una compañía.
 
 ## Propósito
 
@@ -41,6 +41,16 @@ pnpm test:wyoming-agent:connected
 Ambos adaptadores usan Responses con `store:false`, una función obligatoria y esquema estricto. Al simulador solo se le entregan hasta tres datos sintéticos solicitados por turno. Su respuesta se rechaza si revela otro campo, altera el valor conocido o incluye datos prohibidos. La extracción del onboarding continúa requiriendo una cita literal y confirmación antes de persistir.
 
 El informe conectado registra modelos, solicitudes intentadas y completadas, tokens y latencia observada. `observedCostUsd` permanece `null` hasta incorporar una tabla de precios versionada para los modelos elegidos; no se inventa un costo. La documentación oficial consultada fue [Working with evals](https://developers.openai.com/api/docs/guides/evals), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) y [Your data](https://developers.openai.com/api/docs/guides/your-data).
+
+El runner muestra el escenario, el rol de cada solicitud, el presupuesto consumido y los campos exactos aceptados. En modo conectado no oculta errores del proveedor detrás del fallback de producción: detiene la ejecución y clasifica de forma saneada HTTP 401, 403, 404 y 429. También detiene un escenario ante la primera extracción vacía o parche incompleto para no gastar en reintentos que oculten una falla. El reporte se actualiza después de cada escenario y también ante un error fatal; nunca contiene la clave ni los mensajes del cliente.
+
+### Diagnóstico de un fallo conectado
+
+- `MODEL_UNAVAILABLE` con HTTP 401: revisar la API key del proyecto.
+- HTTP 403 o 404: revisar permiso y nombre exacto del modelo.
+- HTTP 429: revisar créditos, cuota y límites del proyecto.
+- `QUALITY_GATE_FAILED`: abrir `.local/qa/wyoming-agent-evaluation.json` y revisar `results[].failures`; no aumentar el presupuesto para ocultar el fallo.
+- `EVALUATION_BUDGET`: el límite detuvo el run. El reporte conserva el escenario y contador alcanzados. Antes de aumentar el límite, corregir la causa observada.
 
 ## Puerta de aceptación
 

@@ -2,8 +2,9 @@ import {z} from 'zod';
 import {DomainError} from '../domain';
 import {WY_FIELDS,syntheticWyomingIntake,type WyomingFieldId,type WyomingIntake} from '../formation-packet/catalog';
 import {safeSyntheticMessage} from '../onboarding-agent';
+import {openAIUnavailableMessage} from '../onboarding-agent/openai';
 
-export const WYOMING_AGENT_EVALUATION_VERSION='2026-09-10.1';
+export const WYOMING_AGENT_EVALUATION_VERSION='2026-09-14.1';
 export type WyomingEvaluationMode='DETERMINISTIC'|'CONNECTED';
 
 export type WyomingEvaluationScenario={
@@ -41,7 +42,7 @@ export function assessPatch(expected:WyomingIntake,allowedFields:readonly Wyomin
   const key=field as WyomingFieldId;
   if(expected[key]===value.trim())correctFields.push(key);else incorrectFields.push(key);
  }
- return{accept:correctFields.length>0&&!incorrectFields.length&&!unexpectedFields.length,correctFields,incorrectFields,unexpectedFields};
+ return{accept:correctFields.length===allowedFields.length&&!incorrectFields.length&&!unexpectedFields.length,correctFields,incorrectFields,unexpectedFields};
 }
 
 const clientReplySchema=z.object({message:z.string().trim().min(1).max(2000),disclosedFields:z.array(z.enum(WY_FIELDS.map(field=>field.key) as [WyomingFieldId,...WyomingFieldId[]])).min(1).max(3)}).strict();
@@ -62,7 +63,7 @@ export async function openAISyntheticClientMessage(
   tools:[{type:'function',name:'reply_as_synthetic_customer',description:'Return a synthetic customer reply and the fields explicitly disclosed in it.',strict:true,parameters:{type:'object',additionalProperties:false,properties:{message:{type:'string',minLength:1,maxLength:2000},disclosedFields:{type:'array',minItems:1,maxItems:3,items:{type:'string',enum:allowed}}},required:['message','disclosedFields']}}],
   tool_choice:{type:'function',name:'reply_as_synthetic_customer'},
  })});
- if(!response.ok)throw new DomainError('MODEL_UNAVAILABLE','El agente cliente ficticio no está disponible',502);
+ if(!response.ok)throw new DomainError('MODEL_UNAVAILABLE',openAIUnavailableMessage(response.status),502);
  const raw=await response.json() as {output?:{type:string;name?:string;arguments?:string}[];usage?:{input_tokens?:number;output_tokens?:number;total_tokens?:number}};
  const calls=raw.output?.filter(item=>item.type==='function_call'&&item.name==='reply_as_synthetic_customer');
  if(calls?.length!==1)throw new DomainError('MODEL_SCHEMA','El agente cliente no devolvió una respuesta estructurada',502);

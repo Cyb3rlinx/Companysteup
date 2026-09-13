@@ -53,7 +53,7 @@ export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boo
  if(conversation.status==='closed')throw new DomainError('CONVERSATION_CLOSED','La conversación está cerrada',409);
  if(Object.keys(z.record(z.string(),z.string()).parse(conversation.pending_patch)).length)throw new DomainError('CONFIRMATION_REQUIRED','Confirma o rechaza los datos propuestos antes de continuar.',409);
  const message=safeSyntheticMessage(values.message);let extraction=deterministicExtract(message);
- if(model?.key&&model.model){try{extraction=await extractWithOpenAI(message,WY_FIELDS.filter(f=>!wyomingIntakeSchema.parse(conversation.state_json)[f.key]).map(f=>f.key),model);}catch(error){if(!(error instanceof DomainError))throw error;extraction={updates:[],modelStatus:'EXTERNAL_BLOCKED'};}}
+ if(model?.key&&model.model){try{extraction=await extractWithOpenAI(message,WY_FIELDS.filter(f=>!wyomingIntakeSchema.parse(conversation.state_json)[f.key]).map(f=>f.key),model);}catch(error){if(!(error instanceof DomainError)||model.failureMode==='throw')throw error;extraction={updates:[],modelStatus:'EXTERNAL_BLOCKED'};}}
  const patch=Object.fromEntries(extraction.updates.map(update=>[update.field,update.value]));const assistant=assistantFor(conversation.state_json,extraction.updates);
  await repo.atomic([
   {kind:'update',table:'agent_conversations',where:{id:conversation.id,revision:conversation.revision},data:{pending_patch:patch,revision:conversation.revision+1,status:'active'}},

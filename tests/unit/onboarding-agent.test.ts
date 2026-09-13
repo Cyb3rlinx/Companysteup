@@ -24,4 +24,6 @@ test('OpenAI adapter stores no response, forces one strict extraction tool and i
  const result=await extractWithOpenAI('Mi nombre es Orbit QA LLC',['companyName'],{key:'test-key',model:'test-model',onMetrics:metrics=>{observed=metrics;}},fetcher as typeof fetch);
  expect(result).toMatchObject({modelStatus:'OPENAI_STRUCTURED',updates:[{field:'companyName'}]});expect(request).toMatchObject({store:false,parallel_tool_calls:false,tool_choice:{type:'function',name:'propose_wyoming_intake_update'}});
  expect(JSON.stringify(request)).not.toContain('test-key');expect(observed).toMatchObject({inputTokens:10,outputTokens:5,totalTokens:15});
+ const unavailable=async()=>new Response('',{status:404});
+ await expect(extractWithOpenAI('Mi nombre es Orbit QA LLC',['companyName'],{key:'test-key',model:'missing-model'},unavailable as typeof fetch)).rejects.toMatchObject({code:'MODEL_UNAVAILABLE',message:expect.stringContaining('HTTP 404')});
 });

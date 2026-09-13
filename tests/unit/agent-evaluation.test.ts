@@ -10,6 +10,7 @@ test('deterministic synthetic client discloses one exact known fact',()=>{
 test('deterministic grader accepts only exact requested facts',()=>{
  const facts=syntheticWyomingPersona();
  expect(assessPatch(facts,['companyName'],{companyName:facts.companyName})).toMatchObject({accept:true,correctFields:['companyName']});
+ expect(assessPatch(facts,['companyName','activity'],{companyName:facts.companyName})).toMatchObject({accept:false,correctFields:['companyName']});
  expect(assessPatch(facts,['companyName'],{companyName:'Invented LLC'})).toMatchObject({accept:false,incorrectFields:['companyName']});
  expect(assessPatch(facts,['companyName'],{agentState:'WY'})).toMatchObject({accept:false,unexpectedFields:['agentState']});
  expect(WYOMING_EVALUATION_SCENARIOS.map(item=>item.id)).toEqual(['complete','correction-and-resume','adversarial','incomplete']);

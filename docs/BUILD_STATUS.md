@@ -1,6 +1,6 @@
 # Estado de construcción
 
-Actualizado: 2026-09-10. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
+Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `38f49f9` aprobó [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) el 2026-09-10. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
@@ -32,7 +32,16 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; OPENAI REAL EXTERNAL_BLOCKED |
-| M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | NIVEL DETERMINISTA 4/4; NIVEL CONECTADO EXTERNAL_BLOCKED |
+| M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | NIVEL DETERMINISTA 4/4; PRIMER RUN CONECTADO FALLÓ POR PRESUPUESTO |
+| M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | IMPLEMENTADO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+
+## Hito M26: diagnóstico del primer run conectado (2026-09-14, Asia/Bangkok)
+
+- El primer intento conectado iniciado por el fundador tuvo las cuatro variables presentes y terminó `EVALUATION_BUDGET` al alcanzar 60 solicitudes. El runner anterior no imprimía progreso ni escribía un reporte parcial, por lo que ese resultado no permite distinguir entre indisponibilidad del modelo y extracciones sin avance y no cuenta como aprobación.
+- Se separó el comportamiento del laboratorio del fallback de producción. Producción puede conservar el fallback determinista seguro; la evaluación usa `failureMode: throw` y expone solo una clasificación saneada para HTTP 401, 403, 404, 429 u otro estado, sin copiar cuerpos remotos ni secretos.
+- El evaluador conectado ahora exige que cada lote contenga exactamente todos los campos solicitados y detiene el escenario ante extracción vacía o parche incompleto. Imprime escenario, rol, consumo y avance; guarda `.local/qa/wyoming-agent-evaluation.json` tras cada escenario y también ante un aborto.
+- No se aumentó el presupuesto ni se afirmó capacidad del modelo. El siguiente paso es reejecutar con el mismo tope de 60, observar el primer diagnóstico real y corregir la causa antes de gastar más.
+- Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build Next.js. `pnpm test:wyoming-agent` volvió a aprobar 4/4, reporte `PASSED` y cero escrituras externas. El conectado no se reejecutó desde Codex porque la clave permanece exclusivamente en la sesión privada del fundador.
 
 ## Hito M25: cliente ficticio y evaluación Wyoming (2026-09-10, Asia/Bangkok)
 
