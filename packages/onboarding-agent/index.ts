@@ -2,7 +2,7 @@ import {z} from 'zod';
 import {DomainError} from '../domain';
 import {WY_FIELDS,emptyWyomingIntake,wyomingIntakeSchema,type WyomingFieldId,type WyomingIntake} from '../formation-packet/catalog';
 
-export const ONBOARDING_AGENT_VERSION='2026-09-07.1';
+export const ONBOARDING_AGENT_VERSION='2026-09-14.2';
 export type ProposedUpdate={field:WyomingFieldId;value:string;evidence:string};
 export type Extraction={updates:ProposedUpdate[];modelStatus:'DETERMINISTIC_MOCK'|'OPENAI_STRUCTURED'|'EXTERNAL_BLOCKED'};
 const ids=WY_FIELDS.map(f=>f.key) as [WyomingFieldId,...WyomingFieldId[]];
@@ -23,10 +23,11 @@ export function deterministicExtract(message:string):Extraction{
  return{updates:[{field:field.key,value,evidence:value}],modelStatus:'DETERMINISTIC_MOCK'};
 }
 
-export function verifyExtraction(message:string,input:unknown,modelStatus:Extraction['modelStatus']):Extraction{
- const parsed=updateSchema.parse(input);const seen=new Set<string>();
+export function verifyExtraction(message:string,input:unknown,modelStatus:Extraction['modelStatus'],allowedFields?:readonly WyomingFieldId[]):Extraction{
+ const parsed=updateSchema.parse(input);const seen=new Set<string>();const allowed=allowedFields?new Set<string>(allowedFields):null;
  const updates=parsed.updates.filter(update=>{
-  if(seen.has(update.field)||!message.toLocaleLowerCase().includes(update.evidence.toLocaleLowerCase()))return false;
+  const definition=WY_FIELDS.find(field=>field.key===update.field);const canonicalOption=Boolean(definition&&'options' in definition&&definition.options?.some(option=>option.value===update.value));
+  if(seen.has(update.field)||allowed&&!allowed.has(update.field)||!message.includes(update.evidence)||!message.includes(update.value)&&!canonicalOption)return false;
   seen.add(update.field);return true;
  });
  return{updates,modelStatus};

@@ -4,7 +4,7 @@ Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `38f49f9` aprobó [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) el 2026-09-10. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El nivel conectado está implementado, pero aún falta ejecutarlo con modelos reales y repetir la aceptación por ruta. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El nivel conectado confirmó acceso a ambos modelos y cero acciones externas, pero falló la exactitud semántica; el contrato quedó endurecido y requiere una nueva ejecución antes de aprobar Wyoming. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
@@ -33,14 +33,24 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; OPENAI REAL EXTERNAL_BLOCKED |
 | M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | NIVEL DETERMINISTA 4/4; PRIMER RUN CONECTADO FALLÓ POR PRESUPUESTO |
-| M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | IMPLEMENTADO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
-| M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CORRECCIÓN PUBLICABLE; SIN CAMBIOS DE ESQUEMA |
+| M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | SEGUNDO RUN CLASIFICADO; 0/4 POR EXACTITUD |
+| M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CI #15 APROBADO; SIN CAMBIOS DE ESQUEMA |
+| M28 Contrato semántico Wyoming | Texto libre literal, campos permitidos, cobertura total del simulador y diagnóstico por categoría | ENDURECIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+
+## Hito M28: puerta semántica del segundo run conectado (2026-09-14, Asia/Bangkok)
+
+- La ejecución conectada con `gpt-5.6-terra` para onboarding y `gpt-5.6-luna` para simulación completó 21 solicitudes, 10.463 tokens y 51,4 segundos de latencia acumulada. No hubo error HTTP ni de credencial. Terminó 0/4 porque la puerta exacta rechazó campos de texto libre resumidos o recortados, principalmente `ownershipSummary` y `mailingAddress`.
+- El rechazo fue seguro: cero órdenes, compañías, pagos, identidad, screening o presentaciones externas. Los recorridos se detuvieron al primer parche incorrecto y ningún campo dudoso se confirmó.
+- El extractor ahora limita el enum de la herramienta a campos faltantes, incluye etiquetas/opciones, exige que texto libre y evidencia sean fragmentos literales y conserva la normalización únicamente para opciones cerradas. El simulador debe revelar todos los campos pedidos y contener cada valor canónico literalmente.
+- La rúbrica informa nombres de campos faltantes, alterados e inesperados sin guardar mensajes ni valores. Pruebas negativas cubren paráfrasis, campos fuera del lote, opciones canónicas y omisiones del simulador.
+- Validación previa a la reejecución: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista aprobó 4/4 con cero acciones externas. El run conectado corregido queda pendiente en la terminal privada que conserva la clave.
 
 ## Hito M27: corrección reproducible del job Supabase (2026-09-14, Asia/Bangkok)
 
 - CI #14 aprobó application (165/165 pruebas) y Edge, pero el job Supabase terminó antes de iniciar la base local: `supabase/setup-cli@v1` no pudo resolver `version: latest` por límite de solicitudes de GitHub. No fue un fallo de migraciones, RLS ni funciones.
 - El workflow usa ahora `supabase/setup-cli@v2` con CLI `2.116.0`, la misma versión exacta declarada en `package.json` y `pnpm-lock.yaml`. Esto elimina la consulta dinámica de la última versión y actualiza la action recomendada por su repositorio oficial.
 - Validación local del cambio: `pnpm typecheck` aprobado, `pnpm test` con 165/165 pruebas aprobadas y `pnpm supabase --version` confirmó `2.116.0`.
+- El commit `33432e0` aprobó [CI #15](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34779210906): application, Supabase y Edge; [Regulatory integrity #15](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34779210860) también aprobó.
 - No se modificaron migraciones, datos, staging, credenciales ni adaptadores externos. La evaluación Wyoming conectada sigue siendo una ejecución separada en la terminal privada del fundador.
 
 ## Hito M26: diagnóstico del primer run conectado (2026-09-14, Asia/Bangkok)

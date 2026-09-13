@@ -1,8 +1,8 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 02:54 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 03:15 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: primer run conectado diagnosticado; reejecutar con fallo rápido
+## Checkpoint actual: segundo run conectado aisló paráfrasis; reejecutar contrato literal
 
 - Se implementó `packages/agent-evaluation` y `pnpm test:wyoming-agent`: cliente ficticio determinista, verdad canónica separada y cuatro recorridos sobre la persistencia real. Completa 21 campos, corrige un valor confirmado, reanuda, rechaza prompt injection/datos prohibidos y conserva un recorrido incompleto sin paquete.
 - Resultado determinista: 4/4 escenarios aprobados. La evaluación compara el estado campo por campo y verificó cero órdenes, suscripciones, webhooks, identidad, screening, registros o compañías; tampoco cambió el expediente de formación.
@@ -11,10 +11,12 @@ Actualizado: 2026-09-14, 02:54 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La rúbrica exige todos los campos solicitados por lote y detiene el escenario en la primera extracción vacía o parche incompleto. El presupuesto permanece en 60 hasta observar el error real; no se incrementa para ocultar fallos.
 - Validación posterior al ajuste: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista aprobó 4/4 con reporte `PASSED` y cero escrituras externas. La reejecución conectada requiere la terminal privada que conserva la clave.
 - GitHub CI #14 confirmó application y Edge, pero Supabase no llegó a ejecutar sus pruebas porque la action antigua consultó `latest` sin autenticar y GitHub limitó esa consulta. El workflow quedó actualizado a `supabase/setup-cli@v2` con la misma CLI fija `2.116.0` del lockfile; no cambió el esquema ni staging.
+- El segundo run conectado confirmó acceso a `gpt-5.6-terra` y `gpt-5.6-luna`: 21 solicitudes, 10.463 tokens, cero errores HTTP y cero acciones externas. La puerta rechazó los cuatro recorridos al detectar valores de texto libre resumidos o recortados; ningún parche dudoso fue confirmado.
+- Se endureció el contrato sin relajar la rúbrica: texto libre y evidencia deben copiarse literalmente, los campos quedan limitados al lote permitido, las opciones permanecen canónicas y el simulador debe contestar todos los campos pedidos. El reporte siguiente separará faltantes, alterados e inesperados sin conservar valores.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
 - GitHub `main`: commit técnico `38f49f9` publicado. [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) terminaron `success` para `38f49f94533873c9303a9edda7c369d438ef589f`; CI conservó el reporte sintético como artefacto.
 - No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.
-- Siguiente paso concreto: reejecutar `corepack pnpm test:wyoming-agent:connected` en la misma sesión privada, revisar el progreso y el reporte `.local/qa/wyoming-agent-evaluation.json`, y corregir el primer fallo observado. Solo después de 4/4 integrar la conversación aprobada en el panel y repetir US-DE → EE → GB.
+- Siguiente paso concreto: reejecutar una vez `corepack pnpm test:wyoming-agent:connected` en la misma sesión privada y revisar `.local/qa/wyoming-agent-evaluation.json`. Solo después de 4/4 integrar la conversación aprobada en el panel y repetir US-DE → EE → GB.
 - Para lanzamiento continúa pendiente identificar entidad/jurisdicción operadora, alcance habilitado y responsable interno; Google externo, hosting definitivo, Stripe y partners siguen sus bloqueos. No hace falta resolverlos para evaluar el modelo de forma sintética.
 - Graphify quedó `SYNCED` el 2026-09-10T06:23:45Z: 1.177 nodos propios, 8.974 nodos ajenos preservados y respaldo previo. La consulta posterior recuperó este checkpoint y su siguiente paso desde `docs/SESSION_HANDOFF.md` y `docs/memory/2026-09-10-wyoming-agent-evaluation.md`.
 

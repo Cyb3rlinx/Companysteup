@@ -38,7 +38,7 @@ Después ejecutar:
 pnpm test:wyoming-agent:connected
 ```
 
-Ambos adaptadores usan Responses con `store:false`, una función obligatoria y esquema estricto. Al simulador solo se le entregan hasta tres datos sintéticos solicitados por turno. Su respuesta se rechaza si revela otro campo, altera el valor conocido o incluye datos prohibidos. La extracción del onboarding continúa requiriendo una cita literal y confirmación antes de persistir.
+Ambos adaptadores usan Responses con `store:false`, una función obligatoria y esquema estricto. Al simulador solo se le entregan hasta tres datos sintéticos solicitados por turno y debe revelar exactamente los tres cuando corresponda. Su respuesta se rechaza si omite o agrega un campo, altera el valor conocido o incluye datos prohibidos. La extracción del onboarding acepta únicamente campos permitidos: para texto libre, tanto el valor como la evidencia deben ser fragmentos literales del mensaje; para opciones cerradas, el valor debe pertenecer al catálogo. Toda propuesta requiere confirmación antes de persistir.
 
 El informe conectado registra modelos, solicitudes intentadas y completadas, tokens y latencia observada. `observedCostUsd` permanece `null` hasta incorporar una tabla de precios versionada para los modelos elegidos; no se inventa un costo. La documentación oficial consultada fue [Working with evals](https://developers.openai.com/api/docs/guides/evals), [Structured Outputs](https://developers.openai.com/api/docs/guides/structured-outputs) y [Your data](https://developers.openai.com/api/docs/guides/your-data).
 
@@ -49,7 +49,7 @@ El runner muestra el escenario, el rol de cada solicitud, el presupuesto consumi
 - `MODEL_UNAVAILABLE` con HTTP 401: revisar la API key del proyecto.
 - HTTP 403 o 404: revisar permiso y nombre exacto del modelo.
 - HTTP 429: revisar créditos, cuota y límites del proyecto.
-- `QUALITY_GATE_FAILED`: abrir `.local/qa/wyoming-agent-evaluation.json` y revisar `results[].failures`; no aumentar el presupuesto para ocultar el fallo.
+- `QUALITY_GATE_FAILED`: abrir `.local/qa/wyoming-agent-evaluation.json` y revisar `results[].failures`. El diagnóstico separa nombres de campos faltantes, alterados e inesperados, sin guardar sus valores ni mensajes; no aumentar el presupuesto para ocultar el fallo.
 - `EVALUATION_BUDGET`: el límite detuvo el run. El reporte conserva el escenario y contador alcanzados. Antes de aumentar el límite, corregir la causa observada.
 
 ## Puerta de aceptación

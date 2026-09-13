@@ -10,7 +10,7 @@ test('deterministic synthetic client discloses one exact known fact',()=>{
 test('deterministic grader accepts only exact requested facts',()=>{
  const facts=syntheticWyomingPersona();
  expect(assessPatch(facts,['companyName'],{companyName:facts.companyName})).toMatchObject({accept:true,correctFields:['companyName']});
- expect(assessPatch(facts,['companyName','activity'],{companyName:facts.companyName})).toMatchObject({accept:false,correctFields:['companyName']});
+ expect(assessPatch(facts,['companyName','activity'],{companyName:facts.companyName})).toMatchObject({accept:false,correctFields:['companyName'],missingFields:['activity']});
  expect(assessPatch(facts,['companyName'],{companyName:'Invented LLC'})).toMatchObject({accept:false,incorrectFields:['companyName']});
  expect(assessPatch(facts,['companyName'],{agentState:'WY'})).toMatchObject({accept:false,unexpectedFields:['agentState']});
  expect(WYOMING_EVALUATION_SCENARIOS.map(item=>item.id)).toEqual(['complete','correction-and-resume','adversarial','incomplete']);
@@ -23,4 +23,6 @@ test('connected synthetic client uses one strict tool, store false and rejects a
  expect(reply.disclosedFields).toEqual(['companyName']);expect(reply.metrics).toMatchObject({inputTokens:8,outputTokens:4,totalTokens:12});expect(request).toMatchObject({store:false,parallel_tool_calls:false,tool_choice:{type:'function',name:'reply_as_synthetic_customer'}});expect(JSON.stringify(request)).not.toContain('test-key');
  const altered=async()=>new Response(JSON.stringify({output:[{type:'function_call',name:'reply_as_synthetic_customer',arguments:JSON.stringify({message:'Quiero usar Invented LLC.',disclosedFields:['companyName']})}]}),{status:200,headers:{'Content-Type':'application/json'}});
  await expect(openAISyntheticClientMessage(['companyName'],facts,{key:'test-key',model:'test-model'},altered as typeof fetch)).rejects.toMatchObject({code:'MODEL_SCHEMA'});
+ const partial=async()=>new Response(JSON.stringify({output:[{type:'function_call',name:'reply_as_synthetic_customer',arguments:JSON.stringify({message:`Quiero usar ${facts.companyName}.`,disclosedFields:['companyName']})}]}),{status:200,headers:{'Content-Type':'application/json'}});
+ await expect(openAISyntheticClientMessage(['companyName','activity'],facts,{key:'test-key',model:'test-model'},partial as typeof fetch)).rejects.toMatchObject({code:'MODEL_SCHEMA'});
 });
