@@ -1,8 +1,8 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 03:15 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 03:29 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: segundo run conectado aisló paráfrasis; reejecutar contrato literal
+## Checkpoint actual: tercer run aisló correcciones bloqueadas; reejecutar versión 2026-09-14.3
 
 - Se implementó `packages/agent-evaluation` y `pnpm test:wyoming-agent`: cliente ficticio determinista, verdad canónica separada y cuatro recorridos sobre la persistencia real. Completa 21 campos, corrige un valor confirmado, reanuda, rechaza prompt injection/datos prohibidos y conserva un recorrido incompleto sin paquete.
 - Resultado determinista: 4/4 escenarios aprobados. La evaluación compara el estado campo por campo y verificó cero órdenes, suscripciones, webhooks, identidad, screening, registros o compañías; tampoco cambió el expediente de formación.
@@ -12,7 +12,9 @@ Actualizado: 2026-09-14, 03:15 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - Validación posterior al ajuste: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista aprobó 4/4 con reporte `PASSED` y cero escrituras externas. La reejecución conectada requiere la terminal privada que conserva la clave.
 - GitHub CI #14 confirmó application y Edge, pero Supabase no llegó a ejecutar sus pruebas porque la action antigua consultó `latest` sin autenticar y GitHub limitó esa consulta. El workflow quedó actualizado a `supabase/setup-cli@v2` con la misma CLI fija `2.116.0` del lockfile; no cambió el esquema ni staging.
 - El segundo run conectado confirmó acceso a `gpt-5.6-terra` y `gpt-5.6-luna`: 21 solicitudes, 10.463 tokens, cero errores HTTP y cero acciones externas. La puerta rechazó los cuatro recorridos al detectar valores de texto libre resumidos o recortados; ningún parche dudoso fue confirmado.
-- Se endureció el contrato sin relajar la rúbrica: texto libre y evidencia deben copiarse literalmente, los campos quedan limitados al lote permitido, las opciones permanecen canónicas y el simulador debe contestar todos los campos pedidos. El reporte siguiente separará faltantes, alterados e inesperados sin conservar valores.
+- Se endureció el contrato sin relajar la rúbrica: texto libre y evidencia deben copiarse literalmente, las opciones permanecen canónicas y el simulador debe contestar todos los campos pedidos. La versión siguiente permite correcciones sobre campos conocidos y el evaluador conserva el lote esperado como límite independiente.
+- El tercer run (`2026-09-14.2`) usó 12 solicitudes y 7.945 tokens. Detectó una extracción vacía después de 6/21 campos y luego terminó `NOTHING_TO_CONFIRM` al ensayar la corrección; cero acciones externas. La causa fatal era impedir por error que el modelo propusiera un campo ya confirmado.
+- La versión `2026-09-14.3` permite correcciones explícitas de campos conocidos, deriva evidencia de un valor libre literal, bloquea confirmaciones vacías y agrega contadores de descarte sin valores. `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; 4/4 recorridos deterministas aprobaron.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
 - GitHub `main`: commit técnico `38f49f9` publicado. [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) terminaron `success` para `38f49f94533873c9303a9edda7c369d438ef589f`; CI conservó el reporte sintético como artefacto.
 - No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.

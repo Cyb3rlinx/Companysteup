@@ -1,12 +1,13 @@
 import {DomainError} from '../domain';
 import {WY_FIELDS} from '../formation-packet/catalog';
-import {verifyExtraction,type Extraction} from './index';
+import {verifyExtraction,type Extraction,type ExtractionValidation} from './index';
 
 export type OpenAIModelMetrics={durationMs:number;inputTokens:number;outputTokens:number;totalTokens:number};
 export type OpenAIConfiguration={
  key:string;
  model:string;
  onMetrics?:(metrics:OpenAIModelMetrics)=>void;
+ onValidation?:(validation:ExtractionValidation)=>void;
  failureMode?:'fallback'|'throw';
  fetcher?:typeof fetch;
 };
@@ -19,9 +20,9 @@ export function openAIUnavailableMessage(status:number){
  return `OpenAI no está disponible (HTTP ${status})`;
 }
 
-export async function extractWithOpenAI(message:string,missingFields:string[],configuration:OpenAIConfiguration,fetcher:typeof fetch=fetch):Promise<Extraction>{
+export async function extractWithOpenAI(message:string,permittedFields:string[],configuration:OpenAIConfiguration,fetcher:typeof fetch=fetch):Promise<Extraction>{
  if(!configuration.key||!configuration.model)throw new DomainError('EXTERNAL_BLOCKED','OpenAI requiere clave y modelo configurados',503);
- const allowedFields=WY_FIELDS.filter(field=>missingFields.includes(field.key));
+ const allowedFields=WY_FIELDS.filter(field=>permittedFields.includes(field.key));
  if(!allowedFields.length)return{updates:[],modelStatus:'OPENAI_STRUCTURED'};
  const allowedIds=allowedFields.map(field=>field.key);
  const properties={field:{type:'string',enum:allowedIds,description:'One allowed field explicitly answered by the user.'},value:{type:'string',minLength:1,maxLength:500,description:'For free text, copy the shortest complete value character-for-character from the user message. For an enumerated field, use only its canonical allowed value.'},evidence:{type:'string',minLength:1,maxLength:500,description:'Copy an exact character-for-character quote from the user message that supports this value.'}};
@@ -38,5 +39,5 @@ export async function extractWithOpenAI(message:string,missingFields:string[],co
  if(calls?.length!==1)throw new DomainError('MODEL_SCHEMA','El modelo no devolvió una extracción válida',502);
  let args:unknown;try{args=JSON.parse(calls[0].arguments??'{}');}catch{throw new DomainError('MODEL_SCHEMA','El modelo no devolvió JSON válido',502);}
  configuration.onMetrics?.({durationMs:Math.round(performance.now()-started),inputTokens:Number(raw.usage?.input_tokens??0),outputTokens:Number(raw.usage?.output_tokens??0),totalTokens:Number(raw.usage?.total_tokens??0)});
- return verifyExtraction(message,args,'OPENAI_STRUCTURED',allowedIds);
+ const extraction=verifyExtraction(message,args,'OPENAI_STRUCTURED',allowedIds);configuration.onValidation?.(extraction.validation!);return extraction;
 }

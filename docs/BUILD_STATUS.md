@@ -36,6 +36,15 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | SEGUNDO RUN CLASIFICADO; 0/4 POR EXACTITUD |
 | M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CI #15 APROBADO; SIN CAMBIOS DE ESQUEMA |
 | M28 Contrato semántico Wyoming | Texto libre literal, campos permitidos, cobertura total del simulador y diagnóstico por categoría | ENDURECIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+| M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | CORREGIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+
+## Hito M29: corrección del tercer run conectado (2026-09-14, Asia/Bangkok)
+
+- El tercer intento conectado, versión `2026-09-14.2`, usó 12/60 solicitudes, 7.945 tokens y 26,6 segundos de latencia acumulada. `complete` alcanzó 6/21 antes de una extracción vacía para el domicilio del agente; `correction-and-resume` alcanzó 6/21 y terminó `NOTHING_TO_CONFIRM`. El reporte confirmó cero acciones externas.
+- La causa fatal era del contrato local: limitar la herramienta a campos vacíos impedía corregir `companyName` después de confirmarlo. El evaluador intentaba confirmar ese parche vacío. Ahora todos los campos conocidos pueden proponerse explícitamente, mientras la rúbrica sigue rechazando cualquier campo no solicitado por el escenario.
+- Para texto libre, un valor solo se acepta si aparece literalmente en el mensaje y ese mismo fragmento se conserva como evidencia. Esto elimina el fallo independiente causado por una segunda cita reformulada, sin aceptar paráfrasis. Las opciones cerradas mantienen valor canónico y evidencia literal.
+- El runner comprueba que la corrección tenga contenido antes de confirmar y se detiene de forma segura si está vacía o es incorrecta. El reporte agrega conteos de propuestas aceptadas/descartadas y motivos (`duplicate_field`, `disallowed_field`, `nonliteral_value`, `nonliteral_evidence`) sin mensajes ni valores.
+- Pruebas específicas aprobaron una corrección por modelo de un campo ya confirmado y rechazaron paráfrasis/campos no permitidos. `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista volvió a aprobar 4/4 con cero acciones externas.
 
 ## Hito M28: puerta semántica del segundo run conectado (2026-09-14, Asia/Bangkok)
 

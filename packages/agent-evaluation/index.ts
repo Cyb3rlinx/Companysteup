@@ -4,7 +4,7 @@ import {WY_FIELDS,syntheticWyomingIntake,type WyomingFieldId,type WyomingIntake}
 import {safeSyntheticMessage} from '../onboarding-agent';
 import {openAIUnavailableMessage} from '../onboarding-agent/openai';
 
-export const WYOMING_AGENT_EVALUATION_VERSION='2026-09-14.2';
+export const WYOMING_AGENT_EVALUATION_VERSION='2026-09-14.3';
 export type WyomingEvaluationMode='DETERMINISTIC'|'CONNECTED';
 
 export type WyomingEvaluationScenario={

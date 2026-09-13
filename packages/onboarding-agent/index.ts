@@ -2,9 +2,11 @@ import {z} from 'zod';
 import {DomainError} from '../domain';
 import {WY_FIELDS,emptyWyomingIntake,wyomingIntakeSchema,type WyomingFieldId,type WyomingIntake} from '../formation-packet/catalog';
 
-export const ONBOARDING_AGENT_VERSION='2026-09-14.2';
+export const ONBOARDING_AGENT_VERSION='2026-09-14.3';
 export type ProposedUpdate={field:WyomingFieldId;value:string;evidence:string};
-export type Extraction={updates:ProposedUpdate[];modelStatus:'DETERMINISTIC_MOCK'|'OPENAI_STRUCTURED'|'EXTERNAL_BLOCKED'};
+export type ExtractionRejectionReason='duplicate_field'|'disallowed_field'|'nonliteral_value'|'nonliteral_evidence';
+export type ExtractionValidation={proposedUpdates:number;acceptedUpdates:number;rejections:{field:WyomingFieldId;reason:ExtractionRejectionReason}[]};
+export type Extraction={updates:ProposedUpdate[];modelStatus:'DETERMINISTIC_MOCK'|'OPENAI_STRUCTURED'|'EXTERNAL_BLOCKED';validation?:ExtractionValidation};
 const ids=WY_FIELDS.map(f=>f.key) as [WyomingFieldId,...WyomingFieldId[]];
 export const updateSchema=z.object({updates:z.array(z.object({field:z.enum(ids),value:z.string().trim().min(1).max(500),evidence:z.string().trim().min(1).max(500)}).strict()).max(WY_FIELDS.length)}).strict();
 
@@ -24,13 +26,15 @@ export function deterministicExtract(message:string):Extraction{
 }
 
 export function verifyExtraction(message:string,input:unknown,modelStatus:Extraction['modelStatus'],allowedFields?:readonly WyomingFieldId[]):Extraction{
- const parsed=updateSchema.parse(input);const seen=new Set<string>();const allowed=allowedFields?new Set<string>(allowedFields):null;
- const updates=parsed.updates.filter(update=>{
-  const definition=WY_FIELDS.find(field=>field.key===update.field);const canonicalOption=Boolean(definition&&'options' in definition&&definition.options?.some(option=>option.value===update.value));
-  if(seen.has(update.field)||allowed&&!allowed.has(update.field)||!message.includes(update.evidence)||!message.includes(update.value)&&!canonicalOption)return false;
-  seen.add(update.field);return true;
- });
- return{updates,modelStatus};
+ const parsed=updateSchema.parse(input);const seen=new Set<string>();const allowed=allowedFields?new Set<string>(allowedFields):null;const updates:ProposedUpdate[]=[];const rejections:ExtractionValidation['rejections']=[];
+ for(const update of parsed.updates){
+  const definition=WY_FIELDS.find(field=>field.key===update.field);const canonicalOption=Boolean(definition&&'options' in definition&&definition.options?.some(option=>option.value===update.value));const literalValue=message.includes(update.value);
+  let reason:ExtractionRejectionReason|undefined;
+  if(seen.has(update.field))reason='duplicate_field';else if(allowed&&!allowed.has(update.field))reason='disallowed_field';else if(!literalValue&&!canonicalOption)reason='nonliteral_value';else if(!literalValue&&!message.includes(update.evidence))reason='nonliteral_evidence';
+  seen.add(update.field);if(reason){rejections.push({field:update.field,reason});continue;}
+  updates.push({...update,evidence:literalValue?update.value:update.evidence});
+ }
+ return{updates,modelStatus,validation:{proposedUpdates:parsed.updates.length,acceptedUpdates:updates.length,rejections}};
 }
 
 export function applyConfirmedPatch(current:unknown,updates:ProposedUpdate[]):WyomingIntake{
