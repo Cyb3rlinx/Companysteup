@@ -34,6 +34,14 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; OPENAI REAL EXTERNAL_BLOCKED |
 | M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | NIVEL DETERMINISTA 4/4; PRIMER RUN CONECTADO FALLÓ POR PRESUPUESTO |
 | M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | IMPLEMENTADO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+| M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CORRECCIÓN PUBLICABLE; SIN CAMBIOS DE ESQUEMA |
+
+## Hito M27: corrección reproducible del job Supabase (2026-09-14, Asia/Bangkok)
+
+- CI #14 aprobó application (165/165 pruebas) y Edge, pero el job Supabase terminó antes de iniciar la base local: `supabase/setup-cli@v1` no pudo resolver `version: latest` por límite de solicitudes de GitHub. No fue un fallo de migraciones, RLS ni funciones.
+- El workflow usa ahora `supabase/setup-cli@v2` con CLI `2.116.0`, la misma versión exacta declarada en `package.json` y `pnpm-lock.yaml`. Esto elimina la consulta dinámica de la última versión y actualiza la action recomendada por su repositorio oficial.
+- Validación local del cambio: `pnpm typecheck` aprobado, `pnpm test` con 165/165 pruebas aprobadas y `pnpm supabase --version` confirmó `2.116.0`.
+- No se modificaron migraciones, datos, staging, credenciales ni adaptadores externos. La evaluación Wyoming conectada sigue siendo una ejecución separada en la terminal privada del fundador.
 
 ## Hito M26: diagnóstico del primer run conectado (2026-09-14, Asia/Bangkok)
 

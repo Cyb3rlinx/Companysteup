@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 02:45 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 02:54 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: primer run conectado diagnosticado; reejecutar con fallo rápido
 
@@ -10,6 +10,7 @@ Actualizado: 2026-09-14, 02:45 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La falta de diagnóstico provenía de compartir el fallback seguro de producción: errores `DomainError` del modelo se convertían en extracciones vacías y el runner reintentaba. El laboratorio ahora usa fallo estricto, clasifica HTTP 401/403/404/429 sin copiar cuerpos externos, imprime progreso y guarda reporte parcial.
 - La rúbrica exige todos los campos solicitados por lote y detiene el escenario en la primera extracción vacía o parche incompleto. El presupuesto permanece en 60 hasta observar el error real; no se incrementa para ocultar fallos.
 - Validación posterior al ajuste: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; el nivel determinista aprobó 4/4 con reporte `PASSED` y cero escrituras externas. La reejecución conectada requiere la terminal privada que conserva la clave.
+- GitHub CI #14 confirmó application y Edge, pero Supabase no llegó a ejecutar sus pruebas porque la action antigua consultó `latest` sin autenticar y GitHub limitó esa consulta. El workflow quedó actualizado a `supabase/setup-cli@v2` con la misma CLI fija `2.116.0` del lockfile; no cambió el esquema ni staging.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
 - GitHub `main`: commit técnico `38f49f9` publicado. [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) terminaron `success` para `38f49f94533873c9303a9edda7c369d438ef589f`; CI conservó el reporte sintético como artefacto.
 - No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.

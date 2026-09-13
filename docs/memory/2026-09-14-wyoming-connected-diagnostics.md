@@ -7,4 +7,5 @@ Fecha: 2026-09-14, Asia/Bangkok.
 - Se agregó un modo de fallo estricto exclusivo del laboratorio, mensajes HTTP saneados, progreso por solicitud, corte ante falta de avance y reporte parcial sin contenido conversacional.
 - La rúbrica exige ahora todos los campos solicitados en cada lote; un parche parcial ya no se acepta silenciosamente.
 - Validación: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build. El runner determinista aprobó 4/4, guardó estado `PASSED` y verificó cero escrituras externas.
+- El push del diagnóstico produjo CI #14: application y Edge aprobaron; Supabase falló antes de ejecutar comandos por el límite de GitHub al resolver `version: latest`. Se cambió a `supabase/setup-cli@v2` y se fijó `2.116.0`, alineada con el lockfile.
 - Siguiente paso: reejecutar con el mismo límite de 60 y usar el primer error o escenario fallido para decidir la corrección. No aumentar presupuesto sin diagnóstico.
