@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `38f49f9` aprobó [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) el 2026-09-10. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `e9ba48e` aprobó [CI #19](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34818129826) y [Regulatory integrity #19](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34818129920) el 2026-09-14. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
 **Base funcional local y Supabase staging validados con datos sintéticos. Wyoming aprobó 4/4 recorridos con los modelos conectados configurados y quedó integrado en el detalle del caso del cliente y en el seguimiento operativo de solo lectura. La aprobación valida el comportamiento observado de la versión 2026-09-14.4; no demuestra constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
@@ -26,19 +26,19 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 168 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL; CI DEL NUEVO HITO PENDIENTE |
+| M19 QA/CI | 168 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL Y CI |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY CONECTADO, RESTO DETERMINISTA |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; MODELOS CONECTADOS PROBADOS |
 | M25 Cliente ficticio Wyoming | Simulador determinista, evaluador separado, cuatro recorridos y runner conectado con límite/telemetría | DETERMINISTA 4/4 Y CONECTADO 4/4 |
 | M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | SEGUNDO RUN CLASIFICADO; 0/4 POR EXACTITUD |
 | M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CI #15 APROBADO; SIN CAMBIOS DE ESQUEMA |
-| M28 Contrato semántico Wyoming | Texto libre literal, campos permitidos, cobertura total del simulador y diagnóstico por categoría | ENDURECIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
-| M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | CI #17 APROBADO; CONECTADO 1/4 |
+| M28 Contrato semántico Wyoming | Texto libre literal, campos permitidos, cobertura total del simulador y diagnóstico por categoría | VALIDADO EN CONECTADO 4/4 |
+| M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | VALIDADO EN CONECTADO 4/4 |
 | M30 Protocolo y alcance Wyoming | Lotes etiquetados exactos, enum mínimo por turno y corrección explícita referenciada | CONECTADO 4/4 |
-| M31 Wyoming en panel y operaciones | Onboarding dentro del caso, progreso saneado, confirmación exclusiva del cliente y vista interna de solo lectura | VALIDADO LOCAL; CI PENDIENTE |
+| M31 Wyoming en panel y operaciones | Onboarding dentro del caso, progreso saneado, confirmación exclusiva del cliente y vista interna de solo lectura | VALIDADO LOCAL Y CI |
 
 ## Hito M31: Wyoming conectado e integrado al expediente (2026-09-14, Asia/Bangkok)
 
@@ -48,6 +48,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - El onboarding Wyoming ahora aparece en `/casos/:id`. El cliente inicia, responde y confirma dentro de su expediente; el seguimiento muestra conteos, estado y eventos saneados sin copiar valores. Los roles internos pueden inspeccionar la sesión y su progreso, pero el servicio rechaza iniciar, responder o confirmar en nombre del cliente.
 - Las aceptaciones y rechazos generan eventos con nombres de campos y revisión, sin valores. El modo alojado mantiene `EXTERNAL_BLOCKED`; la interfaz no presenta esta prueba como trámite, pago, identidad verificada o constitución.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 168/168 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 13/13 con salida 0 sobre un servidor sandbox aislado y reutilizado, incluido aislamiento entre tenants, actualización del panel y vista interna de solo lectura. El runner Wyoming determinista volvió a aprobar 4/4 con cero solicitudes de modelo y cero acciones externas.
+- GitHub: el commit `e9ba48e` aprobó [CI #19](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34818129826) en 3m27s con application 168/168, Supabase y Edge aprobados; [Regulatory integrity #19](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34818129920) aprobó en 34s. Los avisos deprecados de runtime pertenecen a versiones de actions de GitHub y no alteraron el resultado.
 
 ## Hito M30: formato inequívoco y privilegio mínimo por turno (2026-09-14, Asia/Bangkok)
 

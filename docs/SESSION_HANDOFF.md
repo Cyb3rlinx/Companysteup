@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 14:25 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 14:33 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: Wyoming conectado e integrado; continuar con Delaware
 
@@ -15,9 +15,10 @@ Actualizado: 2026-09-14, 14:25 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - Validación local: pnpm check aprobó lint, TypeScript, 168/168 pruebas, diez bundles Edge y build. pnpm test:wyoming-agent aprobó 4/4 con cero solicitudes de red y cero acciones externas.
 - pnpm test:e2e aprobó 13/13 con salida 0 sobre un servidor sandbox aislado y reutilizado, incluido el nuevo recorrido cliente → expediente → reanudación → panel → operaciones de solo lectura.
 - No hubo migraciones ni cambios en Supabase staging. El proyecto autorizado continúa keboldglfjonxcdnmyee en Singapur y los datos permitidos siguen siendo sintéticos.
-- Git parte de 0885218; los cambios del panel aún no tienen commit ni CI. Siguiente cierre técnico: commit/push, confirmar ambos workflows de GitHub y sincronizar Graphify.
+- GitHub: `e9ba48e` está publicado en `main`. CI #19 aprobó application (168/168), Supabase y Edge en 3m27s; Regulatory integrity #19 aprobó en 34s. Solo queda publicar este checkpoint documental y sincronizar Graphify.
 - Siguiente hito funcional: construir el intake y la puerta de evaluación de US-DE reutilizando la arquitectura, no los requisitos de Wyoming. Después seguir EE → GB.
 - Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean el desarrollo y evaluación sintética de Delaware.
+
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
 
 - Se siguió el orden solicitado y se completó el paquete técnico de preparación Wyoming: 21 campos, mapa de destino/fuente, bloqueos por datos/canal y descarga JSON. Implementación en `packages/formation-packet` y laboratorio autenticado. Documento de entrega: `docs/WYOMING_REVIEW_PACKET.md`.

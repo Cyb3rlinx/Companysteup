@@ -8,4 +8,5 @@ Fecha: 2026-09-14, Asia/Bangkok.
 - Operaciones dispone de lectura, pero las mutaciones exigen rol de cliente. Los eventos y el endpoint de seguimiento conservan conteos y nombres de campos, nunca valores del intake.
 - `pnpm check` aprobó lint, TypeScript, 168/168 pruebas, diez bundles Edge y build. El nivel determinista volvió a aprobar 4/4 sin red ni acciones externas.
 - `pnpm test:e2e` aprobó 13/13 con salida 0 sobre un servidor sandbox aislado y reutilizado.
-- No hubo migraciones ni cambios de staging. Siguiente paso: cierre de QA/CI y luego intake más evaluación US-DE, seguido de EE y GB.
+- El commit `e9ba48e` está publicado. GitHub CI #19 aprobó application con 168/168 pruebas, Supabase y Edge; Regulatory integrity #19 también aprobó.
+- No hubo migraciones ni cambios de staging. Siguiente paso: intake más evaluación US-DE, seguido de EE y GB.
