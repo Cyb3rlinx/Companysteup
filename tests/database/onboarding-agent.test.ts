@@ -32,11 +32,18 @@ test('Wyoming conversation is private, idempotent, confirmed and cannot mutate t
   expect(await new LocalRepository(db,users[1]).list('agent_conversations')).toEqual([]);expect(await new LocalRepository(db,users[1]).list('agent_conversation_turns')).toEqual([]);
   await expect(repo.atomic([{kind:'insert',table:'agent_conversation_turns',data:{organization_id:actors[1].organizationId,conversation_id:started.conversation.id,turn_kind:'USER_MESSAGE',assistant_message:'cross tenant',model_status:'NOT_APPLICABLE',client_request_id:'10000000-0000-4000-8000-000000000009',created_by:users[1]}}])).rejects.toThrow(/foreign key/);
   expect(await repo.list('formation_cases',{id:created.id})).toEqual([before]);expect(await repo.list('orders')).toHaveLength(0);expect(await repo.list('companies')).toHaveLength(0);
-  const events=await repo.list('case_events',{case_id:created.id});expect(events.map(e=>e.event_type)).toEqual(expect.arrayContaining(['AGENT_CONVERSATION_STARTED','AGENT_TURN_COMPLETED']));expect(JSON.stringify(events)).not.toContain('Orbit QA LLC');expect(JSON.stringify(events)).not.toContain('Orbit Corrected LLC');
+  const events=await repo.list('case_events',{case_id:created.id});expect(events.map(e=>e.event_type)).toEqual(expect.arrayContaining(['AGENT_CONVERSATION_STARTED','AGENT_TURN_COMPLETED','AGENT_PATCH_ACCEPTED','AGENT_PATCH_REJECTED']));expect(JSON.stringify(events)).not.toContain('Orbit QA LLC');expect(JSON.stringify(events)).not.toContain('Orbit Corrected LLC');
  }finally{await db.close();}
 });
 
 test('hosted mode blocks conversations before any repository access',async()=>{
  const repo={list:async()=>{throw new Error('must not read')},atomic:async()=>{throw new Error('must not write')}} as unknown as LocalRepository;const actor={id:'a',organizationId:'o',role:'customer',displayName:'QA'} as Actor;
  await expect(startWyomingConversation(repo,actor,false,{})).rejects.toMatchObject({code:'AGENT_SANDBOX_ONLY'});
+});
+
+test('internal roles can inspect but cannot act as the customer',async()=>{
+ const repo={list:async()=>{throw new Error('must not read')},atomic:async()=>{throw new Error('must not write')}} as unknown as LocalRepository;const actor={id:'ops',organizationId:'internal',role:'ops',displayName:'Operaciones'} as Actor;
+ await expect(startWyomingConversation(repo,actor,true,{})).rejects.toMatchObject({code:'CUSTOMER_ACTION_REQUIRED'});
+ await expect(sendWyomingMessage(repo,actor,true,{})).rejects.toMatchObject({code:'CUSTOMER_ACTION_REQUIRED'});
+ await expect(confirmWyomingPatch(repo,actor,true,{})).rejects.toMatchObject({code:'CUSTOMER_ACTION_REQUIRED'});
 });

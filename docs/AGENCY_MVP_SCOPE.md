@@ -40,7 +40,7 @@ El grafo Graphify compartido es memoria de desarrollo: no se expondrá al agente
 4. **Repetir la aceptación en Delaware, Estonia y UK.** Adaptar requisitos y escenarios por jurisdicción; no copiar conclusiones de Wyoming. Una ruta aprobada no valida las demás.
 5. **Preparar el piloto comercial.** Resolver alcance y obligaciones del operador de la agencia, seguridad, privacidad, soporte, hosting y dependencias realmente aplicables. No convertir la finalización técnica en autorización comercial.
 
-Estado al 2026-09-07: el punto 1 está implementado para casos ficticios US-WY mediante sesión persistente, extracción estructurada, confirmación/rechazo y reanudación. Con credenciales ausentes, el modo determinista exige `Campo: valor` y bloquea la pretensión de haber entendido lenguaje natural. El punto 2 sigue pendiente: hace falta conectar un modelo, fijar versión/presupuesto y ejecutar la evaluación conversacional con revisión interna.
+Estado al 2026-09-14: los puntos 1 y 2 están implementados para casos ficticios US-WY. La versión `2026-09-14.4` aprobó los cuatro recorridos conectados con modelos, versiones y presupuesto registrados. El punto 3 está integrado en el expediente: cliente y operaciones observan progreso, pero solo el cliente responde y confirma. Las acciones externas permanecen bloqueadas. El siguiente hito es aplicar la misma puerta de aceptación a US-DE sin copiar requisitos de Wyoming.
 
 Google Auth y hosting pueden avanzar sin alterar este orden. El admin ya existe: se amplía para observar conversaciones, pendientes y evidencia; no se reconstruye como si faltara.
 

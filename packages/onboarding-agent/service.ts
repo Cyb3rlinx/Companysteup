@@ -19,6 +19,7 @@ async function response(repo:Repository,conversation:ConversationRecord){
  return{conversation:{id:conversation.id,caseId:conversation.case_id,jurisdiction:conversation.jurisdiction_code,status:conversation.status,executionMode:conversation.execution_mode,model:conversation.model,synthetic:conversation.synthetic,state:wyomingIntakeSchema.parse(conversation.state_json),pendingPatch:z.record(z.string(),z.string()).parse(conversation.pending_patch),revision:conversation.revision,createdAt:conversation.created_at,updatedAt:conversation.updated_at},turns};
 }
 function assertSandbox(sandbox:boolean){if(!sandbox)throw new DomainError('AGENT_SANDBOX_ONLY','La conversación agéntica está habilitada solo con datos ficticios en sandbox',403);}
+function assertCustomer(actor:Actor){if(actor.role!=='customer')throw new DomainError('CUSTOMER_ACTION_REQUIRED','Solo el cliente puede iniciar, responder o confirmar su onboarding',403);}
 async function checkedCase(repo:Repository,actor:Actor,id:string,revision:number){
  const item=owned((await repo.list<FormationRecord>('formation_cases',{id}))[0],actor);
  if(item.jurisdiction_code!=='US-WY')throw new DomainError('CASE_GUIDE_MISMATCH','El expediente no corresponde a Wyoming');
@@ -29,7 +30,7 @@ async function checkedCase(repo:Repository,actor:Actor,id:string,revision:number
 }
 
 export async function startWyomingConversation(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:OpenAIConfiguration){
- assertSandbox(sandbox);const values=startSchema.parse(input);
+ assertSandbox(sandbox);assertCustomer(actor);const values=startSchema.parse(input);
  const prior=(await repo.list<ConversationRecord>('agent_conversations',{organization_id:actor.organizationId,client_request_id:values.clientRequestId}))[0];
  if(prior)return response(repo,owned(prior,actor));
  const formation=await checkedCase(repo,actor,values.caseId,values.caseRevision);const id=crypto.randomUUID();
@@ -47,7 +48,7 @@ export async function getWyomingConversation(repo:Repository,actor:Actor,sandbox
 }
 
 export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,model?:OpenAIConfiguration){
- assertSandbox(sandbox);const values=messageSchema.parse(input);const conversation=await record(repo,actor,values.conversationId);
+ assertSandbox(sandbox);assertCustomer(actor);const values=messageSchema.parse(input);const conversation=await record(repo,actor,values.conversationId);
  const duplicate=(await repo.list<ConversationTurn>('agent_conversation_turns',{conversation_id:conversation.id,client_request_id:values.clientRequestId}))[0];if(duplicate)return response(repo,conversation);
  if(conversation.revision!==values.revision)throw new DomainError('CONFLICT','La conversación cambió. Recarga antes de continuar.',409);
  if(conversation.status==='closed')throw new DomainError('CONVERSATION_CLOSED','La conversación está cerrada',409);
@@ -64,7 +65,7 @@ export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boo
 }
 
 export async function confirmWyomingPatch(repo:Repository,actor:Actor,sandbox:boolean,input:unknown,now=new Date()){
- assertSandbox(sandbox);const values=confirmationSchema.parse(input);const conversation=await record(repo,actor,values.conversationId);
+ assertSandbox(sandbox);assertCustomer(actor);const values=confirmationSchema.parse(input);const conversation=await record(repo,actor,values.conversationId);
  const duplicate=(await repo.list<ConversationTurn>('agent_conversation_turns',{conversation_id:conversation.id,client_request_id:values.clientRequestId}))[0];if(duplicate)return response(repo,conversation);
  if(conversation.revision!==values.revision)throw new DomainError('CONFLICT','La conversación cambió. Recarga antes de confirmar.',409);
  const patch=z.partialRecord(z.enum(WY_FIELDS.map(f=>f.key) as [typeof WY_FIELDS[number]['key'],...typeof WY_FIELDS[number]['key'][]]),z.string()).parse(conversation.pending_patch);
@@ -73,7 +74,8 @@ export async function confirmWyomingPatch(repo:Repository,actor:Actor,sandbox:bo
  const missing=nextMissing(state);const status=!missing?'ready_for_packet_review':'active';const assistant=values.accept?(missing?`Datos guardados. Siguiente: ${missing.label}.`:'Datos completos para preparar el paquete de revisión interno.'):'No guardé los datos propuestos. Puedes corregirlos y volver a intentarlo.';
  await repo.atomic([
   {kind:'update',table:'agent_conversations',where:{id:conversation.id,revision:conversation.revision},data:{state_json:state,pending_patch:{},revision:conversation.revision+1,status}},
-  {kind:'insert',table:'agent_conversation_turns',data:{organization_id:conversation.organization_id,conversation_id:conversation.id,turn_kind:values.accept?'PATCH_ACCEPTED':'PATCH_REJECTED',customer_message:null,assistant_message:assistant,proposed_patch:patch,model_status:'NOT_APPLICABLE',client_request_id:values.clientRequestId,created_by:actor.id}}
+  {kind:'insert',table:'agent_conversation_turns',data:{organization_id:conversation.organization_id,conversation_id:conversation.id,turn_kind:values.accept?'PATCH_ACCEPTED':'PATCH_REJECTED',customer_message:null,assistant_message:assistant,proposed_patch:patch,model_status:'NOT_APPLICABLE',client_request_id:values.clientRequestId,created_by:actor.id}},
+  {kind:'insert',table:'case_events',data:{organization_id:conversation.organization_id,case_id:conversation.case_id,event_type:values.accept?'AGENT_PATCH_ACCEPTED':'AGENT_PATCH_REJECTED',actor_type:actor.role,actor_user_id:actor.id,payload:{conversationId:conversation.id,synthetic:true,fields:Object.keys(patch),conversationRevision:conversation.revision+1}}}
  ]);
  const current=(await repo.list<ConversationRecord>('agent_conversations',{id:conversation.id}))[0];const result=await response(repo,current);
  return{...result,packetPreview:status==='ready_for_packet_review'?prepareWyomingPacket(state,{caseId:conversation.case_id,revision:Number((await repo.list<FormationRecord>('formation_cases',{id:conversation.case_id}))[0].revision)},now):null};

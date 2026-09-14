@@ -1,6 +1,7 @@
 import { type Jurisdiction } from '../domain';
 import type { FormationRecord } from '../application';
 import type { Row } from '../persistence';
+import { WY_FIELDS } from '../formation-packet/catalog';
 
 export const CASE_AGENT_VERSION = '2026-09-03.1';
 export const CASE_AGENTS: Record<Jurisdiction,{id: string; name: string}> = {
@@ -18,8 +19,13 @@ const eventLabels: Record<string,string> = {
   SANDBOX_PAYMENT: 'Pago simulado', PAYMENT_CONFIRMED: 'Pago de plataforma confirmado',
   AGENT_LAB_EVALUATED: 'Evaluación sintética del laboratorio',
   WY_PACKET_PREPARED: 'Paquete Wyoming preparado en ensayo sintético',
+  AGENT_CONVERSATION_STARTED: 'Onboarding conversacional iniciado por el cliente',
+  AGENT_TURN_COMPLETED: 'Respuesta de onboarding procesada',
+  AGENT_PATCH_ACCEPTED: 'Datos de onboarding confirmados por el cliente',
+  AGENT_PATCH_REJECTED: 'Propuesta de onboarding rechazada por el cliente',
 };
-export function trackCase(record: FormationRecord, allEvents: Row[], now = new Date()) {
+export type ConversationTrackingInput = Pick<Row,'organization_id'|'case_id'|'status'|'execution_mode'|'state_json'|'pending_patch'|'updated_at'>;
+export function trackCase(record: FormationRecord, allEvents: Row[], now = new Date(), conversation?: ConversationTrackingInput | null) {
   const state = record.workflow_state;
   const agent = CASE_AGENTS[record.jurisdiction_code];
   const events = allEvents.filter(e => e.case_id === record.id && e.organization_id === record.organization_id)
@@ -49,6 +55,12 @@ export function trackCase(record: FormationRecord, allEvents: Row[], now = new D
     else runStatus = Number.isFinite(age) && age >= 0 && age < 120000 ? 'RUNNING' : 'UNCONFIRMED';
   }
   const completed = state.steps.filter(step => step.status === 'completed').length;
+  const matchingConversation=record.jurisdiction_code==='US-WY'&&conversation?.organization_id===record.organization_id&&conversation.case_id===record.id?conversation:null;
+  const intakeState=matchingConversation?.state_json&&typeof matchingConversation.state_json==='object'&&!Array.isArray(matchingConversation.state_json)?matchingConversation.state_json as Record<string,unknown>:{};
+  const pendingState=matchingConversation?.pending_patch&&typeof matchingConversation.pending_patch==='object'&&!Array.isArray(matchingConversation.pending_patch)?matchingConversation.pending_patch as Record<string,unknown>:{};
+  const confirmedFields=WY_FIELDS.filter(field=>typeof intakeState[field.key]==='string'&&String(intakeState[field.key]).trim().length>0).length;
+  const pendingFields=WY_FIELDS.filter(field=>typeof pendingState[field.key]==='string'&&String(pendingState[field.key]).trim().length>0).length;
+  const intakeStatus=matchingConversation?(matchingConversation.status==='ready_for_packet_review'?'READY_FOR_REVIEW':'ACTIVE'):'NOT_STARTED';
   return {
     caseId: record.id, jurisdiction: record.jurisdiction_code, revision: record.revision,
     mode: sandbox ? 'SANDBOX' as const : 'GUIDED' as const,
@@ -61,6 +73,7 @@ export function trackCase(record: FormationRecord, allEvents: Row[], now = new D
     registrationConfirmed: false as const,
     registrationLabel: sandbox ? state.registered ? 'Registro simulado; sin efecto legal' : 'Sandbox; sin registro real' : 'Sin confirmación oficial de constitución',
     filingLabel: sandbox ? 'Ningún envío real desde este sandbox' : 'Presentación externa no confirmada',
+    intake: {available: record.jurisdiction_code==='US-WY', status: record.jurisdiction_code==='US-WY'?intakeStatus:'NOT_AVAILABLE', label: record.jurisdiction_code!=='US-WY'?'Agente conversacional aún no implementado para esta ruta':intakeStatus==='READY_FOR_REVIEW'?'Información completa; requiere revisión interna':intakeStatus==='ACTIVE'?'Onboarding iniciado por el cliente':'El cliente aún no inició el onboarding', confirmedFields, pendingFields, totalFields: record.jurisdiction_code==='US-WY'?WY_FIELDS.length:0, executionMode: matchingConversation?.execution_mode==='OPENAI_RESPONSES'?'OPENAI_RESPONSES':matchingConversation?'DETERMINISTIC_MOCK':null, updatedAt: matchingConversation?.updated_at?String(matchingConversation.updated_at):null},
     requiresEvidenceReview: !sandbox && (state.registered || ['SUBMITTED','REGISTERED','POST_FORMATION','ACTIVE_COMPLIANCE'].includes(record.status)),
     blockers, canPrepare: !terminal,
     activity: events.filter(e => eventLabels[String(e.event_type)]).slice(0,8).map(e => ({id: String(e.id), label: eventLabels[String(e.event_type)], at: String(e.created_at), synthetic: sandbox || String(e.event_type).startsWith('SANDBOX') || e.event_type === 'AGENT_LAB_EVALUATED'})),

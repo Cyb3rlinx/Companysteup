@@ -22,8 +22,8 @@ export function CaseTracker({caseId, names = {}, internal = false, onUpdate}: {c
   useEffect(()=>{
     const controller=new AbortController();let loading=false;
     const update=async()=>{if(loading||document.visibilityState==='hidden')return;loading=true;try{await refresh(controller.signal);}catch(e){if(!controller.signal.aborted)setError(e instanceof Error?e.message:'No se pudo actualizar');}finally{loading=false;}};
-    void update();const interval=setInterval(()=>void update(),25000);window.addEventListener('focus',update);document.addEventListener('visibilitychange',update);
-    return()=>{controller.abort();clearInterval(interval);window.removeEventListener('focus',update);document.removeEventListener('visibilitychange',update);};
+    void update();const interval=setInterval(()=>void update(),25000);window.addEventListener('focus',update);window.addEventListener('case-tracking-updated',update);document.addEventListener('visibilitychange',update);
+    return()=>{controller.abort();clearInterval(interval);window.removeEventListener('focus',update);window.removeEventListener('case-tracking-updated',update);document.removeEventListener('visibilitychange',update);};
   },[refresh]);
   async function prepare(id:string){
     setBusy(id);setMessage('');
@@ -43,7 +43,7 @@ export function CaseTracker({caseId, names = {}, internal = false, onUpdate}: {c
       <p className={styles.registration}>{item.registrationLabel}</p>
       {item.requiresEvidenceReview&&<p className={styles.warning}>El estado registrado necesita conciliación con evidencia oficial. No confirma constitución.</p>}
       <label className={styles.progress}>{item.completedSteps} de {item.totalSteps} pasos del expediente <progress max={100} value={item.progressPercent}/></label>
-      <dl><dt>Paso actual</dt><dd>{item.status}</dd><dt>Responsable del paso</dt><dd>{item.nextOwner}</dd><dt>Asistente de la ruta</dt><dd>{item.agent.name}<small>Preparación determinista · v{item.agent.version}</small></dd><dt>Última ejecución</dt><dd>{busy===item.caseId?'Preparando el resumen solicitado…':runLabels[item.agent.runStatus]}</dd></dl>
+      <dl><dt>Paso actual</dt><dd>{item.status}</dd><dt>Responsable del paso</dt><dd>{item.nextOwner}</dd><dt>Asistente de la ruta</dt><dd>{item.agent.name}<small>Preparación determinista · v{item.agent.version}</small></dd><dt>Última ejecución</dt><dd>{busy===item.caseId?'Preparando el resumen solicitado…':runLabels[item.agent.runStatus]}</dd>{item.intake.available&&<><dt>Onboarding Wyoming</dt><dd>{item.intake.label}<small>{item.intake.confirmedFields}/{item.intake.totalFields} campos confirmados{item.intake.pendingFields?` · ${item.intake.pendingFields} pendientes de confirmación`:''}</small></dd></>}</dl>
       <p><b>Próxima acción:</b> {item.nextAction}</p><p className={styles.note}>{item.filingLabel}. La sesión de Google no verifica identidad ni constituye una compañía.</p>
       <details><summary>Pendientes y responsables ({item.blockers.length})</summary><ul>{item.blockers.map(b=><li key={b.code}>{b.message}<small>{b.owner}</small></li>)}</ul></details>
       <button className="btn secondary full" disabled={Boolean(busy)||!item.canPrepare} onClick={()=>prepare(item.caseId)}>Preparar resumen del expediente</button>

@@ -44,6 +44,14 @@ El informe conectado registra modelos, solicitudes intentadas y completadas, tok
 
 El runner muestra el escenario, el rol de cada solicitud, el presupuesto consumido y los campos exactos aceptados. En modo conectado no oculta errores del proveedor detrás del fallback de producción: detiene la ejecución y clasifica de forma saneada HTTP 401, 403, 404 y 429. También detiene un escenario ante la primera extracción vacía o parche incompleto para no gastar en reintentos que oculten una falla. El reporte se actualiza después de cada escenario y también ante un error fatal; nunca contiene la clave ni los mensajes del cliente.
 
+### Resultado conectado aprobado
+
+El 2026-09-14, la versión `2026-09-14.4` aprobó 4/4 recorridos con `gpt-5.6-terra` como onboarding y `gpt-5.6-luna` como simulador. Usó 49 de 60 solicitudes, 27.212 tokens totales y 107.748 ms de latencia acumulada. Registró 69 propuestas aceptadas, cero rechazadas y una extracción vacía correspondiente al ataque deliberado sin actualización. Los tres recorridos completos llegaron a 21/21 campos; el recorrido incompleto permaneció activo con 5/5. Hubo cero escrituras externas, órdenes y compañías.
+
+El informe aprobado se preserva localmente en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`. Esta evidencia queda vinculada a esos modelos, prompts, código y datos ficticios. No debe extrapolarse a una constitución real ni a versiones futuras sin una nueva evaluación.
+
+Después de esta puerta, la conversación se integró al detalle de caso del cliente. El seguimiento expone únicamente estado, conteos y tiempos; los valores permanecen en las tablas privadas de conversación. Los operadores tienen lectura y el backend impide que inicien, respondan o confirmen por el cliente.
+
 ### Diagnóstico de un fallo conectado
 
 - `MODEL_UNAVAILABLE` con HTTP 401: revisar la API key del proyecto.

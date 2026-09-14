@@ -10,7 +10,7 @@
 ## Estado operativo y límites
 
 - Al 2026-09-03, el MVP local funciona y existe validación histórica de Supabase staging con datos sintéticos. Esto no es lanzamiento de producción ni prueba de constitución real. Fuente: `docs/BUILD_STATUS.md`.
-- Los agentes preparan expedientes y orientan con un supervisor determinista; todavía no constituyen empresas reales de forma autónoma. No hay modelo externo conectado, pagos reales ni presentación gubernamental habilitada. Fuente: `docs/AGENT_ACCEPTANCE.md`.
+- Los agentes preparan expedientes y orientan con controles deterministas; todavía no constituyen empresas reales de forma autónoma. Wyoming ya fue evaluado con modelos conectados sobre datos ficticios. No hay pagos reales ni presentación gubernamental habilitada. Fuente: `docs/WYOMING_AGENT_EVALUATION.md` y `docs/BUILD_STATUS.md`.
 - Wyoming cuenta con evaluación en dos niveles: cliente ficticio determinista ejecutable sin red y cliente/modelo conectados mediante Responses. El evaluador conserva la verdad de referencia y nunca delega al modelo su propia aprobación. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`.
 - El grafo es memoria de desarrollo, no evidencia legal vigente ni autorización de operaciones. Fuentes vencidas, contradicciones o revisión pendiente bloquean afirmaciones y exigen revisión humana. Fuente: `AGENTS.md`.
 
@@ -24,6 +24,7 @@
 - Next.js + TypeScript en `apps/web`; tipos y permisos en `packages/domain`; lógica de negocio independiente en `packages`. Fuente: `docs/ARCHITECTURE.md`.
 - `packages/formation-guidance` prepara guías por ruta; `packages/case-tracking` conserva actividad y revisión. El panel consulta cada 25 segundos, no usa Supabase Realtime. Fuente: `docs/BUILD_STATUS.md`.
 - `packages/formation-packet` prepara el paquete interno Wyoming: 21 campos, fuentes/destinos y 11 escenarios adicionales. El acuse es SANDBOX, no aceptación del proveedor; las respuestas no se guardan en eventos. Fuente: `docs/WYOMING_REVIEW_PACKET.md`.
+- La conversación Wyoming está integrada en el detalle del expediente. El cliente controla sus respuestas y confirmaciones; operaciones tiene lectura. El seguimiento solo devuelve estado, conteos y eventos saneados, sin valores del intake. Fuente: `apps/web/components/wyoming-conversation.tsx`, `packages/case-tracking/index.ts` y `packages/onboarding-agent/service.ts`.
 - `packages/regulatory-engine` controla fuentes, versiones, vigencia y publicación humana; `packages/workflow-engine` orquesta; `packages/compliance-engine` calcula obligaciones con reglas verificadas. Fuente: `docs/ARCHITECTURE.md`.
 - Supabase migrations es la autoridad del esquema; PGlite local usa las mismas migraciones. El staging autorizado tiene once migraciones, 57 tablas con RLS y diez Edge Functions. Fuente: `docs/SESSION_HANDOFF.md` y `docs/STAGING_VALIDATION.md`.
 - Roles consultados del servidor, nunca elevados por metadatos del usuario; documentos privados y cuarentena; secretos solo del servidor. Fuente: `AGENTS.md` y `docs/ARCHITECTURE.md`.
@@ -44,9 +45,9 @@
 
 ## Siguiente paso y bloqueos
 
-- La conversación Wyoming persistente y el cliente ficticio determinista están implementados. Cuatro recorridos comprueban finalización, corrección/reanudación, entradas adversariales y abandono sin acciones externas. Siguiente paso: ejecutar el nivel conectado con modelos y presupuesto fijados; después integrar acompañamiento/evidencia y repetir Delaware → Estonia → UK. Fuente: `docs/WYOMING_AGENT_EVALUATION.md` y `docs/SESSION_HANDOFF.md`.
-- El adaptador actual `packages/ai/openai.ts` solo enruta una pregunta a reglas verificadas; no es una entrevista conversacional. Los escenarios deterministas existentes no prueban capacidad de un modelo conectado. Sin credencial construir contrato/mock y declarar pendiente esa validación, sin rebajar controles. Fuente: `docs/AGENCY_MVP_SCOPE.md`.
-- Se necesitan proyecto y presupuesto del modelo para pruebas reales con datos ficticios; no pedir secretos por conversación. Google puede configurarse en paralelo. Para lanzamiento identificar operador y responsable interno; resolver servicios externos únicamente cuando la ruta/actividad los requiera. Fuente: `docs/SESSION_HANDOFF.md`.
+- La conversación Wyoming persistente aprobó 4/4 recorridos deterministas y 4/4 conectados en la versión `2026-09-14.4`, y ya forma parte del caso del cliente y del seguimiento operativo. Siguiente paso: construir la matriz de intake y la misma evaluación para Delaware; después Estonia y UK. Fuente: `docs/WYOMING_AGENT_EVALUATION.md` y `docs/SESSION_HANDOFF.md`.
+- El adaptador conversacional Wyoming usa Responses con salida estructurada, privilegio mínimo por turno y confirmación. El evaluador determinista conserva la verdad y no delega la aprobación al modelo. Esta evidencia no valida futuras versiones ni otras jurisdicciones. Fuente: `packages/onboarding-agent`, `packages/agent-evaluation` y `docs/WYOMING_AGENT_EVALUATION.md`.
+- Las credenciales del modelo permanecen exclusivamente en la terminal privada y no son necesarias para repetir el nivel determinista. Google puede configurarse en paralelo. Para lanzamiento hay que identificar operador y responsable interno, y resolver servicios externos solo cuando la ruta o actividad los requiera. Fuente: `docs/SESSION_HANDOFF.md`.
 - Hosting, correo, hardening operativo y piloto supervisado siguen pendientes. No ejecutar `test:staging` como lectura de estado: crea fixtures remotos. Fuente: `docs/SESSION_HANDOFF.md`.
 
 ## Memoria entre conversaciones y Guarda el estado

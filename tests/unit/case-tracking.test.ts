@@ -20,6 +20,15 @@ test('tenant events, lab output and arbitrary payload text cannot become agent e
  expect(trackCase(r,[{...e,organization_id:r.organization_id,event_type:'AGENT_LAB_EVALUATED',payload:{...e.payload,registered:true,secret:'not-for-output'}}],now).agent.runStatus).toBe('NOT_STARTED');
  expect(JSON.stringify(trackCase(r,[{...e,organization_id:r.organization_id,payload:{secret:'not-for-output'}}],now))).not.toContain('not-for-output');
 });
+test('Wyoming tracking exposes only bounded onboarding progress and ignores foreign conversation rows',()=>{
+ const r=record('US-WY');r.execution_mode='SANDBOX';
+ const conversation={organization_id:r.organization_id,case_id:r.id,status:'active',execution_mode:'OPENAI_RESPONSES',state_json:{companyName:'Private Orbit LLC',entityVariant:'ordinary',unexpected:'do-not-leak'},pending_patch:{nameSearch:'pending-secret-value',injected:'do-not-leak'},updated_at:now.toISOString()};
+ const tracked=trackCase(r,[{id:7,case_id:r.id,organization_id:r.organization_id,event_type:'AGENT_PATCH_ACCEPTED',created_at:now.toISOString(),payload:{fields:['companyName']}}],now,conversation);
+ expect(tracked.intake).toMatchObject({available:true,status:'ACTIVE',confirmedFields:2,pendingFields:1,totalFields:21,executionMode:'OPENAI_RESPONSES'});
+ expect(tracked.activity[0].label).toBe('Datos de onboarding confirmados por el cliente');
+ expect(JSON.stringify(tracked)).not.toContain('Private Orbit LLC');expect(JSON.stringify(tracked)).not.toContain('pending-secret-value');expect(JSON.stringify(tracked)).not.toContain('do-not-leak');
+ expect(trackCase(r,[],now,{...conversation,organization_id:'foreign'}).intake).toMatchObject({status:'NOT_STARTED',confirmedFields:0,pendingFields:0});
+});
 test('only a recent matching execution is running; stale clocks and newer case revisions invalidate it',()=>{
  const r=record();const e={id:1,case_id:r.id,organization_id:r.organization_id,event_type:'CASE_BRIEF_STARTED',created_at:now.toISOString(),payload:{agentId:CASE_AGENTS.GB.id,version:CASE_AGENT_VERSION,caseRevision:0}};
  expect(trackCase(r,[e],now).agent.runStatus).toBe('RUNNING');
