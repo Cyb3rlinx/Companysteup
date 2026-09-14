@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 23:03 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 23:09 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: Delaware determinista integrado; ejecutar puerta conectada
 
@@ -13,6 +13,7 @@ Actualizado: 2026-09-14, 23:03 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La migración 012 fue la única pendiente, se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación final aprobó 17/17 con una conversación Delaware y aislamiento RLS explícito.
 - El primer run conectado Delaware falló en la primera solicitud del simulador: 1/60 reservada, cero respuestas/tokens y cero acciones externas. El runner anterior ocultó timeout, red, JSON o esquema bajo `EVALUATION_FAILED`, por lo que no existe causa exacta demostrada.
 - El transporte `2026-09-14.6` ahora usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Ejecutar nuevamente desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
+- El arreglo `1e22ba4` aprobó [CI #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321176) con application, Supabase y Edge, además de [Regulatory integrity #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321191).
 - Si el run conectado aprueba 4/4, preservar el reporte y continuar Estonia. Si falla, diagnosticar el primer parche exacto sin relajar la rúbrica ni aumentar el presupuesto a ciegas.
 - Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
 - El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
@@ -47,7 +48,7 @@ Actualizado: 2026-09-14, 23:03 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Actualizar el repositorio local con el commit del diagnóstico y ejecutar `corepack pnpm test:delaware-agent:connected` en la PowerShell privada con las cuatro variables ya usadas para Wyoming. No copiar claves al chat ni al repositorio.
+2. Confirmar que el repositorio contiene `1e22ba4` y ejecutar `corepack pnpm test:delaware-agent:connected` en la PowerShell privada con las cuatro variables ya usadas para Wyoming. No copiar claves al chat ni al repositorio.
 3. Preservar y revisar el reporte Delaware. Solo con 4/4 y cero acciones externas continuar Estonia; ante fallo, usar el nuevo código/categoría y la referencia de solicitud para corregir sin relajar la puerta. Después repetir EE → GB.
 4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
 5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.

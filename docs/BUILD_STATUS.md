@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 176 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL; CI DEL DIAGNÓSTICO PENDIENTE |
+| M19 QA/CI | 176 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y CI |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY CONECTADO, DE CONECTADO PENDIENTE |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -48,6 +48,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - La versión de evaluación Delaware `2026-09-14.2` eleva el timeout controlado de 20 a 45 segundos y clasifica `MODEL_TIMEOUT`, `MODEL_NETWORK`, `MODEL_UNAVAILABLE`, `MODEL_RESPONSE` y `MODEL_SCHEMA`. Cada petición incluye un `X-Client-Request-Id` aleatorio; los fallos conservan solo una referencia segura, nunca la API key, el cuerpo del proveedor ni las respuestas del cliente.
 - El transporte compartido también actualiza el agente a `2026-09-14.6` y la evaluación Wyoming a `2026-09-14.5`. No se agregaron reintentos automáticos que pudieran duplicar gasto tras una respuesta incierta.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 176/176 pruebas en 24 archivos, diez bundles Edge y build. Las puertas deterministas Delaware y Wyoming aprobaron 4/4 con cero solicitudes de modelo y cero acciones externas.
+- GitHub: el commit `1e22ba4` aprobó [CI #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321176), incluidos application, Supabase y Edge; [Regulatory integrity #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321191) también aprobó.
 - La puerta conectada Delaware permanece pendiente. El siguiente run debe ejecutarse desde la terminal privada; si vuelve a fallar, el informe mostrará una categoría y referencia accionables sin exponer datos sensibles.
 
 ## Hito M32: Delaware conversacional determinista y staging (2026-09-14, Asia/Bangkok)
