@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 174 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y CI |
+| M19 QA/CI | 176 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL; CI DEL DIAGNÓSTICO PENDIENTE |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY CONECTADO, DE CONECTADO PENDIENTE |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -40,13 +40,22 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M30 Protocolo y alcance Wyoming | Lotes etiquetados exactos, enum mínimo por turno y corrección explícita referenciada | CONECTADO 4/4 |
 | M31 Wyoming en panel y operaciones | Onboarding dentro del caso, progreso saneado, confirmación exclusiva del cliente y vista interna de solo lectura | VALIDADO LOCAL Y CI |
 | M32 Delaware conversacional | Catálogo de 20 campos, motor compartido por ruta, panel, evaluación 4 escenarios y RLS alojado | DETERMINISTA Y STAGING APROBADOS; CONECTADO PENDIENTE |
+| M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL; REINTENTO DELAWARE PENDIENTE |
+
+## Hito M33: diagnóstico conectado Delaware (2026-09-14, Asia/Bangkok)
+
+- El primer intento conectado Delaware terminó durante la solicitud inicial del simulador: usó 1/60 solicitudes, completó cero respuestas, no registró tokens y ejecutó cero acciones externas. El runner anterior ocultó la excepción de transporte o parseo bajo `EVALUATION_FAILED`, por lo que ese reporte no permite afirmar una causa exacta.
+- La versión de evaluación Delaware `2026-09-14.2` eleva el timeout controlado de 20 a 45 segundos y clasifica `MODEL_TIMEOUT`, `MODEL_NETWORK`, `MODEL_UNAVAILABLE`, `MODEL_RESPONSE` y `MODEL_SCHEMA`. Cada petición incluye un `X-Client-Request-Id` aleatorio; los fallos conservan solo una referencia segura, nunca la API key, el cuerpo del proveedor ni las respuestas del cliente.
+- El transporte compartido también actualiza el agente a `2026-09-14.6` y la evaluación Wyoming a `2026-09-14.5`. No se agregaron reintentos automáticos que pudieran duplicar gasto tras una respuesta incierta.
+- Validación local: `pnpm check` aprobó lint, TypeScript, 176/176 pruebas en 24 archivos, diez bundles Edge y build. Las puertas deterministas Delaware y Wyoming aprobaron 4/4 con cero solicitudes de modelo y cero acciones externas.
+- La puerta conectada Delaware permanece pendiente. El siguiente run debe ejecutarse desde la terminal privada; si vuelve a fallar, el informe mostrará una categoría y referencia accionables sin exponer datos sensibles.
 
 ## Hito M32: Delaware conversacional determinista y staging (2026-09-14, Asia/Bangkok)
 
 - Se definieron 20 campos propios de Delaware con destino, responsable y localización oficial: Certificate of Formation, agente registrado, ejecución, cover memo, expediente interno y clasificación del canal EIN. No se copiaron requisitos de Wyoming ni se recopilan firmas, TIN, identidad, cuentas de mensajería o pagos.
 - El servicio conversacional deriva `US-WY` o `US-DE` desde el expediente y usa catálogo, esquema, herramienta estructurada y paquete propios. Mantiene idempotencia, confirmación antes de persistir, reanudación, aislamiento por organización y mutaciones exclusivas del cliente. Operaciones conserva una vista de solo lectura.
 - La evaluación Delaware `2026-09-14.1` aprobó 4/4 recorridos deterministas: completo, corrección/reanudación, adversarial e incompleto. Los completos llegaron a 20/20 campos, el incompleto a 5/5 y la puerta negativa confirmó cero acciones externas. La evaluación conectada quedó preparada como `pnpm test:delaware-agent:connected`, pendiente porque el proceso de Codex no posee las variables privadas.
-- Validación local: `pnpm check` aprobó lint, TypeScript, 174/174 pruebas en 24 archivos, diez bundles Edge y build. `pnpm test:e2e` aprobó 14/14 con salida 0 sobre un servidor sandbox aislado, incluido cliente → expediente Delaware → confirmación → tracking sin valores. Wyoming volvió a aprobar 4/4 determinista después del refactor.
+- Validación original del hito: `pnpm check` aprobó lint, TypeScript, 174/174 pruebas en 24 archivos, diez bundles Edge y build. `pnpm test:e2e` aprobó 14/14 con salida 0 sobre un servidor sandbox aislado, incluido cliente → expediente Delaware → confirmación → tracking sin valores. Wyoming volvió a aprobar 4/4 determinista después del refactor.
 - La migración `202609140012_delaware_agent_conversations.sql` fue la única pendiente en el dry-run y se aplicó al staging autorizado `keboldglfjonxcdnmyee`. La suite alojada aprobó 17/17 con salida 0 e incluyó una fila `US-DE`, lectura del dueño, invisibilidad para otro tenant y rechazo de escritura directa. No se modificaron Edge Functions ni se aplicó seed.
 - GitHub: el commit funcional `0f41d08` fue publicado en `main`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
 - No hubo compañía, presentación, pago, identidad, firma, contacto de partner, publicación de regla o acción gubernamental. Ver `DELAWARE_AGENT_EVALUATION.md` y `STAGING_VALIDATION.md`.

@@ -1,6 +1,6 @@
 import {expect,test} from 'vitest';
 import {applyConfirmedPatch,deterministicExtract,safeSyntheticMessage,verifyExtraction,initialConversationState,permittedFieldsForMessage} from '../../packages/onboarding-agent';
-import {extractWithOpenAI} from '../../packages/onboarding-agent/openai';
+import {extractWithOpenAI,requestOpenAIJson} from '../../packages/onboarding-agent/openai';
 
 test('fallback extracts one explicit field and never treats prose as a confirmed update',()=>{
  expect(deterministicExtract('Nombre propuesto: Orbit QA LLC')).toMatchObject({modelStatus:'DETERMINISTIC_MOCK',updates:[{field:'companyName',value:'Orbit QA LLC'}]});
@@ -45,4 +45,13 @@ test('Delaware uses its own bounded catalog and structured tool',async()=>{
  const state=initialConversationState('US-DE');expect(Object.keys(state)).toHaveLength(20);expect(deterministicExtract('Nombre propuesto: Orbit Delaware QA LLC','US-DE').updates).toEqual([{field:'companyName',value:'Orbit Delaware QA LLC',evidence:'Orbit Delaware QA LLC'}]);
  let request:Record<string,unknown>|undefined;const fetcher=async(_url:string,init?:RequestInit)=>{request=JSON.parse(String(init?.body));return new Response(JSON.stringify({output:[{type:'function_call',name:'propose_delaware_intake_update',arguments:JSON.stringify({updates:[{field:'companyName',value:'Orbit Delaware QA LLC',evidence:'Orbit Delaware QA LLC'}]})}]}),{status:200,headers:{'Content-Type':'application/json'}});};
  await expect(extractWithOpenAI('Nombre propuesto: Orbit Delaware QA LLC',['companyName'],{key:'test-key',model:'test-model'},fetcher as typeof fetch,'US-DE')).resolves.toMatchObject({updates:[{field:'companyName'}]});expect(request).toMatchObject({store:false,tool_choice:{type:'function',name:'propose_delaware_intake_update'}});expect(JSON.stringify(request)).not.toContain('registeredAgentName');
+});
+
+test('OpenAI transport classifies failures without exposing response bodies',async()=>{
+ let trace='';const ok=async(_url:string,init?:RequestInit)=>{trace=String((init?.headers as Record<string,string>)['X-Client-Request-Id']);return new Response(JSON.stringify({ok:true}),{status:200,headers:{'Content-Type':'application/json'}});};
+ await expect(requestOpenAIJson({model:'test-model'},'test-key',ok as typeof fetch)).resolves.toEqual({ok:true});expect(trace).toMatch(/^[0-9a-f-]{36}$/);
+ const timeout=async()=>{throw new DOMException('timed out','TimeoutError');};await expect(requestOpenAIJson({},'test-key',timeout as typeof fetch,1)).rejects.toMatchObject({code:'MODEL_TIMEOUT',message:expect.stringContaining('referencia')});
+ const network=async()=>{throw new TypeError('private network detail');};await expect(requestOpenAIJson({},'test-key',network as typeof fetch)).rejects.toMatchObject({code:'MODEL_NETWORK',message:expect.not.stringContaining('private network detail')});
+ const malformed=async()=>new Response('not-json',{status:200,headers:{'x-request-id':'req_safe_test'}});await expect(requestOpenAIJson({},'test-key',malformed as typeof fetch)).rejects.toMatchObject({code:'MODEL_RESPONSE',message:expect.stringContaining('req_safe_test')});
+ const limited=async()=>new Response('private provider body',{status:429,headers:{'x-request-id':'req_rate_test'}});await expect(requestOpenAIJson({},'test-key',limited as typeof fetch)).rejects.toMatchObject({code:'MODEL_UNAVAILABLE',message:expect.stringContaining('HTTP 429'),});
 });

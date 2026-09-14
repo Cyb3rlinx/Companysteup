@@ -3,7 +3,7 @@ import {DomainError} from '../domain';
 import {WY_FIELDS,emptyWyomingIntake,wyomingIntakeSchema,type WyomingFieldId} from '../formation-packet/catalog';
 import {DE_FIELDS,emptyDelawareIntake,delawareIntakeSchema,type DelawareFieldId} from '../formation-packet/delaware-catalog';
 
-export const ONBOARDING_AGENT_VERSION='2026-09-14.5';
+export const ONBOARDING_AGENT_VERSION='2026-09-14.6';
 export type ConversationJurisdiction='US-WY'|'US-DE';
 export type FormationFieldId=WyomingFieldId|DelawareFieldId;
 export type ProposedUpdate={field:FormationFieldId;value:string;evidence:string};

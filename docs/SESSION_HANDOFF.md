@@ -1,17 +1,18 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 17:42 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 23:03 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: Delaware determinista integrado; ejecutar puerta conectada
 
 - Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
-- Delaware `2026-09-14.1` tiene un catálogo propio de 20 campos con fuentes, destinos y responsables. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
+- Delaware conserva el catálogo `2026-09-14.1` de 20 campos con fuentes, destinos y responsables. Su evaluación actual es `2026-09-14.2`. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
 - El motor conversacional deriva `US-WY` o `US-DE` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
 - El tracking expone jurisdicción, estado, modo, conteos y fecha; no copia valores. Los eventos contienen nombres de campos y revisión, nunca las respuestas.
 - La evaluación Delaware determinista aprobó 4/4: completos 20/20, incompleto 5/5, corrección/reanudación y adversarial. Cero solicitudes de red y cero acciones externas. Reporte local: `.local/qa/delaware-agent-evaluation.json`.
-- `pnpm check` aprobó lint, TypeScript, 174/174 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 14/14 con salida 0 en servidor sandbox aislado. Wyoming volvió a aprobar 4/4 determinista.
+- Tras el diagnóstico, `pnpm check` aprobó lint, TypeScript, 176/176 pruebas, diez bundles Edge y build. Las evaluaciones deterministas Delaware y Wyoming volvieron a aprobar 4/4; el E2E anterior permanece 14/14.
 - La migración 012 fue la única pendiente, se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación final aprobó 17/17 con una conversación Delaware y aislamiento RLS explícito.
-- La puerta conectada Delaware está implementada pero no ejecutada: las cuatro variables OpenAI no están disponibles en el proceso de Codex. Ejecutar desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
+- El primer run conectado Delaware falló en la primera solicitud del simulador: 1/60 reservada, cero respuestas/tokens y cero acciones externas. El runner anterior ocultó timeout, red, JSON o esquema bajo `EVALUATION_FAILED`, por lo que no existe causa exacta demostrada.
+- El transporte `2026-09-14.6` ahora usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Ejecutar nuevamente desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
 - Si el run conectado aprueba 4/4, preservar el reporte y continuar Estonia. Si falla, diagnosticar el primer parche exacto sin relajar la rúbrica ni aumentar el presupuesto a ciegas.
 - Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
 - El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
@@ -46,8 +47,8 @@ Actualizado: 2026-09-14, 17:42 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Ejecutar `corepack pnpm test:delaware-agent:connected` en la PowerShell privada con las cuatro variables ya usadas para Wyoming. No copiar claves al chat ni al repositorio.
-3. Preservar y revisar el reporte Delaware. Solo con 4/4 y cero acciones externas continuar Estonia; ante fallo, corregir el contrato observado sin relajar la puerta. Después repetir EE → GB.
+2. Actualizar el repositorio local con el commit del diagnóstico y ejecutar `corepack pnpm test:delaware-agent:connected` en la PowerShell privada con las cuatro variables ya usadas para Wyoming. No copiar claves al chat ni al repositorio.
+3. Preservar y revisar el reporte Delaware. Solo con 4/4 y cero acciones externas continuar Estonia; ante fallo, usar el nuevo código/categoría y la referencia de solicitud para corregir sin relajar la puerta. Después repetir EE → GB.
 4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
 5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.
 

@@ -4,7 +4,7 @@ Actualizado: 2026-09-14. Esta ruta usa exclusivamente identidades, domicilios y 
 
 ## Contrato de conocimiento y datos
 
-La versión `2026-09-14.1` define 20 campos separados en Certificate of Formation, agente registrado, ejecución, cover memo, expediente interno y clasificación preliminar del canal EIN. Cada campo conserva destino, responsable, fuente y localización. El agente nunca solicita la firma, el TIN, una cuenta FedEx/UPS, documentos de identidad o medios de pago.
+El catálogo `2026-09-14.1` define 20 campos separados en Certificate of Formation, agente registrado, ejecución, cover memo, expediente interno y clasificación preliminar del canal EIN. Cada campo conserva destino, responsable, fuente y localización. El agente nunca solicita la firma, el TIN, una cuenta FedEx/UPS, documentos de identidad o medios de pago. La evaluación conectada actual es `2026-09-14.2`.
 
 Fuentes oficiales observadas:
 
@@ -47,7 +47,9 @@ corepack pnpm test:delaware-agent:connected
 
 El onboarding usa `propose_delaware_intake_update`, esquema estricto, `store:false`, hasta tres campos permitidos por turno y copia literal de evidencia. El cliente ficticio conectado recibe únicamente los campos solicitados. El evaluador determinista decide si el parche coincide exactamente antes de confirmarlo. Cualquier salida vacía o incorrecta detiene el escenario para evitar gasto repetido.
 
-La ejecución conectada permanece pendiente porque las variables privadas no están disponibles en el proceso de desarrollo de Codex. No se interpreta la aprobación determinista como comprensión de lenguaje natural.
+El primer intento conectado reservó 1/60 solicitudes y falló antes de completar una respuesta, registrar tokens o iniciar onboarding. El diagnóstico anterior conservó únicamente `EVALUATION_FAILED`, por lo que no permite distinguir timeout, red, JSON o esquema. No hubo acciones externas.
+
+La versión `2026-09-14.2` usa un timeout de 45 segundos y un `X-Client-Request-Id` aleatorio. La [referencia oficial de OpenAI](https://developers.openai.com/api/reference/overview#debugging-requests) recomienda este identificador para investigar solicitudes que no devuelven `x-request-id`, como timeouts o problemas de red. Los errores se clasifican como timeout, red, HTTP, respuesta no interpretable o esquema inválido, preservando solo una referencia segura. No registra cuerpos de error, conversaciones ni la API key, y tampoco reintenta automáticamente una solicitud cuyo resultado externo sea incierto. La repetición conectada queda pendiente en la terminal privada.
 
 ## Integración y seguridad
 
