@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito funcional Delaware está publicado en `0f41d08`: [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) seguía en ejecución al cerrar este documento. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito funcional Delaware está publicado en `0f41d08`: [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
 **Base funcional local y Supabase staging validados con datos sintéticos. Wyoming aprobó 4/4 recorridos con modelos conectados. Delaware ya tiene catálogo propio, panel, evaluación determinista 4/4 y migración/RLS validados en staging; su puerta conectada permanece pendiente. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 174 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL; REGULATORIO #21 APROBADO, CI #21 EN EJECUCIÓN |
+| M19 QA/CI | 174 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y CI |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY CONECTADO, DE CONECTADO PENDIENTE |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -48,7 +48,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - La evaluación Delaware `2026-09-14.1` aprobó 4/4 recorridos deterministas: completo, corrección/reanudación, adversarial e incompleto. Los completos llegaron a 20/20 campos, el incompleto a 5/5 y la puerta negativa confirmó cero acciones externas. La evaluación conectada quedó preparada como `pnpm test:delaware-agent:connected`, pendiente porque el proceso de Codex no posee las variables privadas.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 174/174 pruebas en 24 archivos, diez bundles Edge y build. `pnpm test:e2e` aprobó 14/14 con salida 0 sobre un servidor sandbox aislado, incluido cliente → expediente Delaware → confirmación → tracking sin valores. Wyoming volvió a aprobar 4/4 determinista después del refactor.
 - La migración `202609140012_delaware_agent_conversations.sql` fue la única pendiente en el dry-run y se aplicó al staging autorizado `keboldglfjonxcdnmyee`. La suite alojada aprobó 17/17 con salida 0 e incluyó una fila `US-DE`, lectura del dueño, invisibilidad para otro tenant y rechazo de escritura directa. No se modificaron Edge Functions ni se aplicó seed.
-- GitHub: el commit funcional `0f41d08` fue publicado en `main`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos; [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) seguía en ejecución al documentar el hito.
+- GitHub: el commit funcional `0f41d08` fue publicado en `main`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
 - No hubo compañía, presentación, pago, identidad, firma, contacto de partner, publicación de regla o acción gubernamental. Ver `DELAWARE_AGENT_EVALUATION.md` y `STAGING_VALIDATION.md`.
 
 ## Hito M31: Wyoming conectado e integrado al expediente (2026-09-14, Asia/Bangkok)

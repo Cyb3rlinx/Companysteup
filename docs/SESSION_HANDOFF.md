@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 17:40 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 17:42 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: Delaware determinista integrado; ejecutar puerta conectada
 
@@ -14,7 +14,7 @@ Actualizado: 2026-09-14, 17:40 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La puerta conectada Delaware está implementada pero no ejecutada: las cuatro variables OpenAI no están disponibles en el proceso de Codex. Ejecutar desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
 - Si el run conectado aprueba 4/4, preservar el reporte y continuar Estonia. Si falla, diagnosticar el primer parche exacto sin relajar la rúbrica ni aumentar el presupuesto a ciegas.
 - Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
-- El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos; [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) seguía en ejecución al guardar este checkpoint.
+- El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
 - Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean Estonia después de resolver la puerta conectada Delaware.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
