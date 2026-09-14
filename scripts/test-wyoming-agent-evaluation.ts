@@ -63,7 +63,7 @@ async function runScenario(index:number,scenario:WyomingEvaluationScenario):Prom
 
   let correctionDone=false;let resumedOnce=false;let attempts=0;
   while(acceptedFields<scenario.fieldLimit&&attempts<scenario.fieldLimit*4){
-   attempts++;const remainingTarget=scenario.fieldLimit-acceptedFields;const requested=missingFields(data.conversation.state,connected?Math.min(3,remainingTarget):1);if(!requested.length)break;
+   attempts++;const remainingTarget=scenario.fieldLimit-acceptedFields;const requested=missingFields(data.conversation.state as WyomingIntake,connected?Math.min(3,remainingTarget):1);if(!requested.length)break;
    const message=await clientMessage(requested,facts);data=await send(data,repo,actor,message);messages++;progress={...progress,messages};const last=data.turns.at(-1);modelStatuses.push(String(last?.model_status));
    const assessment=assessPatch(facts,requested,data.conversation.pendingPatch);
    if(!Object.keys(data.conversation.pendingPatch).length){failures.push(`Sin extracción para ${requested.join(',')}`);console.log(`[${index+1}/${WYOMING_EVALUATION_SCENARIOS.length} ${scenario.id}] sin extracción; se detiene el escenario para evitar gasto repetido.`);break;}

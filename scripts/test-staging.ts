@@ -108,16 +108,20 @@ try{
   const stranger=await b.client.from('formation_cases').select('id');assert(!stranger.error&&stranger.data.length===0,'Case RLS failed');
  });
  await check('agent conversation tables enforce tenant RLS, append-only turns and composite ownership',async()=>{
-  const created=await admin.from('agent_conversations').insert({organization_id:a.org,case_id:a.cases['US-WY'],jurisdiction_code:'US-WY',status:'active',execution_mode:'DETERMINISTIC_MOCK',synthetic:true,state_json:{},pending_patch:{},revision:0,client_request_id:randomUUID(),created_by:a.identity.id}).select('id').single();
-  assert(!created.error&&created.data,'Synthetic agent conversation fixture failed');
+ const created=await admin.from('agent_conversations').insert({organization_id:a.org,case_id:a.cases['US-WY'],jurisdiction_code:'US-WY',status:'active',execution_mode:'DETERMINISTIC_MOCK',synthetic:true,state_json:{},pending_patch:{},revision:0,client_request_id:randomUUID(),created_by:a.identity.id}).select('id').single();
+ assert(!created.error&&created.data,'Synthetic agent conversation fixture failed');
+  const delaware=await admin.from('agent_conversations').insert({organization_id:a.org,case_id:a.cases['US-DE'],jurisdiction_code:'US-DE',status:'active',execution_mode:'DETERMINISTIC_MOCK',synthetic:true,state_json:{},pending_patch:{},revision:0,client_request_id:randomUUID(),created_by:a.identity.id}).select('id,jurisdiction_code').single();
+  assert(!delaware.error&&delaware.data?.jurisdiction_code==='US-DE','Delaware agent conversation migration not active');
   const turn=await admin.from('agent_conversation_turns').insert({organization_id:a.org,conversation_id:created.data.id,turn_kind:'USER_MESSAGE',customer_message:'Synthetic RLS fixture',assistant_message:'Synthetic response',proposed_patch:{},model_status:'DETERMINISTIC_MOCK',client_request_id:randomUUID(),created_by:a.identity.id}).select('id').single();
   assert(!turn.error&&turn.data,'Synthetic agent turn fixture failed');
   const ownConversation=await a.client.from('agent_conversations').select('id').eq('id',created.data.id);
+  const ownDelaware=await a.client.from('agent_conversations').select('id').eq('id',delaware.data.id);
   const ownTurn=await a.client.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
-  assert(!ownConversation.error&&ownConversation.data.length===1&&!ownTurn.error&&ownTurn.data.length===1,'Owner cannot read conversation fixture');
+  assert(!ownConversation.error&&ownConversation.data.length===1&&!ownDelaware.error&&ownDelaware.data.length===1&&!ownTurn.error&&ownTurn.data.length===1,'Owner cannot read conversation fixture');
   const foreignConversations=await b.client.from('agent_conversations').select('id').eq('id',created.data.id);
+  const foreignDelaware=await b.client.from('agent_conversations').select('id').eq('id',delaware.data.id);
   const foreignTurns=await b.client.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
-  assert(!foreignConversations.error&&foreignConversations.data.length===0&&!foreignTurns.error&&foreignTurns.data.length===0,'Conversation leaked to another authenticated tenant');
+  assert(!foreignConversations.error&&foreignConversations.data.length===0&&!foreignDelaware.error&&foreignDelaware.data.length===0&&!foreignTurns.error&&foreignTurns.data.length===0,'Conversation leaked to another authenticated tenant');
   const anonymousConversations=await anonymous.from('agent_conversations').select('id').eq('id',created.data.id);
   const anonymousTurns=await anonymous.from('agent_conversation_turns').select('id').eq('id',turn.data.id);
   assert((anonymousConversations.error||anonymousConversations.data.length===0)&&(anonymousTurns.error||anonymousTurns.data.length===0),'Conversation leaked to an anonymous client');

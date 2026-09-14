@@ -40,3 +40,9 @@ test('OpenAI adapter stores no response, forces one strict extraction tool and i
  const unavailable=async()=>new Response('',{status:404});
  await expect(extractWithOpenAI('Mi nombre es Orbit QA LLC',['companyName'],{key:'test-key',model:'missing-model'},unavailable as typeof fetch)).rejects.toMatchObject({code:'MODEL_UNAVAILABLE',message:expect.stringContaining('HTTP 404')});
 });
+
+test('Delaware uses its own bounded catalog and structured tool',async()=>{
+ const state=initialConversationState('US-DE');expect(Object.keys(state)).toHaveLength(20);expect(deterministicExtract('Nombre propuesto: Orbit Delaware QA LLC','US-DE').updates).toEqual([{field:'companyName',value:'Orbit Delaware QA LLC',evidence:'Orbit Delaware QA LLC'}]);
+ let request:Record<string,unknown>|undefined;const fetcher=async(_url:string,init?:RequestInit)=>{request=JSON.parse(String(init?.body));return new Response(JSON.stringify({output:[{type:'function_call',name:'propose_delaware_intake_update',arguments:JSON.stringify({updates:[{field:'companyName',value:'Orbit Delaware QA LLC',evidence:'Orbit Delaware QA LLC'}]})}]}),{status:200,headers:{'Content-Type':'application/json'}});};
+ await expect(extractWithOpenAI('Nombre propuesto: Orbit Delaware QA LLC',['companyName'],{key:'test-key',model:'test-model'},fetcher as typeof fetch,'US-DE')).resolves.toMatchObject({updates:[{field:'companyName'}]});expect(request).toMatchObject({store:false,tool_choice:{type:'function',name:'propose_delaware_intake_update'}});expect(JSON.stringify(request)).not.toContain('registeredAgentName');
+});

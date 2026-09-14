@@ -29,6 +29,9 @@ test('Wyoming tracking exposes only bounded onboarding progress and ignores fore
  expect(JSON.stringify(tracked)).not.toContain('Private Orbit LLC');expect(JSON.stringify(tracked)).not.toContain('pending-secret-value');expect(JSON.stringify(tracked)).not.toContain('do-not-leak');
  expect(trackCase(r,[],now,{...conversation,organization_id:'foreign'}).intake).toMatchObject({status:'NOT_STARTED',confirmedFields:0,pendingFields:0});
 });
+test('Delaware tracking exposes bounded progress without intake values',()=>{
+ const r=record('US-DE');r.execution_mode='SANDBOX';const conversation={organization_id:r.organization_id,case_id:r.id,status:'active',execution_mode:'DETERMINISTIC_MOCK',state_json:{companyName:'Private Delaware LLC',nameSearch:'yes'},pending_patch:{activity:'Private activity'},updated_at:now.toISOString()};const tracked=trackCase(r,[],now,conversation);expect(tracked.intake).toMatchObject({available:true,jurisdiction:'US-DE',status:'ACTIVE',confirmedFields:2,pendingFields:1,totalFields:20,executionMode:'DETERMINISTIC_MOCK'});expect(JSON.stringify(tracked)).not.toContain('Private Delaware LLC');expect(JSON.stringify(tracked)).not.toContain('Private activity');
+});
 test('only a recent matching execution is running; stale clocks and newer case revisions invalidate it',()=>{
  const r=record();const e={id:1,case_id:r.id,organization_id:r.organization_id,event_type:'CASE_BRIEF_STARTED',created_at:now.toISOString(),payload:{agentId:CASE_AGENTS.GB.id,version:CASE_AGENT_VERSION,caseRevision:0}};
  expect(trackCase(r,[e],now).agent.runStatus).toBe('RUNNING');

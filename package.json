@@ -18,6 +18,8 @@
     "test:wyoming": "tsx scripts/test-wyoming-packet.ts",
     "test:wyoming-agent": "tsx scripts/test-wyoming-agent-evaluation.ts",
     "test:wyoming-agent:connected": "tsx scripts/test-wyoming-agent-evaluation.ts --connected",
+    "test:delaware-agent": "tsx scripts/test-delaware-agent-evaluation.ts",
+    "test:delaware-agent:connected": "tsx scripts/test-delaware-agent-evaluation.ts --connected",
     "start:staging": "node scripts/start-staging.mjs",
     "test:integrity": "vitest run tests/regulatory",
     "brain:query": "tsx scripts/graph-memory.ts query",
