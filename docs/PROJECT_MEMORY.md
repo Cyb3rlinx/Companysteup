@@ -10,7 +10,7 @@
 ## Estado operativo y límites
 
 - Al 2026-09-03, el MVP local funciona y existe validación histórica de Supabase staging con datos sintéticos. Esto no es lanzamiento de producción ni prueba de constitución real. Fuente: `docs/BUILD_STATUS.md`.
-- Los agentes preparan expedientes y orientan con controles deterministas; todavía no constituyen empresas reales de forma autónoma. Wyoming fue evaluado con modelos conectados. Delaware tiene evaluación determinista, panel y RLS alojado aprobados, con puerta conectada pendiente. No hay pagos reales ni presentación gubernamental habilitada. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`, `docs/DELAWARE_AGENT_EVALUATION.md` y `docs/BUILD_STATUS.md`.
+- Los agentes preparan expedientes y orientan con controles deterministas; todavía no constituyen empresas reales de forma autónoma. Wyoming y Delaware aprobaron evaluaciones con modelos conectados sobre datos ficticios y cero acciones externas. No hay pagos reales ni presentación gubernamental habilitada. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`, `docs/DELAWARE_AGENT_EVALUATION.md` y `docs/BUILD_STATUS.md`.
 - Wyoming cuenta con evaluación en dos niveles: cliente ficticio determinista ejecutable sin red y cliente/modelo conectados mediante Responses. El evaluador conserva la verdad de referencia y nunca delega al modelo su propia aprobación. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`.
 - El grafo es memoria de desarrollo, no evidencia legal vigente ni autorización de operaciones. Fuentes vencidas, contradicciones o revisión pendiente bloquean afirmaciones y exigen revisión humana. Fuente: `AGENTS.md`.
 
@@ -45,7 +45,7 @@
 
 ## Siguiente paso y bloqueos
 
-- Wyoming aprobó 4/4 recorridos deterministas y conectados. Delaware conserva el catálogo `2026-09-14.1`; la evaluación `2026-09-14.2` aprobó 4/4 deterministas, panel y staging. Su primer intento conectado falló antes de completar la respuesta inicial y el transporte ahora diferencia timeout, red, HTTP, JSON y esquema. Repetir la puerta en la terminal privada; después del resultado continúan Estonia y UK. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`, `docs/DELAWARE_AGENT_EVALUATION.md` y `docs/SESSION_HANDOFF.md`.
+- Wyoming y Delaware aprobaron 4/4 recorridos deterministas y conectados. Delaware `2026-09-14.2` completó 49/60 solicitudes con cero acciones externas. Siguiente paso: matriz, conversación, panel y puerta agéntica específica de Estonia; después UK. Fuente: `docs/WYOMING_AGENT_EVALUATION.md`, `docs/DELAWARE_AGENT_EVALUATION.md` y `docs/SESSION_HANDOFF.md`.
 - El adaptador conversacional Wyoming usa Responses con salida estructurada, privilegio mínimo por turno y confirmación. El evaluador determinista conserva la verdad y no delega la aprobación al modelo. Esta evidencia no valida futuras versiones ni otras jurisdicciones. Fuente: `packages/onboarding-agent`, `packages/agent-evaluation` y `docs/WYOMING_AGENT_EVALUATION.md`.
 - Las credenciales del modelo permanecen exclusivamente en la terminal privada y no son necesarias para repetir el nivel determinista. Google puede configurarse en paralelo. Para lanzamiento hay que identificar operador y responsable interno, y resolver servicios externos solo cuando la ruta o actividad los requiera. Fuente: `docs/SESSION_HANDOFF.md`.
 - Hosting, correo, hardening operativo y piloto supervisado siguen pendientes. No ejecutar `test:staging` como lectura de estado: crea fixtures remotos. Fuente: `docs/SESSION_HANDOFF.md`.

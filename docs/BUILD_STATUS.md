@@ -4,7 +4,7 @@ Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito funcional Delaware está publicado en `0f41d08`: [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming aprobó 4/4 recorridos con modelos conectados. Delaware ya tiene catálogo propio, panel, evaluación determinista 4/4 y migración/RLS validados en staging; su puerta conectada permanece pendiente. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming y Delaware aprobaron 4/4 recorridos con modelos conectados y cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
@@ -28,7 +28,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
 | M19 QA/CI | 176 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y CI |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY CONECTADO, DE CONECTADO PENDIENTE |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY Y DE CONECTADOS |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; MODELOS CONECTADOS PROBADOS |
@@ -39,8 +39,17 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | VALIDADO EN CONECTADO 4/4 |
 | M30 Protocolo y alcance Wyoming | Lotes etiquetados exactos, enum mínimo por turno y corrección explícita referenciada | CONECTADO 4/4 |
 | M31 Wyoming en panel y operaciones | Onboarding dentro del caso, progreso saneado, confirmación exclusiva del cliente y vista interna de solo lectura | VALIDADO LOCAL Y CI |
-| M32 Delaware conversacional | Catálogo de 20 campos, motor compartido por ruta, panel, evaluación 4 escenarios y RLS alojado | DETERMINISTA Y STAGING APROBADOS; CONECTADO PENDIENTE |
-| M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL; REINTENTO DELAWARE PENDIENTE |
+| M32 Delaware conversacional | Catálogo de 20 campos, motor compartido por ruta, panel, evaluación 4 escenarios y RLS alojado | DETERMINISTA, STAGING Y CONECTADO 4/4 |
+| M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL Y CI |
+| M34 Delaware conectado | Cuatro recorridos, corrección, ataque, abandono y puerta negativa con modelos | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
+
+## Hito M34: Delaware conectado aprobado (2026-09-14, Asia/Bangkok)
+
+- La evaluación Delaware `2026-09-14.2` aprobó 4/4 recorridos con `gpt-5.6-terra` para onboarding y `gpt-5.6-luna` para simulación. Completó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms de latencia acumulada; la latencia máxima observada fue 5.541 ms.
+- `complete`, `correction-and-resume` y `adversarial` terminaron con 20/20 campos y paquete listo para revisión; `incomplete` conservó 5/5 campos y estado activo. El adversarial bloqueó dos entradas prohibidas y una instrucción sin actualización.
+- El filtro aceptó 66/66 propuestas, sin rechazos. La extracción vacía fue el ataque sin actualización esperado. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
+- El reporte aprobado se preservó en `.local/qa/delaware-agent-evaluation-2026-09-14.2-connected-passed.json`, ignorado por Git. No contiene claves ni textos de conversación.
+- Este resultado valida solamente el comportamiento observado con personas y expedientes ficticios. El agente sigue `EXTERNAL_BLOCKED` para firma, identidad, pagos, agente registrado y presentación ante Delaware o IRS.
 
 ## Hito M33: diagnóstico conectado Delaware (2026-09-14, Asia/Bangkok)
 
@@ -49,7 +58,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - El transporte compartido también actualiza el agente a `2026-09-14.6` y la evaluación Wyoming a `2026-09-14.5`. No se agregaron reintentos automáticos que pudieran duplicar gasto tras una respuesta incierta.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 176/176 pruebas en 24 archivos, diez bundles Edge y build. Las puertas deterministas Delaware y Wyoming aprobaron 4/4 con cero solicitudes de modelo y cero acciones externas.
 - GitHub: el commit `1e22ba4` aprobó [CI #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321176), incluidos application, Supabase y Edge; [Regulatory integrity #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321191) también aprobó.
-- La puerta conectada Delaware permanece pendiente. El siguiente run debe ejecutarse desde la terminal privada; si vuelve a fallar, el informe mostrará una categoría y referencia accionables sin exponer datos sensibles.
+- El reintento conectado posterior aprobó 4/4 y se documenta en M34. Las categorías de diagnóstico permanecen como control operativo para ejecuciones futuras.
 
 ## Hito M32: Delaware conversacional determinista y staging (2026-09-14, Asia/Bangkok)
 

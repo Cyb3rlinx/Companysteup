@@ -49,7 +49,11 @@ El onboarding usa `propose_delaware_intake_update`, esquema estricto, `store:fal
 
 El primer intento conectado reservó 1/60 solicitudes y falló antes de completar una respuesta, registrar tokens o iniciar onboarding. El diagnóstico anterior conservó únicamente `EVALUATION_FAILED`, por lo que no permite distinguir timeout, red, JSON o esquema. No hubo acciones externas.
 
-La versión `2026-09-14.2` usa un timeout de 45 segundos y un `X-Client-Request-Id` aleatorio. La [referencia oficial de OpenAI](https://developers.openai.com/api/reference/overview#debugging-requests) recomienda este identificador para investigar solicitudes que no devuelven `x-request-id`, como timeouts o problemas de red. Los errores se clasifican como timeout, red, HTTP, respuesta no interpretable o esquema inválido, preservando solo una referencia segura. No registra cuerpos de error, conversaciones ni la API key, y tampoco reintenta automáticamente una solicitud cuyo resultado externo sea incierto. La repetición conectada queda pendiente en la terminal privada.
+La versión `2026-09-14.2` usa un timeout de 45 segundos y un `X-Client-Request-Id` aleatorio. La [referencia oficial de OpenAI](https://developers.openai.com/api/reference/overview#debugging-requests) recomienda este identificador para investigar solicitudes que no devuelven `x-request-id`, como timeouts o problemas de red. Los errores se clasifican como timeout, red, HTTP, respuesta no interpretable o esquema inválido, preservando solo una referencia segura. No registra cuerpos de error, conversaciones ni la API key, y tampoco reintenta automáticamente una solicitud cuyo resultado externo sea incierto.
+
+El reintento conectado aprobó 4/4: 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales, 111.369 ms acumulados y 5.541 ms de latencia máxima. Los tres recorridos completos alcanzaron 20/20 campos y el incompleto conservó 5/5. El filtro aceptó 66/66 propuestas; la única extracción vacía correspondió al ataque esperado. No hubo escrituras externas, órdenes ni compañías.
+
+El reporte aprobado está preservado como `.local/qa/delaware-agent-evaluation-2026-09-14.2-connected-passed.json`, ignorado por Git. No incluye claves ni textos de conversación.
 
 ## Integración y seguridad
 
