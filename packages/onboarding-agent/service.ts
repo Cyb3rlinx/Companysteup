@@ -4,7 +4,7 @@ import {owned,type Actor,type FormationRecord} from '../application';
 import type {Repository,Row} from '../persistence';
 import {prepareWyomingPacket} from '../formation-packet/wyoming';
 import {WY_FIELDS,wyomingIntakeSchema} from '../formation-packet/catalog';
-import {applyConfirmedPatch,assistantFor,deterministicExtract,initialConversationState,nextMissing,safeSyntheticMessage,type ProposedUpdate} from './index';
+import {applyConfirmedPatch,assistantFor,deterministicExtract,initialConversationState,nextMissing,permittedFieldsForMessage,safeSyntheticMessage,type ProposedUpdate} from './index';
 import {extractWithOpenAI,type OpenAIConfiguration} from './openai';
 
 export interface ConversationRecord extends Row{id:string;organization_id:string;case_id:string;jurisdiction_code:'US-WY';status:string;execution_mode:string;model:string|null;synthetic:boolean;state_json:unknown;pending_patch:unknown;revision:number;created_by:string;created_at:string;updated_at:string}
@@ -53,7 +53,7 @@ export async function sendWyomingMessage(repo:Repository,actor:Actor,sandbox:boo
  if(conversation.status==='closed')throw new DomainError('CONVERSATION_CLOSED','La conversación está cerrada',409);
  if(Object.keys(z.record(z.string(),z.string()).parse(conversation.pending_patch)).length)throw new DomainError('CONFIRMATION_REQUIRED','Confirma o rechaza los datos propuestos antes de continuar.',409);
  const message=safeSyntheticMessage(values.message);let extraction=deterministicExtract(message);
- if(model?.key&&model.model){try{extraction=await extractWithOpenAI(message,WY_FIELDS.map(field=>field.key),model);}catch(error){if(!(error instanceof DomainError)||model.failureMode==='throw')throw error;extraction={updates:[],modelStatus:'EXTERNAL_BLOCKED'};}}
+ if(model?.key&&model.model){try{extraction=await extractWithOpenAI(message,permittedFieldsForMessage(conversation.state_json,message),model);}catch(error){if(!(error instanceof DomainError)||model.failureMode==='throw')throw error;extraction={updates:[],modelStatus:'EXTERNAL_BLOCKED'};}}
  const patch=Object.fromEntries(extraction.updates.map(update=>[update.field,update.value]));const assistant=assistantFor(conversation.state_json,extraction.updates);
  await repo.atomic([
   {kind:'update',table:'agent_conversations',where:{id:conversation.id,revision:conversation.revision},data:{pending_patch:patch,revision:conversation.revision+1,status:'active'}},

@@ -2,9 +2,9 @@ import {z} from 'zod';
 import {DomainError} from '../domain';
 import {WY_FIELDS,emptyWyomingIntake,wyomingIntakeSchema,type WyomingFieldId,type WyomingIntake} from '../formation-packet/catalog';
 
-export const ONBOARDING_AGENT_VERSION='2026-09-14.3';
+export const ONBOARDING_AGENT_VERSION='2026-09-14.4';
 export type ProposedUpdate={field:WyomingFieldId;value:string;evidence:string};
-export type ExtractionRejectionReason='duplicate_field'|'disallowed_field'|'nonliteral_value'|'nonliteral_evidence';
+export type ExtractionRejectionReason='duplicate_field'|'disallowed_field'|'nonliteral_value'|'nonliteral_evidence'|'unsupported_option_evidence';
 export type ExtractionValidation={proposedUpdates:number;acceptedUpdates:number;rejections:{field:WyomingFieldId;reason:ExtractionRejectionReason}[]};
 export type Extraction={updates:ProposedUpdate[];modelStatus:'DETERMINISTIC_MOCK'|'OPENAI_STRUCTURED'|'EXTERNAL_BLOCKED';validation?:ExtractionValidation};
 const ids=WY_FIELDS.map(f=>f.key) as [WyomingFieldId,...WyomingFieldId[]];
@@ -18,6 +18,15 @@ export function safeSyntheticMessage(value:unknown){
 }
 
 const normalized=(value:string)=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+const correctionIntent=/\b(?:corregir|corrijo|correccion|cambiar|cambio|actualizar|actualizo|nuevo|nueva|correct|change|replace|update)\b/;
+const optionEvidence:Record<string,readonly string[]>={yes:['si','yes'],no:['no'],unknown:['unknown','por confirmar','no se'],ordinary:['ordinary','ordinaria'],close:['close'],series:['series'],dao:['dao']};
+const supportsCanonicalOption=(value:string,evidence:string)=>optionEvidence[value]?.some(alias=>normalized(evidence)===alias||normalized(evidence).startsWith(`${alias} `))??false;
+
+export function permittedFieldsForMessage(intake:unknown,message:string,batchSize=3):WyomingFieldId[]{
+ const parsed=wyomingIntakeSchema.parse(intake);const pending=WY_FIELDS.filter(field=>!parsed[field.key]).slice(0,batchSize).map(field=>field.key);const text=normalized(message);
+ if(!correctionIntent.test(text))return pending;
+ const confirmed=WY_FIELDS.filter(field=>Boolean(parsed[field.key])&&(text.includes(normalized(field.label))||text.includes(normalized(field.key)))).map(field=>field.key);return confirmed.length?confirmed:pending;
+}
 export function deterministicExtract(message:string):Extraction{
  const separator=message.indexOf(':');if(separator<1)return{updates:[],modelStatus:'EXTERNAL_BLOCKED'};
  const name=normalized(message.slice(0,separator));const field=WY_FIELDS.find(f=>normalized(f.key)===name||normalized(f.label)===name);
@@ -30,7 +39,7 @@ export function verifyExtraction(message:string,input:unknown,modelStatus:Extrac
  for(const update of parsed.updates){
   const definition=WY_FIELDS.find(field=>field.key===update.field);const canonicalOption=Boolean(definition&&'options' in definition&&definition.options?.some(option=>option.value===update.value));const literalValue=message.includes(update.value);
   let reason:ExtractionRejectionReason|undefined;
-  if(seen.has(update.field))reason='duplicate_field';else if(allowed&&!allowed.has(update.field))reason='disallowed_field';else if(!literalValue&&!canonicalOption)reason='nonliteral_value';else if(!literalValue&&!message.includes(update.evidence))reason='nonliteral_evidence';
+  if(seen.has(update.field))reason='duplicate_field';else if(allowed&&!allowed.has(update.field))reason='disallowed_field';else if(!literalValue&&!canonicalOption)reason='nonliteral_value';else if(!literalValue&&!message.includes(update.evidence))reason='nonliteral_evidence';else if(!literalValue&&canonicalOption&&!supportsCanonicalOption(update.value,update.evidence))reason='unsupported_option_evidence';
   seen.add(update.field);if(reason){rejections.push({field:update.field,reason});continue;}
   updates.push({...update,evidence:literalValue?update.value:update.evidence});
  }

@@ -1,8 +1,8 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 03:29 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 13:02 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: tercer run aisló correcciones bloqueadas; reejecutar versión 2026-09-14.3
+## Checkpoint actual: cuarto run aisló formato ambiguo; reejecutar versión 2026-09-14.4
 
 - Se implementó `packages/agent-evaluation` y `pnpm test:wyoming-agent`: cliente ficticio determinista, verdad canónica separada y cuatro recorridos sobre la persistencia real. Completa 21 campos, corrige un valor confirmado, reanuda, rechaza prompt injection/datos prohibidos y conserva un recorrido incompleto sin paquete.
 - Resultado determinista: 4/4 escenarios aprobados. La evaluación compara el estado campo por campo y verificó cero órdenes, suscripciones, webhooks, identidad, screening, registros o compañías; tampoco cambió el expediente de formación.
@@ -15,12 +15,15 @@ Actualizado: 2026-09-14, 03:29 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - Se endureció el contrato sin relajar la rúbrica: texto libre y evidencia deben copiarse literalmente, las opciones permanecen canónicas y el simulador debe contestar todos los campos pedidos. La versión siguiente permite correcciones sobre campos conocidos y el evaluador conserva el lote esperado como límite independiente.
 - El tercer run (`2026-09-14.2`) usó 12 solicitudes y 7.945 tokens. Detectó una extracción vacía después de 6/21 campos y luego terminó `NOTHING_TO_CONFIRM` al ensayar la corrección; cero acciones externas. La causa fatal era impedir por error que el modelo propusiera un campo ya confirmado.
 - La versión `2026-09-14.3` permite correcciones explícitas de campos conocidos, deriva evidencia de un valor libre literal, bloquea confirmaciones vacías y agrega contadores de descarte sin valores. `pnpm check` aprobó lint, TypeScript, 165/165 pruebas, diez bundles Edge y build; 4/4 recorridos deterministas aprobaron.
+- El cuarto run conectado (`2026-09-14.3`) usó 29/60 solicitudes, 20.675 tokens y 60,3 segundos de latencia acumulada. `incomplete` aprobó; dos recorridos se detuvieron en 6/21 por salidas vacías y `adversarial` rechazó tres fragmentos incompletos en 12/21. Hubo 33 propuestas aceptadas por el filtro, cero descartes y cero acciones externas; el fallo ya no fue de credenciales, presupuesto ni confirmación vacía.
+- La versión `2026-09-14.4` limita el enum ordinario a los próximos tres campos pendientes y solo habilita un campo confirmado ante corrección explícita que referencia etiqueta o identificador. El simulador debe producir líneas exactas `Etiqueta: valor`, verificadas antes del onboarding; las opciones canónicas requieren respaldo literal o compatible. El reporte agrega conteo de extracciones vacías sin almacenar mensajes ni valores.
+- Validación de `2026-09-14.4`: `pnpm check` aprobó lint, TypeScript, 166/166 pruebas, diez bundles Edge y build; 10 pruebas focalizadas y 4/4 recorridos deterministas aprobaron con cero acciones externas. El reporte conectado anterior se preservó localmente como `.local/qa/wyoming-agent-evaluation-2026-09-14.3-connected-failed.json`.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 165/165 pruebas en 21 archivos, diez bundles Edge y build; `pnpm test:e2e` aprobó 13/13 con salida 0 sobre servidor aislado. El runner determinista no utilizó red ni datos reales.
-- GitHub `main`: commit técnico `38f49f9` publicado. [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) terminaron `success` para `38f49f94533873c9303a9edda7c369d438ef589f`; CI conservó el reporte sintético como artefacto.
+- GitHub `main`: commit `6acebbe` publicado. [CI #17](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34781199967) y [Regulatory integrity #17](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34781199983) terminaron `success`; los cambios de `2026-09-14.4` aún no se publicaron.
 - No hubo migraciones. El staging Singapur conserva como evidencia histórica la migración 011, 57 tablas con RLS y el run `211090ab-d408-4125-8635-3ae21e2bccd9` con 17/17 grupos; no fue necesario reejecutarlo para este cambio local sin esquema.
-- Siguiente paso concreto: reejecutar una vez `corepack pnpm test:wyoming-agent:connected` en la misma sesión privada y revisar `.local/qa/wyoming-agent-evaluation.json`. Solo después de 4/4 integrar la conversación aprobada en el panel y repetir US-DE → EE → GB.
+- Siguiente paso concreto: publicar `2026-09-14.4`, confirmar CI y reejecutar una vez `corepack pnpm test:wyoming-agent:connected` en la misma sesión privada. Revisar `.local/qa/wyoming-agent-evaluation.json`; solo después de 4/4 integrar la conversación aprobada en el panel y repetir US-DE → EE → GB.
 - Para lanzamiento continúa pendiente identificar entidad/jurisdicción operadora, alcance habilitado y responsable interno; Google externo, hosting definitivo, Stripe y partners siguen sus bloqueos. No hace falta resolverlos para evaluar el modelo de forma sintética.
-- Graphify quedó `SYNCED` el 2026-09-10T06:23:45Z: 1.177 nodos propios, 8.974 nodos ajenos preservados y respaldo previo. La consulta posterior recuperó este checkpoint y su siguiente paso desde `docs/SESSION_HANDOFF.md` y `docs/memory/2026-09-10-wyoming-agent-evaluation.md`.
+- Graphify conserva el último grafo verificable, pero `pnpm brain:status` reportó `STALE` el 2026-09-14. La sincronización externa posterior a `6acebbe` fue bloqueada por el límite temporal del control de permisos; los archivos canónicos locales sí están actualizados y la sincronización queda pendiente.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
 

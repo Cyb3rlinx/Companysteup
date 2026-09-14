@@ -4,7 +4,7 @@ Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito técnico `38f49f9` aprobó [CI #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186631) y [Regulatory integrity #12](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34445186736) el 2026-09-10. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El nivel conectado confirmó acceso a ambos modelos y cero acciones externas, pero falló la exactitud semántica; el contrato quedó endurecido y requiere una nueva ejecución antes de aprobar Wyoming. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming ya tiene conversación persistente y un cliente ficticio determinista que completa, corrige, reanuda y abandona recorridos de forma controlada. El cuarto nivel conectado aprobó el escenario incompleto y confirmó cero acciones externas, pero aisló ambigüedad de formato y amplitud excesiva del enum; la versión 2026-09-14.4 quedó corregida localmente y requiere una nueva ejecución antes de aprobar Wyoming. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 165 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL Y CI; STAGING SIN CAMBIOS |
+| M19 QA/CI | 166 pruebas unitarias/SQL, 13 E2E locales y 17 grupos alojados históricos; integración detallada abajo | APROBADO LOCAL Y CI; STAGING SIN CAMBIOS |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; SIN PRESENTACIÓN EXTERNA NI LLM CONECTADO |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -36,7 +36,17 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M26 Diagnóstico conectado Wyoming | Progreso, fallo rápido, clasificación HTTP y reporte parcial saneado | SEGUNDO RUN CLASIFICADO; 0/4 POR EXACTITUD |
 | M27 CI Supabase reproducible | Action actualizada y CLI alineada con el lockfile, sin resolución dinámica de `latest` | CI #15 APROBADO; SIN CAMBIOS DE ESQUEMA |
 | M28 Contrato semántico Wyoming | Texto libre literal, campos permitidos, cobertura total del simulador y diagnóstico por categoría | ENDURECIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
-| M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | CORREGIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+| M29 Correcciones y evidencia Wyoming | Corrección de campos confirmados, evidencia derivada y telemetría de descartes sin valores | CI #17 APROBADO; CONECTADO 1/4 |
+| M30 Protocolo y alcance Wyoming | Lotes etiquetados exactos, enum mínimo por turno y corrección explícita referenciada | CORREGIDO LOCAL; REEJECUCIÓN CONECTADA PENDIENTE |
+
+## Hito M30: formato inequívoco y privilegio mínimo por turno (2026-09-14, Asia/Bangkok)
+
+- El run conectado `2026-09-14.3` completó 29/60 solicitudes, 20.675 tokens y 60,3 segundos de latencia acumulada. `incomplete` aprobó 5/5; `complete` y `correction-and-resume` se detuvieron después de 6/21 por una salida vacía; `adversarial` llegó a 12/21 y rechazó tres valores parciales. No hubo órdenes, compañías, pagos, identidad, screening ni presentaciones externas.
+- La telemetría confirmó 33 propuestas aceptadas por el validador y cero descartes: los dos lotes vacíos salieron vacíos del modelo, mientras los tres valores adversariales eran fragmentos literales pero incompletos. Por ello no se relajó la rúbrica ni se aumentó el presupuesto.
+- El simulador conectado debe emitir una línea exacta `Etiqueta: valor` por cada dato solicitado, en el orden pedido; el adaptador verifica cada línea antes de entregarla al onboarding. Una corrección también debe declarar `Corrijo los siguientes datos:`. El modelo sigue generando la respuesta, pero el código rechaza cualquier omisión o alteración.
+- El extractor recibe solo los próximos tres campos pendientes. Un campo confirmado se agrega al enum únicamente si el mensaje expresa intención de corrección y referencia su etiqueta o identificador. Una instrucción hostil que solo repite datos anteriores no vuelve a habilitarlos.
+- Las opciones cerradas no pueden usar una frase arbitraria como evidencia de un valor canónico: requieren el valor literal o evidencia compatible comprobada localmente. La telemetría agrega el número de extracciones vacías sin guardar mensajes ni valores.
+- Validación local: typecheck aprobado, 10/10 pruebas focalizadas, 166/166 pruebas totales, lint, diez bundles Edge, build Next.js y 4/4 recorridos deterministas; cero acciones externas. La copia saneada del run fallido se preservó fuera de Git en `.local/qa/wyoming-agent-evaluation-2026-09-14.3-connected-failed.json`.
 
 ## Hito M29: corrección del tercer run conectado (2026-09-14, Asia/Bangkok)
 
