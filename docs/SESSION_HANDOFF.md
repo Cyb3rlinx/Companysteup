@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 23:51 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 00:00 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: Estonia determinista y staging aprobados; ejecutar puerta conectada
 
@@ -15,11 +15,12 @@ Actualizado: 2026-09-14, 23:51 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La migración 013 fue la única pendiente en dry-run y se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con conversaciones Delaware y Estonia y aislamiento RLS explícito.
 - El run conectado aprobado usó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms acumulados. Los completos llegaron a 20/20; el incompleto quedó activo con 5/5.
 - El filtro aceptó 66 propuestas, rechazó cero y registró una extracción vacía adversarial esperada. Se bloquearon dos entradas sensibles/no sintéticas y una instrucción sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
-- El transporte `2026-09-14.6` ahora usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Ejecutar nuevamente desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
+- El transporte `2026-09-14.6` usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Delaware ya aprobó con este contrato.
 - El arreglo `1e22ba4` aprobó [CI #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321176) con application, Supabase y Edge, además de [Regulatory integrity #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321191).
 - El reporte Delaware aprobado está preservado en `.local/qa/delaware-agent-evaluation-2026-09-14.2-connected-passed.json`; el reporte Estonia determinista está en `.local/qa/estonia-agent-evaluation.json`. Ambos están ignorados por Git y no contienen claves ni conversaciones.
 - Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
 - El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
+- El hito funcional Estonia está publicado en `0b3b463`. [Regulatory integrity #27](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34871625791) aprobó en 35 segundos y [CI #27](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34871625643) aprobó en 2 minutos 54 segundos con application, Supabase y Edge.
 - Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean la puerta conectada Estonia ni el desarrollo posterior de UK.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
