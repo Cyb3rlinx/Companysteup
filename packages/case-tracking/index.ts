@@ -3,6 +3,7 @@ import type { FormationRecord } from '../application';
 import type { Row } from '../persistence';
 import { WY_FIELDS } from '../formation-packet/catalog';
 import { DE_FIELDS } from '../formation-packet/delaware-catalog';
+import { EE_FIELDS } from '../formation-packet/estonia-catalog';
 
 export const CASE_AGENT_VERSION = '2026-09-03.1';
 export const CASE_AGENTS: Record<Jurisdiction,{id: string; name: string}> = {
@@ -21,6 +22,7 @@ const eventLabels: Record<string,string> = {
   AGENT_LAB_EVALUATED: 'Evaluación sintética del laboratorio',
   WY_PACKET_PREPARED: 'Paquete Wyoming preparado en ensayo sintético',
   DE_PACKET_PREPARED: 'Paquete Delaware preparado en ensayo sintético',
+  EE_PACKET_PREPARED: 'Paquete Estonia preparado en ensayo sintético',
   AGENT_CONVERSATION_STARTED: 'Onboarding conversacional iniciado por el cliente',
   AGENT_TURN_COMPLETED: 'Respuesta de onboarding procesada',
   AGENT_PATCH_ACCEPTED: 'Datos de onboarding confirmados por el cliente',
@@ -57,8 +59,8 @@ export function trackCase(record: FormationRecord, allEvents: Row[], now = new D
     else runStatus = Number.isFinite(age) && age >= 0 && age < 120000 ? 'RUNNING' : 'UNCONFIRMED';
   }
   const completed = state.steps.filter(step => step.status === 'completed').length;
-  const conversationAvailable=['US-WY','US-DE'].includes(record.jurisdiction_code);
-  const intakeFields=record.jurisdiction_code==='US-DE'?DE_FIELDS:record.jurisdiction_code==='US-WY'?WY_FIELDS:[];
+  const conversationAvailable=['US-WY','US-DE','EE'].includes(record.jurisdiction_code);
+  const intakeFields=record.jurisdiction_code==='US-DE'?DE_FIELDS:record.jurisdiction_code==='EE'?EE_FIELDS:record.jurisdiction_code==='US-WY'?WY_FIELDS:[];
   const matchingConversation=conversationAvailable&&conversation?.organization_id===record.organization_id&&conversation.case_id===record.id?conversation:null;
   const intakeState=matchingConversation?.state_json&&typeof matchingConversation.state_json==='object'&&!Array.isArray(matchingConversation.state_json)?matchingConversation.state_json as Record<string,unknown>:{};
   const pendingState=matchingConversation?.pending_patch&&typeof matchingConversation.pending_patch==='object'&&!Array.isArray(matchingConversation.pending_patch)?matchingConversation.pending_patch as Record<string,unknown>:{};

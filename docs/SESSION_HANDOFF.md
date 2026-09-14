@@ -1,24 +1,26 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 23:15 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 23:51 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: Delaware conectado aprobado; continuar Estonia
+## Checkpoint actual: Estonia determinista y staging aprobados; ejecutar puerta conectada
 
 - Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
 - Delaware conserva el catálogo `2026-09-14.1` de 20 campos con fuentes, destinos y responsables. La evaluación `2026-09-14.2` aprobó 4/4 conectada. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
-- El motor conversacional deriva `US-WY` o `US-DE` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
+- Estonia incorpora catálogo `2026-09-14.1` de 24 campos propios con fuentes RIK/e-Residency, destinos, responsables y paquete `DRAFT_NOT_FOR_FILING`. Códigos personales, PIN2, credenciales, firma, capital, tasa y presentación quedan fuera del agente.
+- El motor conversacional deriva `US-WY`, `US-DE` o `EE` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
 - El tracking expone jurisdicción, estado, modo, conteos y fecha; no copia valores. Los eventos contienen nombres de campos y revisión, nunca las respuestas.
 - La evaluación Delaware determinista aprobó 4/4: completos 20/20, incompleto 5/5, corrección/reanudación y adversarial. Cero solicitudes de red y cero acciones externas. Reporte local: `.local/qa/delaware-agent-evaluation.json`.
-- Tras el diagnóstico, `pnpm check` aprobó lint, TypeScript, 176/176 pruebas, diez bundles Edge y build. Las evaluaciones deterministas Delaware y Wyoming volvieron a aprobar 4/4; el E2E anterior permanece 14/14.
-- La migración 012 fue la única pendiente, se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación final aprobó 17/17 con una conversación Delaware y aislamiento RLS explícito.
+- Para Estonia, `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 15/15 sobre un sandbox aislado con fuente sintética fresca.
+- La evaluación Estonia determinista aprobó 4/4: tres recorridos 24/24 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, PIN2 y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
+- La migración 013 fue la única pendiente en dry-run y se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con conversaciones Delaware y Estonia y aislamiento RLS explícito.
 - El run conectado aprobado usó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms acumulados. Los completos llegaron a 20/20; el incompleto quedó activo con 5/5.
 - El filtro aceptó 66 propuestas, rechazó cero y registró una extracción vacía adversarial esperada. Se bloquearon dos entradas sensibles/no sintéticas y una instrucción sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
 - El transporte `2026-09-14.6` ahora usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Ejecutar nuevamente desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
 - El arreglo `1e22ba4` aprobó [CI #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321176) con application, Supabase y Edge, además de [Regulatory integrity #24](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34866321191).
-- El reporte aprobado está preservado en `.local/qa/delaware-agent-evaluation-2026-09-14.2-connected-passed.json`, ignorado por Git y sin claves ni conversaciones. El siguiente hito funcional es Estonia y después UK.
+- El reporte Delaware aprobado está preservado en `.local/qa/delaware-agent-evaluation-2026-09-14.2-connected-passed.json`; el reporte Estonia determinista está en `.local/qa/estonia-agent-evaluation.json`. Ambos están ignorados por Git y no contienen claves ni conversaciones.
 - Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
 - El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos.
-- Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean Estonia después de resolver la puerta conectada Delaware.
+- Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean la puerta conectada Estonia ni el desarrollo posterior de UK.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
 
@@ -49,15 +51,15 @@ Actualizado: 2026-09-14, 23:15 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Construir la matriz, paquete y conversación específicos de Estonia con fuentes RIK/e-Residency vigentes; no copiar requisitos de Delaware o Wyoming.
-3. Ejecutar la misma puerta determinista, integrar panel/RLS y luego preparar la evaluación conectada Estonia. Solo con 4/4 y cero acciones externas continuar UK.
+2. Ejecutar `corepack pnpm test:estonia-agent:connected` desde la PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
+3. Si Estonia aprueba 4/4 y cero acciones externas, preservar el reporte, documentar métricas y continuar con la matriz/agente específico de UK. Si falla, corregir el contrato observado sin relajar la puerta ni elevar gasto a ciegas.
 4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
 5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.
 
 ## Entornos y datos
 
 - Único Supabase autorizado: `keboldglfjonxcdnmyee`, Singapur (`ap-southeast-1`), exclusivamente datos sintéticos. El proyecto anterior de Japón está excluido.
-- Doce migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 012 habilitó `US-DE` en las conversaciones sin cambiar RLS; no fue necesario redesplegar Edge.
+- Trece migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 013 habilitó `EE` en las conversaciones sin cambiar RLS; no fue necesario redesplegar Edge.
 - Demo local: `http://127.0.0.1:3000/panel`; datos PGlite en `.local/agent-demo`. Metadatos de la demostración en `.local/qa/agent-demo.json`. No resetear esa base para ejecutar pruebas; usar un entorno aislado. Los fixtures caducan y no equivalen a evidencia oficial vigente.
 - Frontend local conectado a Supabase: `http://127.0.0.1:3100`, mediante `pnpm start:staging`. Verificar disponibilidad; los procesos pueden finalizar al cerrar la sesión.
 - Credenciales existentes solo en ubicaciones locales ignoradas/gestores del sistema. No imprimirlas, copiarlas a documentación ni incluirlas en Git. No incorporar datos personales reales.

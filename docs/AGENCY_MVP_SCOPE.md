@@ -40,7 +40,7 @@ El grafo Graphify compartido es memoria de desarrollo: no se expondrá al agente
 4. **Repetir la aceptación en Delaware, Estonia y UK.** Adaptar requisitos y escenarios por jurisdicción; no copiar conclusiones de Wyoming. Una ruta aprobada no valida las demás.
 5. **Preparar el piloto comercial.** Resolver alcance y obligaciones del operador de la agencia, seguridad, privacidad, soporte, hosting y dependencias realmente aplicables. No convertir la finalización técnica en autorización comercial.
 
-Estado al 2026-09-14: US-WY completó los puntos 1 a 3 y aprobó cuatro recorridos conectados en la versión `2026-09-14.4`. US-DE ya tiene matriz propia de 20 campos, conversación integrada, paquete interno, cuatro recorridos deterministas y RLS alojado validados; falta su ejecución conectada. Cliente y operaciones observan progreso, pero solo el cliente responde y confirma. Las acciones externas permanecen bloqueadas. Después de aprobar o diagnosticar la puerta conectada Delaware, el siguiente hito es Estonia y luego UK.
+Estado al 2026-09-14: US-WY y US-DE aprobaron cuatro recorridos conectados con cero acciones externas. EE ya tiene matriz propia de 24 campos, conversación integrada, paquete interno, cuatro recorridos deterministas, panel y RLS alojado validados; falta su ejecución conectada. Cliente y operaciones observan progreso, pero solo el cliente responde y confirma. Las acciones externas permanecen bloqueadas. Después de aprobar o diagnosticar la puerta conectada Estonia, el siguiente hito es UK.
 
 Google Auth y hosting pueden avanzar sin alterar este orden. El admin ya existe: se amplía para observar conversaciones, pendientes y evidencia; no se reconstruye como si faltara.
 
@@ -55,7 +55,7 @@ Estos son criterios pendientes, no resultados alcanzados:
 - El recorrido de navegador termina en una acción real pendiente identificada o en un resultado respaldado. En desarrollo se ensaya evidencia sintética etiquetada; nunca se reporta una empresa ficticia como constituida.
 - Un responsable interno revisa conversaciones y errores contra una rúbrica y fuentes; un evaluador de IA puede ayudar, pero no autoriza reglas ni reemplaza la evidencia. Aprobar una batería finita no garantiza ausencia de errores futuros.
 
-Las 174 pruebas, 14 E2E, 17 grupos alojados y escenarios deterministas son una base de ingeniería. `packages/onboarding-agent` conduce entrevistas de varios turnos para Wyoming y Delaware y conserva confirmaciones. OpenAI aprobó la puerta Wyoming; Delaware aún requiere su run conectado. Ninguna de estas pruebas demuestra calidad universal ni capacidad de constituir una empresa.
+Las 182 pruebas, 15 E2E, 17 grupos alojados y escenarios deterministas son una base de ingeniería. `packages/onboarding-agent` conduce entrevistas de varios turnos para Wyoming, Delaware y Estonia y conserva confirmaciones. OpenAI aprobó las puertas Wyoming y Delaware; Estonia aún requiere su run conectado. Ninguna de estas pruebas demuestra calidad universal ni capacidad de constituir una empresa.
 
 ## Límites oficiales que el modelo de negocio debe contemplar
 

@@ -4,12 +4,12 @@ Actualizado: 2026-09-14. Repositorio inicialmente vacío. Git local inicializado
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito funcional Delaware está publicado en `0f41d08`: [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos y [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) aprobó en 2 minutos 40 segundos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming y Delaware aprobaron 4/4 recorridos con modelos conectados y cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming y Delaware aprobaron 4/4 recorridos con modelos conectados; Estonia aprobó 4/4 deterministas y está lista para su puerta conectada. Todas confirmaron cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
 | M1 Foundation | Next.js, TypeScript, pnpm, entorno, Git y estructura modular | IMPLEMENTADO |
-| M2 Supabase + RLS | 57 tablas, doce migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
+| M2 Supabase + RLS | 57 tablas, trece migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
 | M3 Fuentes | 22 fuentes, 19 capturas directas, hashes, snapshots privados y monitor | IMPLEMENTADO; 3 FUENTES BLOQUEADAS |
 | M4 Reglas | Versiones, fechas, evidencia, edición, publicación humana, supersesión y bloqueo por cambios | VALIDADO |
 | M5 Onboarding | Cuenta, fundador, residencia, negocio, titularidad declarada, cuestionario y consentimiento | VALIDADO LOCAL Y SUPABASE ALOJADO |
@@ -17,7 +17,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M7 Workflow | Responsables, pasos, precondiciones, pago y concurrencia | VALIDADO |
 | M8 Delaware | Preparación, agente, registro/EIN simulados y obligaciones | VALIDADO EN SANDBOX; PARTNER BLOQUEADO |
 | M9 Wyoming | Constitución, informe y fórmula de activos | VALIDADO EN SANDBOX; PARTNER BLOQUEADO |
-| M10 Estonia | e-Residency, domicilio/contacto, firmas y requisitos RIK | VALIDADO EN SANDBOX; RIK/PARTNER BLOQUEADOS |
+| M10 Estonia | Matriz de 24 campos, e-Residency, domicilio/contacto, firmas y requisitos RIK | DETERMINISTA Y STAGING 4/4; CONECTADO PENDIENTE |
 | M11 Reino Unido | Directores/PSC, identidad, autopresentación/ACSP y cumplimiento | VALIDADO EN SANDBOX; ACSP BLOQUEADO |
 | M12 Cumplimiento | Fechas, importes, períodos posteriores, recálculo auditable, calendario y .ics | VALIDADO |
 | M13 Cliente | Panel, casos, tareas, compañías, documentos privados, soporte y perfil | VALIDADO EN NAVEGADOR |
@@ -26,9 +26,9 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 176 pruebas unitarias/SQL, 14 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y CI |
+| M19 QA/CI | 182 pruebas unitarias/SQL, 15 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL; CI DEL HITO ESTONIA PENDIENTE |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY Y DE CONECTADOS |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE CONECTADOS, EE DETERMINISTA |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; MODELOS CONECTADOS PROBADOS |
@@ -42,6 +42,18 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M32 Delaware conversacional | Catálogo de 20 campos, motor compartido por ruta, panel, evaluación 4 escenarios y RLS alojado | DETERMINISTA, STAGING Y CONECTADO 4/4 |
 | M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL Y CI |
 | M34 Delaware conectado | Cuatro recorridos, corrección, ataque, abandono y puerta negativa con modelos | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
+| M35 Estonia conversacional | Catálogo de 24 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E Y STAGING 4/4; CONECTADO PENDIENTE |
+
+## Hito M35: Estonia conversacional determinista y staging (2026-09-14, Asia/Bangkok)
+
+- Se definió el catálogo Estonia `2026-09-14.1` con 24 campos propios y localización oficial: actividad EMTAK, ejercicio, nombre, domicilio/contacto, fundadores, directorio, representación, identidad admitida declarada, capital, estatutos, beneficiarios finales, IVA opcional y preparación de tasa. No se copiaron formularios estadounidenses.
+- El paquete queda `DRAFT_NOT_FOR_FILING`, `PENDING_REVIEW` y `EXTERNAL_BLOCKED`. Códigos personales, documentos, PIN2, credenciales, firma, capital, tasa, contacto con proveedores, presentación y decisión registral permanecen fuera de la plataforma.
+- El onboarding compartido ahora deriva `EE`, usa `propose_estonia_intake_update`, limita el modelo a tres campos explícitamente permitidos y exige confirmación del cliente. Panel cliente y vista interna muestran progreso sin exponer valores.
+- La evaluación Estonia `2026-09-14.1` aprobó 4/4 recorridos deterministas: tres completos con 24/24 campos y paquete revisable, uno incompleto con 5/5 y estado activo, corrección/reanudación y ataques que bloquean SSN, PIN2 y correo real. Cero solicitudes de modelo y cero acciones externas. Reporte: `.local/qa/estonia-agent-evaluation.json`.
+- Validación local: `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build Next.js. `pnpm test:e2e` aprobó 15/15 en un sandbox aislado con fuente sintética fresca; incluye cliente Estonia, confirmación, tracking privado y rechazo de PIN2. Una ejecución previa sobre la base sandbox manual vencida produjo un ICS sin eventos, comportamiento fail-closed esperado; no fue un defecto del producto.
+- La migración `202609140013_estonia_agent_conversations.sql` fue la única pendiente en el dry-run y se aplicó al staging `keboldglfjonxcdnmyee`. La suite alojada aprobó 17/17 e incluyó una conversación `EE`, lectura del dueño, invisibilidad para otro tenant y rechazo de escrituras directas. No se aplicó seed ni se redesplegaron Edge Functions.
+- Fuentes públicas observadas el 14 de septiembre: guía RIK de constitución, e-Business Register y guías oficiales de e-Residency sobre OÜ, domicilio/contacto, firmantes y capital. Siguen siendo datos no confiables hasta revisión humana y deben reconsultarse después de la ventana interna.
+- Próxima puerta: ejecutar `corepack pnpm test:estonia-agent:connected` desde la PowerShell privada. Solo 4/4, estado exacto y cero acciones externas habilitan continuar con UK.
 
 ## Hito M34: Delaware conectado aprobado (2026-09-14, Asia/Bangkok)
 

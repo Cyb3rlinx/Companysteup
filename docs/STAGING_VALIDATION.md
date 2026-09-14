@@ -1,5 +1,13 @@
 # Validación de Supabase alojado
 
+## Revalidación: conversaciones Estonia y RLS (2026-09-14, Bangkok)
+
+Ejecución final `2026-09-14T16:50:36.695Z`, run `4a2cf89b-0233-4de2-8aa1-17d945b04fc9`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El dry-run mostró únicamente `202609140013_estonia_agent_conversations.sql` y se aplicó sin seed ni cambios de Edge Functions.
+
+La migración amplió la restricción a `US-WY | US-DE | EE`, sin modificar RLS, permisos, claves compuestas o turnos append-only. El grupo alojado creó conversaciones Delaware y Estonia sintéticas vinculadas a casos del mismo tenant; el dueño pudo leerlas, el segundo tenant obtuvo cero filas y los clientes continuaron sin escritura directa.
+
+La ejecución repitió Auth, prevención de elevación por metadatos, cuatro casos GUIDED, tracking privado, funciones Edge, Storage y navegador. Se retuvieron fixtures `.test`; el objeto Storage del run fue eliminado. No hubo compañías, liquidación de pagos, reglas publicadas, OpenAI, identidad, firma, partner, presentación ni acción ante una autoridad.
+
 ## Revalidación: conversaciones Delaware y RLS (2026-09-14, Bangkok)
 
 Ejecución final `2026-09-14T10:30:53.219Z`, run `993e297c-4218-4262-be5c-6b47db61ee48`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El historial remoto coincidía con las once migraciones previas; el dry-run mostró únicamente `202609140012_delaware_agent_conversations.sql` y se aplicó sin seed ni cambios de Edge Functions.
@@ -57,7 +65,7 @@ Resultado: **14/14 grupos de integración aprobados** mediante `pnpm test:stagin
 ## Estado del despliegue
 
 - Preflight inicial: ninguna tabla pública, usuario u objeto Storage antes de aplicar las migraciones. No se reseteó ni reparó historial remoto.
-- Once migraciones locales y remotas coinciden; 57 tablas públicas y cero sin RLS.
+- Trece migraciones locales y remotas coinciden; 57 tablas públicas y cero sin RLS.
 - Diez Edge Functions `ACTIVE`. Siete conservan `verify_jwt=true`; webhook, monitor y notify usan los controles propios versionados y probados. No se usó `--no-verify-jwt`.
 - Seed: 22 versiones `PENDING_REVIEW`, cero verificadas/publicadas, un precio inicial PLATFORM_SETUP; COMPLIANCE_ANNUAL sin precio autorizado. No se duplicaron precios.
 - Siete cuentas sintéticas conservadas entre el ensayo inicial y las repeticiones. No contienen datos personales reales. Los passwords se generaron en memoria y no se guardaron en Git ni reportes; las sesiones del recorrido final se cerraron. No se enviaron correos.
