@@ -1,5 +1,13 @@
 # Validación de Supabase alojado
 
+## Revalidación: conversaciones Delaware y RLS (2026-09-14, Bangkok)
+
+Ejecución final `2026-09-14T10:30:53.219Z`, run `993e297c-4218-4262-be5c-6b47db61ee48`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El historial remoto coincidía con las once migraciones previas; el dry-run mostró únicamente `202609140012_delaware_agent_conversations.sql` y se aplicó sin seed ni cambios de Edge Functions.
+
+La migración amplió la restricción de las conversaciones a `US-WY | US-DE`, conservando las políticas RLS, permisos de solo lectura autenticada, claves compuestas y turnos append-only. El grupo alojado creó una conversación Delaware sintética vinculada a un caso Delaware del mismo tenant: el dueño pudo leerla y el segundo tenant obtuvo cero filas. Los clientes continuaron sin permiso de escritura directa.
+
+La misma ejecución repitió Auth, prevención de elevación por metadatos, cuatro casos GUIDED, tracking privado, funciones Edge, Storage, navegador y bloqueos de Google/laboratorio alojado. Se crearon y retuvieron fixtures `.test` para auditoría; el objeto Storage del run fue eliminado. No hubo compañías, liquidación de pagos, reglas publicadas, OpenAI, identidad, firma, partner, presentación ni acción ante una autoridad.
+
 ## Revalidación: conversaciones Wyoming y RLS (2026-09-07, Bangkok)
 
 Ejecución final `2026-09-07T08:59:20Z`, run `211090ab-d408-4125-8635-3ae21e2bccd9`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El dry-run mostró únicamente `202609070011_agent_conversations.sql`; se aplicó sin seed y la consulta posterior confirmó once migraciones locales/remotas alineadas.

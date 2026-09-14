@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-02. Destino proporcionado por el fundador: `keboldglfjonxcdnmyee`, URL `https://keboldglfjonxcdnmyee.supabase.co`. Región `ap-southeast-1` verificada mediante la API de administración, estado `ACTIVE_HEALTHY`. El proyecto anterior `uvmijrapoezpvtsyhhoj` queda excluido de este despliegue y no fue modificado.
 
-El descriptor público está en `supabase/environments/staging.json`. No contiene credenciales. Estado: `SANDBOX` por su uso exclusivo con datos sintéticos, sobre infraestructura Supabase real y `APP_MODE=supabase`. Las once migraciones, el seed pendiente de revisión y las diez funciones Edge están desplegados. Esto no habilita pagos, identidad, presentaciones ni aprobaciones regulatorias reales.
+El descriptor público está en `supabase/environments/staging.json`. No contiene credenciales. Estado: `SANDBOX` por su uso exclusivo con datos sintéticos, sobre infraestructura Supabase real y `APP_MODE=supabase`. Las doce migraciones, el seed pendiente de revisión y las diez funciones Edge están desplegados. Esto no habilita pagos, identidad, presentaciones ni aprobaciones regulatorias reales.
 
 ## Ejecución local contra staging
 
@@ -49,7 +49,7 @@ pnpm supabase db push --dry-run
 
 3. Si la CLI solicita contraseña de base de datos, introducirla directamente en la terminal. No ponerla en argumentos, docs ni Git.
 4. Consultar metadatos del esquema y cantidades agregadas de usuarios/objetos mediante acceso SQL autorizado. Confirmar que es el staging nuevo y que no hay tablas o migraciones desconocidas. Ante diferencias, inspeccionar antes de aplicar nada; nunca reparar historial ni resetear el remoto para forzar coincidencia.
-5. El plan esperado es aplicar las once migraciones canónicas. El seed se revisa por separado; no usar `--include-seed` sin esa revisión. `db push --dry-run` no prueba RLS ni la aplicación, solo muestra el plan. [Referencia de db push](https://supabase.com/docs/reference/cli/supabase-db-push).
+5. El plan esperado es aplicar las doce migraciones canónicas. El seed se revisa por separado; no usar `--include-seed` sin esa revisión. `db push --dry-run` no prueba RLS ni la aplicación, solo muestra el plan. [Referencia de db push](https://supabase.com/docs/reference/cli/supabase-db-push).
 
 ## Despliegue después del preflight
 

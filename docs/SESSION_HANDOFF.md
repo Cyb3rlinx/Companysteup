@@ -1,23 +1,21 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-14, 14:33 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-14, 17:40 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: Wyoming conectado e integrado; continuar con Delaware
+## Checkpoint actual: Delaware determinista integrado; ejecutar puerta conectada
 
-- La evaluación Wyoming 2026-09-14.4 aprobó 4/4 recorridos conectados con gpt-5.6-terra para onboarding y gpt-5.6-luna para simulación. Usó 49/60 solicitudes, 22.183 tokens de entrada, 5.029 de salida y 107.748 ms de latencia acumulada.
-- complete, correction-and-resume y adversarial terminaron con 21/21 campos exactos y paquete listo para revisión; incomplete conservó 5/5 y estado activo. El adversarial bloqueó dos entradas prohibidas y una instrucción sin actualización.
-- El filtro registró 69 propuestas aceptadas, cero rechazadas y una extracción vacía esperada por el ataque sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes y compañías.
-- El reporte conectado aprobado está preservado en .local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json. Es local e ignorado por Git; no contiene claves ni textos de conversación. El reporte previo fallido también se conserva.
-- El onboarding Wyoming ya aparece dentro de /casos/:id. El cliente puede iniciar, responder, confirmar o rechazar usando datos ficticios. La sesión persiste al recargar y el seguimiento se actualiza al cambiar la conversación.
-- Operaciones puede consultar el progreso y la conversación sintética en modo de solo lectura. El backend exige rol customer antes de cualquier lectura/escritura de las rutas de mutación, por lo que un operador no puede contestar o confirmar en nombre del cliente.
-- case-tracking devuelve únicamente estado, modo, conteos, fecha y actividad autorizada; no copia valores del intake. Las aceptaciones/rechazos agregan eventos con nombres de campos y revisión, sin valores.
-- Fuera de sandbox la interfaz y el servicio mantienen EXTERNAL_BLOCKED. Ninguna prueba firma, cobra, verifica identidad, presenta ante una autoridad ni constituye una compañía.
-- Validación local: pnpm check aprobó lint, TypeScript, 168/168 pruebas, diez bundles Edge y build. pnpm test:wyoming-agent aprobó 4/4 con cero solicitudes de red y cero acciones externas.
-- pnpm test:e2e aprobó 13/13 con salida 0 sobre un servidor sandbox aislado y reutilizado, incluido el nuevo recorrido cliente → expediente → reanudación → panel → operaciones de solo lectura.
-- No hubo migraciones ni cambios en Supabase staging. El proyecto autorizado continúa keboldglfjonxcdnmyee en Singapur y los datos permitidos siguen siendo sintéticos.
-- GitHub: `e9ba48e` está publicado en `main`. CI #19 aprobó application (168/168), Supabase y Edge en 3m27s; Regulatory integrity #19 aprobó en 34s. Solo queda publicar este checkpoint documental y sincronizar Graphify.
-- Siguiente hito funcional: construir el intake y la puerta de evaluación de US-DE reutilizando la arquitectura, no los requisitos de Wyoming. Después seguir EE → GB.
-- Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean el desarrollo y evaluación sintética de Delaware.
+- Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
+- Delaware `2026-09-14.1` tiene un catálogo propio de 20 campos con fuentes, destinos y responsables. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
+- El motor conversacional deriva `US-WY` o `US-DE` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
+- El tracking expone jurisdicción, estado, modo, conteos y fecha; no copia valores. Los eventos contienen nombres de campos y revisión, nunca las respuestas.
+- La evaluación Delaware determinista aprobó 4/4: completos 20/20, incompleto 5/5, corrección/reanudación y adversarial. Cero solicitudes de red y cero acciones externas. Reporte local: `.local/qa/delaware-agent-evaluation.json`.
+- `pnpm check` aprobó lint, TypeScript, 174/174 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 14/14 con salida 0 en servidor sandbox aislado. Wyoming volvió a aprobar 4/4 determinista.
+- La migración 012 fue la única pendiente, se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación final aprobó 17/17 con una conversación Delaware y aislamiento RLS explícito.
+- La puerta conectada Delaware está implementada pero no ejecutada: las cuatro variables OpenAI no están disponibles en el proceso de Codex. Ejecutar desde la PowerShell privada: `corepack pnpm test:delaware-agent:connected`.
+- Si el run conectado aprueba 4/4, preservar el reporte y continuar Estonia. Si falla, diagnosticar el primer parche exacto sin relajar la rúbrica ni aumentar el presupuesto a ciegas.
+- Fuera de sandbox el agente permanece `EXTERNAL_BLOCKED`. Ninguna prueba firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
+- El hito funcional Delaware está publicado en `0f41d08`. [Regulatory integrity #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079997) aprobó en 38 segundos; [CI #21](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34834079916) seguía en ejecución al guardar este checkpoint.
+- Para lanzamiento siguen pendientes operador/jurisdicción de la agencia, responsable interno, Google externo, hosting definitivo, Stripe y partners. No bloquean Estonia después de resolver la puerta conectada Delaware.
 
 ## Hito anterior: paquete Wyoming (2026-09-03, Asia/Bangkok)
 
@@ -48,15 +46,15 @@ Actualizado: 2026-09-14, 14:33 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Construir la entrevista Wyoming persistente descrita en `AGENCY_MVP_SCOPE.md`; no confundir el preparador determinista ni el adaptador de consulta con un agente conversacional completo.
-3. Revisar conocimiento internamente y evaluar conversaciones con un modelo conectado cuando haya credencial/presupuesto. Después integrar evidencia y pendientes en el panel existente, y repetir US-DE → EE → GB. No aprobar reglas por interpretación de IA ni usar mocks como prueba de constitución.
+2. Ejecutar `corepack pnpm test:delaware-agent:connected` en la PowerShell privada con las cuatro variables ya usadas para Wyoming. No copiar claves al chat ni al repositorio.
+3. Preservar y revisar el reporte Delaware. Solo con 4/4 y cero acciones externas continuar Estonia; ante fallo, corregir el contrato observado sin relajar la puerta. Después repetir EE → GB.
 4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
 5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.
 
 ## Entornos y datos
 
 - Único Supabase autorizado: `keboldglfjonxcdnmyee`, Singapur (`ap-southeast-1`), exclusivamente datos sintéticos. El proyecto anterior de Japón está excluido.
-- Once migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 011 agregó las tablas conversacionales; no fue necesario redesplegar Edge.
+- Doce migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 012 habilitó `US-DE` en las conversaciones sin cambiar RLS; no fue necesario redesplegar Edge.
 - Demo local: `http://127.0.0.1:3000/panel`; datos PGlite en `.local/agent-demo`. Metadatos de la demostración en `.local/qa/agent-demo.json`. No resetear esa base para ejecutar pruebas; usar un entorno aislado. Los fixtures caducan y no equivalen a evidencia oficial vigente.
 - Frontend local conectado a Supabase: `http://127.0.0.1:3100`, mediante `pnpm start:staging`. Verificar disponibilidad; los procesos pueden finalizar al cerrar la sesión.
 - Credenciales existentes solo en ubicaciones locales ignoradas/gestores del sistema. No imprimirlas, copiarlas a documentación ni incluirlas en Git. No incorporar datos personales reales.
