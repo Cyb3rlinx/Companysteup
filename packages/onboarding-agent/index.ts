@@ -3,25 +3,26 @@ import {DomainError} from '../domain';
 import {WY_FIELDS,emptyWyomingIntake,wyomingIntakeSchema,type WyomingFieldId} from '../formation-packet/catalog';
 import {DE_FIELDS,emptyDelawareIntake,delawareIntakeSchema,type DelawareFieldId} from '../formation-packet/delaware-catalog';
 import {EE_FIELDS,emptyEstoniaIntake,estoniaIntakeSchema,type EstoniaFieldId} from '../formation-packet/estonia-catalog';
+import {UK_FIELDS,emptyUkIntake,ukIntakeSchema,type UkFieldId} from '../formation-packet/uk-catalog';
 
-export const ONBOARDING_AGENT_VERSION='2026-09-14.7';
-export type ConversationJurisdiction='US-WY'|'US-DE'|'EE';
-export type FormationFieldId=WyomingFieldId|DelawareFieldId|EstoniaFieldId;
+export const ONBOARDING_AGENT_VERSION='2026-09-15.1';
+export type ConversationJurisdiction='US-WY'|'US-DE'|'EE'|'GB';
+export type FormationFieldId=WyomingFieldId|DelawareFieldId|EstoniaFieldId|UkFieldId;
 export type ProposedUpdate={field:FormationFieldId;value:string;evidence:string};
 export type ExtractionRejectionReason='duplicate_field'|'disallowed_field'|'nonliteral_value'|'nonliteral_evidence'|'unsupported_option_evidence';
 export type ExtractionValidation={proposedUpdates:number;acceptedUpdates:number;rejections:{field:FormationFieldId;reason:ExtractionRejectionReason}[]};
 export type Extraction={updates:ProposedUpdate[];modelStatus:'DETERMINISTIC_MOCK'|'OPENAI_STRUCTURED'|'EXTERNAL_BLOCKED';validation?:ExtractionValidation};
 export type IntakeField={key:FormationFieldId;label:string;options?:readonly {value:string;label:string}[]};
 
-export function fieldsForJurisdiction(jurisdiction:ConversationJurisdiction):readonly IntakeField[]{if(jurisdiction==='US-DE')return DE_FIELDS;if(jurisdiction==='EE')return EE_FIELDS;return WY_FIELDS;}
-export function intakeSchemaFor(jurisdiction:ConversationJurisdiction):z.ZodType<Record<string,string>>{if(jurisdiction==='US-DE')return delawareIntakeSchema as z.ZodType<Record<string,string>>;if(jurisdiction==='EE')return estoniaIntakeSchema as z.ZodType<Record<string,string>>;return wyomingIntakeSchema as z.ZodType<Record<string,string>>;}
-export function initialConversationState(jurisdiction:ConversationJurisdiction='US-WY'):Record<string,string>{if(jurisdiction==='US-DE')return emptyDelawareIntake();if(jurisdiction==='EE')return emptyEstoniaIntake();return emptyWyomingIntake();}
+export function fieldsForJurisdiction(jurisdiction:ConversationJurisdiction):readonly IntakeField[]{if(jurisdiction==='US-DE')return DE_FIELDS;if(jurisdiction==='EE')return EE_FIELDS;if(jurisdiction==='GB')return UK_FIELDS;return WY_FIELDS;}
+export function intakeSchemaFor(jurisdiction:ConversationJurisdiction):z.ZodType<Record<string,string>>{if(jurisdiction==='US-DE')return delawareIntakeSchema as z.ZodType<Record<string,string>>;if(jurisdiction==='EE')return estoniaIntakeSchema as z.ZodType<Record<string,string>>;if(jurisdiction==='GB')return ukIntakeSchema as z.ZodType<Record<string,string>>;return wyomingIntakeSchema as z.ZodType<Record<string,string>>;}
+export function initialConversationState(jurisdiction:ConversationJurisdiction='US-WY'):Record<string,string>{if(jurisdiction==='US-DE')return emptyDelawareIntake();if(jurisdiction==='EE')return emptyEstoniaIntake();if(jurisdiction==='GB')return emptyUkIntake();return emptyWyomingIntake();}
 function updateSchemaFor(jurisdiction:ConversationJurisdiction){const fields=fieldsForJurisdiction(jurisdiction);const ids=fields.map(field=>field.key) as [FormationFieldId,...FormationFieldId[]];return z.object({updates:z.array(z.object({field:z.enum(ids),value:z.string().trim().min(1).max(500),evidence:z.string().trim().min(1).max(500)}).strict()).max(fields.length)}).strict();}
 export const updateSchema=updateSchemaFor('US-WY');
 
 export function safeSyntheticMessage(value:unknown){
  const message=z.string().trim().min(1).max(2000).parse(value);
- if(/\b(?:\d{3}-\d{2}-\d{4}|passport|pasaporte|personal identification code|c[oó]digo personal|isikukood|pin[- ]?2|smart-id\s+(?:pin|code|c[oó]digo)|id[- ]?card\s+(?:number|n[uú]mero)|api[_ -]?key|secret(?:o)?|contrase(?:ñ|n)a|fedex\s+account|ups\s+account)\b/i.test(message))throw new DomainError('SENSITIVE_DATA_REJECTED','No ingreses identificadores, pasaportes, PIN, cuentas de mensajería, credenciales ni secretos en el laboratorio.');
+ if(/\b(?:\d{3}-\d{2}-\d{4}|passport|pasaporte|personal identification code|companies house personal code|c[oó]digo personal(?:\s+de\s+companies house)?|national insurance(?:\s+number)?|utr|isikukood|pin[- ]?2|smart-id\s+(?:pin|code|c[oó]digo)|id[- ]?card\s+(?:number|n[uú]mero)|api[_ -]?key|secret(?:o)?|contrase(?:ñ|n)a|fedex\s+account|ups\s+account)\b/i.test(message))throw new DomainError('SENSITIVE_DATA_REJECTED','No ingreses identificadores, pasaportes, códigos personales, PIN, cuentas, credenciales ni secretos en el laboratorio.');
  for(const email of message.match(/[\w.+-]+@[\w.-]+/g)??[])if(!email.toLowerCase().endsWith('.test'))throw new DomainError('SYNTHETIC_EMAIL_REQUIRED','Usa únicamente correos ficticios con dominio .test.');
  return message;
 }

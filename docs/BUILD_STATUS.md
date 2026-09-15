@@ -4,7 +4,7 @@ Actualizado: 2026-09-15. Repositorio inicialmente vacío. Git local inicializado
 
 Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La corrección conectada Estonia está publicada en `0bfd3bd`: [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming y Delaware aprobaron 4/4 recorridos con modelos conectados; Estonia aprobó 4/4 deterministas y está lista para su puerta conectada. Todas confirmaron cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming, Delaware y Estonia aprobaron 4/4 recorridos con modelos conectados; UK aprobó 4/4 deterministas, 16/16 E2E y aislamiento alojado. Todas confirmaron cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
@@ -17,7 +17,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 | M7 Workflow | Responsables, pasos, precondiciones, pago y concurrencia | VALIDADO |
 | M8 Delaware | Preparación, agente, registro/EIN simulados y obligaciones | VALIDADO EN SANDBOX; PARTNER BLOQUEADO |
 | M9 Wyoming | Constitución, informe y fórmula de activos | VALIDADO EN SANDBOX; PARTNER BLOQUEADO |
-| M10 Estonia | Matriz de 24 campos, e-Residency, domicilio/contacto, firmas y requisitos RIK | DETERMINISTA Y STAGING 4/4; CONECTADO PENDIENTE |
+| M10 Estonia | Matriz de 24 campos, e-Residency, domicilio/contacto, firmas y requisitos RIK | DETERMINISTA, STAGING Y CONECTADO 4/4 |
 | M11 Reino Unido | Directores/PSC, identidad, autopresentación/ACSP y cumplimiento | VALIDADO EN SANDBOX; ACSP BLOQUEADO |
 | M12 Cumplimiento | Fechas, importes, períodos posteriores, recálculo auditable, calendario y .ics | VALIDADO |
 | M13 Cliente | Panel, casos, tareas, compañías, documentos privados, soporte y perfil | VALIDADO EN NAVEGADOR |
@@ -26,9 +26,9 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 182 pruebas unitarias/SQL, 15 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL, STAGING Y CI |
+| M19 QA/CI | 188 pruebas unitarias/SQL, 16 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y STAGING; CI DEL CAMBIO UK PENDIENTE |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE CONECTADOS, EE DETERMINISTA |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE/EE CONECTADOS, GB DETERMINISTA |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; MODELOS CONECTADOS PROBADOS |
@@ -42,8 +42,26 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 | M32 Delaware conversacional | Catálogo de 20 campos, motor compartido por ruta, panel, evaluación 4 escenarios y RLS alojado | DETERMINISTA, STAGING Y CONECTADO 4/4 |
 | M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL Y CI |
 | M34 Delaware conectado | Cuatro recorridos, corrección, ataque, abandono y puerta negativa con modelos | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
-| M35 Estonia conversacional | Catálogo de 24 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E Y STAGING 4/4; CONECTADO PENDIENTE |
-| M36 Diagnóstico conectado Estonia | Progreso exacto parcial, reintento de omitidos y rechazo de alterados/inesperados | CORRECCIÓN LOCAL Y CI APROBADA; REPETICIÓN CONECTADA PENDIENTE |
+| M35 Estonia conversacional | Catálogo de 24 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E, STAGING Y CONECTADO 4/4 |
+| M36 Diagnóstico conectado Estonia | Progreso exacto parcial, reintento de omitidos y rechazo de alterados/inesperados | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
+| M37 UK conversacional | Catálogo de 22 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E Y STAGING 4/4; CONECTADO PENDIENTE |
+
+## Hito M37: UK conversacional determinista y staging (2026-09-15, Asia/Bangkok)
+
+- Se definió el catálogo UK `2026-09-15.1` con 22 campos propios: actividad/SIC, nombre, nación y domicilio, correo registrado ficticio, directores, accionistas, estructura de acciones, PSC, identidad declarada, memorandum/articles, propósito lícito, ruta de presentación y preparación de tasa. Nueve fuentes GOV.UK/Companies House conservan localización, observación y reconsulta; siguen `PENDING_REVIEW`.
+- El paquete queda `DRAFT_NOT_FOR_FILING`, `SANDBOX` y `PENDING_REVIEW`. Identidad y presentación son `EXTERNAL_BLOCKED`; domicilios residenciales, fechas de nacimiento, documentos, National Insurance, UTR, códigos personales, credenciales, firma, pago y decisión registral permanecen fuera de la plataforma.
+- La conversación deriva `GB`, usa `propose_uk_intake_update`, limita el modelo a tres campos por turno y exige confirmación del cliente. El panel cliente y operaciones muestra progreso sin copiar valores; operaciones conserva solo lectura.
+- La evaluación UK aprobó 4/4 determinista: tres recorridos 22/22 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, código personal de Companies House y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
+- Validación local: `pnpm check` aprobó lint, TypeScript, 188/188 pruebas, diez bundles Edge y build. Playwright aprobó 16/16, incluido cliente UK, confirmación, tracking privado y rechazo de código personal.
+- El dry-run mostró únicamente `202609150014_uk_agent_conversations.sql`; se aplicó al staging `keboldglfjonxcdnmyee` sin seed ni Edge. La suite alojada aprobó 17/17 con conversación GB, lectura del dueño, invisibilidad para otro tenant y rechazo de escritura directa. El primer intento de suite no tenía servidor local y el segundo servidor estaba aislado de red; ninguno alcanzó el flujo de producto. La ejecución final con salida 0 es la evidencia válida.
+- Próxima puerta: `corepack pnpm test:uk-agent:connected` en la PowerShell privada. Solo 4/4, estado exacto y cero acciones externas permiten declarar aprobada la secuencia conversacional de las cuatro jurisdicciones. Ver `UK_AGENT_EVALUATION.md`.
+
+## Cierre del hito M36: Estonia conectada aprobada (2026-09-15, Asia/Bangkok)
+
+- La evaluación `2026-09-15.1` aprobó 4/4 con `gpt-5.6-terra` para onboarding y `gpt-5.6-luna` para simulación: 59/60 solicitudes, 26.242 tokens de entrada, 6.166 de salida, 32.408 totales, 131.776 ms acumulados y 4.115 ms máximos.
+- `complete`, `correction-and-resume` y `adversarial` terminaron con 24/24 campos y paquete revisable; `incomplete` quedó activo con 5/5. El filtro aceptó 78/78 propuestas, rechazó cero y registró una extracción vacía adversarial esperada.
+- La puerta negativa confirmó cero escrituras externas, órdenes o compañías. El reporte aprobado está preservado en `.local/qa/estonia-agent-evaluation-2026-09-15.1-connected-passed.json`, ignorado por Git y sin claves ni conversaciones.
+- Esta evidencia valida solamente el comportamiento observado con datos ficticios. Estonia sigue `EXTERNAL_BLOCKED` para identidad, firma, capital, tasa, contacto con proveedor y presentación ante RIK.
 
 ## Hito M36: diagnóstico del primer run conectado Estonia (2026-09-15, Asia/Bangkok)
 
@@ -52,7 +70,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 - No se elevó el presupuesto de 60, no se amplió el lote de tres campos y no se concedió autoridad al modelo para confirmar datos. El cliente/evaluador conserva la confirmación y el estado persistido sigue siendo la verdad.
 - Validación posterior: `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build Next.js. `pnpm test:estonia-agent` volvió a aprobar 4/4 determinista, cero solicitudes y cero acciones externas.
 - GitHub: la corrección `0bfd3bd` está publicada en `main`. [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos con application, Supabase y Edge.
-- Próxima puerta: repetir `corepack pnpm test:estonia-agent:connected` en la misma PowerShell privada. Solo 4/4, estado exacto y cero acciones externas permiten continuar UK.
+- La repetición conectada posterior aprobó 4/4 y se documenta en el cierre M36. La siguiente puerta es UK conectado.
 
 ## Hito M35: Estonia conversacional determinista y staging (2026-09-14, Asia/Bangkok)
 

@@ -1,21 +1,31 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-15, 14:26 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 16:25 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: diagnóstico conectado Estonia corregido; repetir puerta
+## Checkpoint actual: Estonia conectada aprobada; UK listo para puerta conectada
+
+- Estonia `2026-09-15.1` aprobó 4/4 conectada con `gpt-5.6-terra` y simulador `gpt-5.6-luna`: 59/60 solicitudes, 32.408 tokens, 131.776 ms acumulados, 78/78 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó en `.local/qa/estonia-agent-evaluation-2026-09-15.1-connected-passed.json`.
+- UK incorpora catálogo `2026-09-15.1` de 22 campos propios y nueve fuentes GOV.UK/Companies House. El paquete es `DRAFT_NOT_FOR_FILING`, `SANDBOX`, `PENDING_REVIEW`; identidad y presentación permanecen `EXTERNAL_BLOCKED`.
+- La conversación UK deriva `GB`, usa una herramienta estructurada propia, permite hasta tres campos por turno, exige confirmación del cliente y muestra solo conteos/estado al tracking. Operaciones conserva lectura; no puede responder ni confirmar por el cliente.
+- UK determinista aprobó 4/4: recorridos completos 22/22, incompleto 5/5, corrección/reanudación y ataques bloqueados. `pnpm check` aprobó lint, TypeScript, 188/188 pruebas, diez bundles Edge y build. Playwright aprobó 16/16. Cero acciones externas.
+- La migración 014 fue la única pendiente y se aplicó al staging `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con aislamiento RLS GB. El servidor temporal en `127.0.0.1:3100` se apagó al terminar.
+- Próxima puerta concreta: ejecutar `corepack pnpm test:uk-agent:connected` desde la PowerShell privada que conserva las variables OpenAI y el límite 60. Solo 4/4, estado exacto y cero acciones externas completan la secuencia conversacional de las cuatro jurisdicciones.
+- Ningún recorrido firma, cobra, verifica identidad, custodia códigos personales, contacta un partner, presenta ante una autoridad o constituye una compañía.
+
+## Detalle histórico reciente
 
 - Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
 - Delaware conserva el catálogo `2026-09-14.1` de 20 campos con fuentes, destinos y responsables. La evaluación `2026-09-14.2` aprobó 4/4 conectada. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
 - Estonia incorpora catálogo `2026-09-14.1` de 24 campos propios con fuentes RIK/e-Residency, destinos, responsables y paquete `DRAFT_NOT_FOR_FILING`. Códigos personales, PIN2, credenciales, firma, capital, tasa y presentación quedan fuera del agente.
-- El motor conversacional deriva `US-WY`, `US-DE` o `EE` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
+- El motor conversacional deriva `US-WY`, `US-DE`, `EE` o `GB` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
 - El tracking expone jurisdicción, estado, modo, conteos y fecha; no copia valores. Los eventos contienen nombres de campos y revisión, nunca las respuestas.
 - La evaluación Delaware determinista aprobó 4/4: completos 20/20, incompleto 5/5, corrección/reanudación y adversarial. Cero solicitudes de red y cero acciones externas. Reporte local: `.local/qa/delaware-agent-evaluation.json`.
-- Para Estonia, `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 15/15 sobre un sandbox aislado con fuente sintética fresca.
+- Para el hito UK, `pnpm check` aprobó lint, TypeScript, 188/188 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 16/16 sobre un sandbox aislado con fuente sintética fresca.
 - La evaluación Estonia determinista aprobó 4/4: tres recorridos 24/24 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, PIN2 y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
 - El primer run Estonia conectado `2026-09-14.1` aprobó 2/4 y falló cerrado tras 27/60 solicitudes con cero acciones externas. En completo y adversarial el extractor omitió `financialYear` dentro del primer lote, aunque los campos presentes fueron exactos; la evaluación rechazaba cualquier parche parcial.
 - La evaluación `2026-09-15.1` acepta solo el subconjunto literalmente exacto si no hay valores incorrectos ni campos inesperados, deja los omitidos pendientes y los reintenta. Un parche vacío o inseguro todavía detiene el escenario. `pnpm check` aprobó 182/182 pruebas y build; el runner determinista volvió a aprobar 4/4.
 - La corrección `0bfd3bd` está publicada en `main`. [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos con application, Supabase y Edge.
-- La migración 013 fue la única pendiente en dry-run y se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con conversaciones Delaware y Estonia y aislamiento RLS explícito.
+- Las migraciones 013 y 014 se aplicaron secuencialmente al staging Singapur `keboldglfjonxcdnmyee`, cada una después de un dry-run que mostró solo ese cambio, sin seed ni Edge. La revalidación más reciente aprobó 17/17 con conversaciones Delaware, Estonia y UK y aislamiento RLS explícito.
 - El run conectado aprobado usó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms acumulados. Los completos llegaron a 20/20; el incompleto quedó activo con 5/5.
 - El filtro aceptó 66 propuestas, rechazó cero y registró una extracción vacía adversarial esperada. Se bloquearon dos entradas sensibles/no sintéticas y una instrucción sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
 - El transporte `2026-09-14.6` usa timeout de 45 segundos, `X-Client-Request-Id` y categorías saneadas para timeout, red, HTTP, JSON y esquema. No reintenta automáticamente ni guarda cuerpos, claves o respuestas. Delaware ya aprobó con este contrato.
@@ -54,16 +64,16 @@ Actualizado: 2026-09-15, 14:26 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 
 ## Retomar por aquí
 
-1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Repetir `corepack pnpm test:estonia-agent:connected` desde la misma PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
-3. Si Estonia aprueba 4/4 y cero acciones externas, preservar el reporte, documentar métricas y continuar con la matriz/agente específico de UK. Si falla, corregir el contrato observado sin relajar la puerta ni elevar gasto a ciegas.
-4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
-5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.
+1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas.
+2. Ejecutar `corepack pnpm test:uk-agent:connected` desde la misma PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
+3. Si UK aprueba 4/4 y cero acciones externas, preservar el reporte, documentar métricas y cerrar la matriz conversacional WY/DE/EE/GB. Si falla, diagnosticar el contrato observado sin relajar la puerta ni elevar gasto a ciegas.
+4. Después, convertir las cuatro evaluaciones en regresión operativa versionada y avanzar al dashboard administrativo de excepciones/casos, sin habilitar trámites externos.
+5. Configurar Google OAuth dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. Preparar alcance comercial del operador, atención interna, hosting y piloto supervisado antes de admitir datos reales.
 
 ## Entornos y datos
 
 - Único Supabase autorizado: `keboldglfjonxcdnmyee`, Singapur (`ap-southeast-1`), exclusivamente datos sintéticos. El proyecto anterior de Japón está excluido.
-- Trece migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 013 habilitó `EE` en las conversaciones sin cambiar RLS; no fue necesario redesplegar Edge.
+- Catorce migraciones aplicadas, 57 tablas públicas con RLS y diez Edge Functions desplegadas. La migración 014 habilitó `GB` en las conversaciones sin cambiar RLS; no fue necesario redesplegar Edge.
 - Demo local: `http://127.0.0.1:3000/panel`; datos PGlite en `.local/agent-demo`. Metadatos de la demostración en `.local/qa/agent-demo.json`. No resetear esa base para ejecutar pruebas; usar un entorno aislado. Los fixtures caducan y no equivalen a evidencia oficial vigente.
 - Frontend local conectado a Supabase: `http://127.0.0.1:3100`, mediante `pnpm start:staging`. Verificar disponibilidad; los procesos pueden finalizar al cerrar la sesión.
 - Credenciales existentes solo en ubicaciones locales ignoradas/gestores del sistema. No imprimirlas, copiarlas a documentación ni incluirlas en Git. No incorporar datos personales reales.

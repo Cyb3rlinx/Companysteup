@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {WyomingPacketLab} from './wyoming-packet';
-import {DelawareConversationLab,EstoniaConversationLab,WyomingConversationLab} from './wyoming-conversation';
+import {DelawareConversationLab,EstoniaConversationLab,UkConversationLab,WyomingConversationLab} from './wyoming-conversation';
 import type { CountryGuide, GuideId } from '../../../packages/formation-guidance/catalog';
 import type { Evaluation, Scenario } from '../../../packages/formation-guidance';
 import styles from './agent-lab.module.css';
@@ -62,6 +62,7 @@ export function AgentLab({name, version, observedAt, recheckAfter, guides, cases
     {selected==='US-WY'&&<><div className={styles.content}><WyomingConversationLab cases={cases.filter(c=>c.jurisdiction==='US-WY')} readOnly={readOnly}/></div><div className={styles.content}><WyomingPacketLab cases={cases.filter(c=>c.jurisdiction==='US-WY')}/></div></>}
     {selected==='US-DE'&&<div className={styles.content}><DelawareConversationLab cases={cases.filter(c=>c.jurisdiction==='US-DE')} readOnly={readOnly}/></div>}
     {selected==='EE'&&<div className={styles.content}><EstoniaConversationLab cases={cases.filter(c=>c.jurisdiction==='EE')} readOnly={readOnly}/></div>}
+    {selected==='GB'&&<div className={styles.content}><UkConversationLab cases={cases.filter(c=>c.jurisdiction==='GB')} readOnly={readOnly}/></div>}
     <section className={styles.content} aria-label="Comparación de resultados"><div className={styles.header}><h2>Bitácora de esta sesión</h2><button className="btn secondary" onClick={download} disabled={!results.length || busy}>Descargar informe JSON</button></div><p>Los resultados de esta tabla se reinician al recargar. Los vinculados a un expediente permanecen en su historial.</p><div className={styles.tableWrap}><table><thead><tr><th>Agente / ruta</th><th>Escenario</th><th>Máximo alcance</th><th>Registro real</th></tr></thead><tbody>{results.map(r => <tr key={`${r.guideId}-${r.scenario}-${r.caseId}`}><td>{r.agent}</td><td>{guides.find(g => g.id === r.guideId)?.scenarios.find(s => s.id === r.scenario)?.label}</td><td>{stageNames[r.maximumStage]}</td><td>No</td></tr>)}</tbody></table></div>{!results.length && <p>Ejecuta una evaluación para comparar los límites.</p>}</section>
   </main>;
 }

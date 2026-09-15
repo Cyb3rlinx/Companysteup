@@ -3,9 +3,10 @@ import {useEffect,useState,type FormEvent} from 'react';
 import {WY_FIELDS} from '../../../packages/formation-packet/catalog';
 import {DE_FIELDS} from '../../../packages/formation-packet/delaware-catalog';
 import {EE_FIELDS} from '../../../packages/formation-packet/estonia-catalog';
+import {UK_FIELDS} from '../../../packages/formation-packet/uk-catalog';
 import styles from './wyoming-packet.module.css';
 
-type Jurisdiction='US-WY'|'US-DE'|'EE';
+type Jurisdiction='US-WY'|'US-DE'|'EE'|'GB';
 type Turn={id:string;turn_kind:string;customer_message:string|null;assistant_message:string;model_status:string;created_at:string};
 type Conversation={conversation:{id:string;caseId:string;jurisdiction:Jurisdiction;status:string;executionMode:string;synthetic:boolean;state:Record<string,string>;pendingPatch:Record<string,string>;revision:number};turns:Turn[];packetPreview?:unknown};
 type CaseOption={id:string;revision:number};
@@ -14,7 +15,7 @@ async function json(response:Response){const value=await response.json();if(!res
 const requestId=()=>crypto.randomUUID();
 
 export function FormationConversation({cases,jurisdiction,fixedCaseId,readOnly=false}:Props){
- const route=jurisdiction==='US-DE'?'Delaware':jurisdiction==='EE'?'Estonia':'Wyoming';const fields=jurisdiction==='US-DE'?DE_FIELDS:jurisdiction==='EE'?EE_FIELDS:WY_FIELDS;const placeholder=jurisdiction==='US-DE'?'Nombre propuesto: Orbit Delaware QA LLC':jurisdiction==='EE'?'Nombre propuesto: Orbit Estonia QA OÜ':'Nombre propuesto: Orbit QA LLC';
+ const route=jurisdiction==='US-DE'?'Delaware':jurisdiction==='EE'?'Estonia':jurisdiction==='GB'?'UK':'Wyoming';const fields=jurisdiction==='US-DE'?DE_FIELDS:jurisdiction==='EE'?EE_FIELDS:jurisdiction==='GB'?UK_FIELDS:WY_FIELDS;const placeholder=jurisdiction==='US-DE'?'Nombre propuesto: Orbit Delaware QA LLC':jurisdiction==='EE'?'Nombre propuesto: Orbit Estonia QA OÜ':jurisdiction==='GB'?'Nombre propuesto: Orbit United Kingdom QA Ltd':'Nombre propuesto: Orbit QA LLC';
  const[selectedCaseId,setSelectedCaseId]=useState('');const caseId=fixedCaseId??selectedCaseId;const[data,setData]=useState<Conversation|null>(null);const[loaded,setLoaded]=useState(false);const[message,setMessage]=useState('');const[busy,setBusy]=useState(false);const[error,setError]=useState('');
  useEffect(()=>{if(!caseId)return;const controller=new AbortController();void fetch(`/api/agent-conversation?caseId=${encodeURIComponent(caseId)}`,{cache:'no-store',signal:controller.signal}).then(json).then(value=>{if(!controller.signal.aborted)setData(value)}).catch(error=>{if(!controller.signal.aborted)setError(error instanceof Error?error.message:'No se pudo recuperar la sesión')}).finally(()=>{if(!controller.signal.aborted){setBusy(false);setLoaded(true);}});return()=>controller.abort();},[caseId]);
  function selectCase(value:string){setSelectedCaseId(value);setData(null);setError('');setLoaded(!value);setBusy(Boolean(value));}
@@ -38,3 +39,5 @@ export function DelawareConversationLab({cases,readOnly=false}:{cases:CaseOption
 export function DelawareConversationCase({caseId,caseRevision,readOnly=false}:{caseId:string;caseRevision:number;readOnly?:boolean}){return<FormationConversation cases={[{id:caseId,revision:caseRevision}]} jurisdiction="US-DE" fixedCaseId={caseId} readOnly={readOnly}/>;}
 export function EstoniaConversationLab({cases,readOnly=false}:{cases:CaseOption[];readOnly?:boolean}){return<FormationConversation cases={cases} jurisdiction="EE" readOnly={readOnly}/>;}
 export function EstoniaConversationCase({caseId,caseRevision,readOnly=false}:{caseId:string;caseRevision:number;readOnly?:boolean}){return<FormationConversation cases={[{id:caseId,revision:caseRevision}]} jurisdiction="EE" fixedCaseId={caseId} readOnly={readOnly}/>;}
+export function UkConversationLab({cases,readOnly=false}:{cases:CaseOption[];readOnly?:boolean}){return<FormationConversation cases={cases} jurisdiction="GB" readOnly={readOnly}/>;}
+export function UkConversationCase({caseId,caseRevision,readOnly=false}:{caseId:string;caseRevision:number;readOnly?:boolean}){return<FormationConversation cases={[{id:caseId,revision:caseRevision}]} jurisdiction="GB" fixedCaseId={caseId} readOnly={readOnly}/>;}

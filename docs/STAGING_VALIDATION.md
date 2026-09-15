@@ -1,5 +1,15 @@
 # Validación de Supabase alojado
 
+## Revalidación: conversaciones UK y RLS (2026-09-15, Bangkok)
+
+Ejecución final `2026-09-15T09:18:54.131Z`, run `8b655c21-aa99-4cfb-8bab-fefef4b4cfed`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El dry-run mostró únicamente `202609150014_uk_agent_conversations.sql` y se aplicó sin seed ni cambios de Edge Functions.
+
+La migración amplió la restricción a `US-WY | US-DE | EE | GB`, sin modificar RLS, permisos, claves compuestas o turnos append-only. El grupo alojado creó conversaciones sintéticas vinculadas a casos del mismo tenant para las cuatro rutas; el dueño pudo leerlas, el segundo tenant obtuvo cero filas y los clientes continuaron sin escritura directa.
+
+La ejecución repitió Auth, prevención de elevación por metadatos, cuatro casos GUIDED, tracking privado, funciones Edge, Storage y navegador. Se retuvieron fixtures `.test`; el objeto Storage del run fue eliminado. No hubo compañías, liquidación de pagos, reglas publicadas, OpenAI, identidad, firma, partner, presentación ni acción ante una autoridad.
+
+Dos intentos previos fallaron antes de la suite funcional: uno por no existir servidor en `127.0.0.1:3100` y otro porque el servidor se inició sin acceso de red a Supabase. El RPC se comprobó sano, el servidor se reinició con la red correcta y solo la ejecución final con salida 0 fundamenta la conclusión.
+
 ## Revalidación: conversaciones Estonia y RLS (2026-09-14, Bangkok)
 
 Ejecución final `2026-09-14T16:50:36.695Z`, run `4a2cf89b-0233-4de2-8aa1-17d945b04fc9`: **17/17 grupos aprobados** contra `keboldglfjonxcdnmyee`. El dry-run mostró únicamente `202609140013_estonia_agent_conversations.sql` y se aplicó sin seed ni cambios de Edge Functions.

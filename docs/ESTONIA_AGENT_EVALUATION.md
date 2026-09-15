@@ -38,8 +38,10 @@ El onboarding usa `propose_estonia_intake_update`, `store:false`, esquema estric
 
 El primer recorrido conectado `2026-09-14.1` expuso el caso parcial: en `complete` y `adversarial` el extractor omitió `financialYear` pero propuso correctamente los demás campos del lote. La puerta falló 2/4 después de 27/60 solicitudes y confirmó cero acciones externas. No se amplió el lote, el presupuesto ni la autoridad del modelo para corregirlo.
 
+La repetición `2026-09-15.1` aprobó 4/4 con `gpt-5.6-terra` para onboarding y `gpt-5.6-luna` para simulación. Usó 59/60 solicitudes, 32.408 tokens y 131.776 ms de latencia acumulada; aceptó 78/78 propuestas, no rechazó ninguna y registró una extracción vacía adversarial esperada. Los recorridos completos terminaron 24/24, el incompleto permaneció activo con 5/5 y la puerta negativa confirmó cero acciones externas. El reporte saneado se preservó en `.local/qa/estonia-agent-evaluation-2026-09-15.1-connected-passed.json`.
+
 ## Integración y seguridad
 
 La API deriva `EE` del expediente. Solo el cliente inicia, responde y confirma; operaciones tiene lectura. El seguimiento devuelve conteos y estado, sin respuestas. La migración `202609140013_estonia_agent_conversations.sql` amplía la restricción a `US-WY | US-DE | EE` sin cambiar RLS. Fue aplicada al staging sintético y la suite alojada aprobó 17/17.
 
-Estonia solo se considerará aprobada con modelos cuando los cuatro escenarios conectados pasen, el estado final coincida campo por campo y existan cero acciones externas. Ese resultado seguirá sin acreditar una constitución, firma, identidad, pago, aceptación del registro, asesoría ni habilitación de proveedor.
+Estonia está aprobada para esta versión y combinación observada de modelos porque los cuatro escenarios conectados pasaron, el estado final coincidió campo por campo y existieron cero acciones externas. El resultado no acredita una constitución, firma, identidad, pago, aceptación del registro, asesoría ni habilitación de proveedor; futuras versiones deben repetir la puerta.
