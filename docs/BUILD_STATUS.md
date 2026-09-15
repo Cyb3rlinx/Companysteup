@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-15. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito funcional Estonia está publicado en `0b3b463`: [Regulatory integrity #27](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34871625791) aprobó en 35 segundos y [CI #27](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34871625643) aprobó en 2 minutos 54 segundos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La corrección conectada Estonia está publicada en `0bfd3bd`: [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
 **Base funcional local y Supabase staging validados con datos sintéticos. Wyoming y Delaware aprobaron 4/4 recorridos con modelos conectados; Estonia aprobó 4/4 deterministas y está lista para su puerta conectada. Todas confirmaron cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
 
@@ -43,7 +43,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 | M33 Diagnóstico de transporte OpenAI | Timeout, red, HTTP, JSON y esquema diferenciados; referencias de solicitud sin cuerpos ni secretos | VALIDADO LOCAL Y CI |
 | M34 Delaware conectado | Cuatro recorridos, corrección, ataque, abandono y puerta negativa con modelos | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
 | M35 Estonia conversacional | Catálogo de 24 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E Y STAGING 4/4; CONECTADO PENDIENTE |
-| M36 Diagnóstico conectado Estonia | Progreso exacto parcial, reintento de omitidos y rechazo de alterados/inesperados | CORRECCIÓN LOCAL APROBADA; REPETICIÓN CONECTADA PENDIENTE |
+| M36 Diagnóstico conectado Estonia | Progreso exacto parcial, reintento de omitidos y rechazo de alterados/inesperados | CORRECCIÓN LOCAL Y CI APROBADA; REPETICIÓN CONECTADA PENDIENTE |
 
 ## Hito M36: diagnóstico del primer run conectado Estonia (2026-09-15, Asia/Bangkok)
 
@@ -51,6 +51,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hi
 - La evaluación `2026-09-15.1` ahora acepta progreso parcial únicamente cuando existe al menos un campo literalmente exacto y no hay valores incorrectos ni campos inesperados. Los omitidos permanecen vacíos, vuelven a la cola y se contabilizan como `partialPatches`. Un parche vacío, alterado o fuera del lote sigue bloqueando el recorrido.
 - No se elevó el presupuesto de 60, no se amplió el lote de tres campos y no se concedió autoridad al modelo para confirmar datos. El cliente/evaluador conserva la confirmación y el estado persistido sigue siendo la verdad.
 - Validación posterior: `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build Next.js. `pnpm test:estonia-agent` volvió a aprobar 4/4 determinista, cero solicitudes y cero acciones externas.
+- GitHub: la corrección `0bfd3bd` está publicada en `main`. [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos con application, Supabase y Edge.
 - Próxima puerta: repetir `corepack pnpm test:estonia-agent:connected` en la misma PowerShell privada. Solo 4/4, estado exacto y cero acciones externas permiten continuar UK.
 
 ## Hito M35: Estonia conversacional determinista y staging (2026-09-14, Asia/Bangkok)

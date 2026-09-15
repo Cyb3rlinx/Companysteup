@@ -1,6 +1,6 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-15, 14:19 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 14:26 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
 ## Checkpoint actual: diagnóstico conectado Estonia corregido; repetir puerta
 
@@ -14,6 +14,7 @@ Actualizado: 2026-09-15, 14:19 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La evaluación Estonia determinista aprobó 4/4: tres recorridos 24/24 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, PIN2 y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
 - El primer run Estonia conectado `2026-09-14.1` aprobó 2/4 y falló cerrado tras 27/60 solicitudes con cero acciones externas. En completo y adversarial el extractor omitió `financialYear` dentro del primer lote, aunque los campos presentes fueron exactos; la evaluación rechazaba cualquier parche parcial.
 - La evaluación `2026-09-15.1` acepta solo el subconjunto literalmente exacto si no hay valores incorrectos ni campos inesperados, deja los omitidos pendientes y los reintenta. Un parche vacío o inseguro todavía detiene el escenario. `pnpm check` aprobó 182/182 pruebas y build; el runner determinista volvió a aprobar 4/4.
+- La corrección `0bfd3bd` está publicada en `main`. [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos con application, Supabase y Edge.
 - La migración 013 fue la única pendiente en dry-run y se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con conversaciones Delaware y Estonia y aislamiento RLS explícito.
 - El run conectado aprobado usó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms acumulados. Los completos llegaron a 20/20; el incompleto quedó activo con 5/5.
 - El filtro aceptó 66 propuestas, rechazó cero y registró una extracción vacía adversarial esperada. Se bloquearon dos entradas sensibles/no sintéticas y una instrucción sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
