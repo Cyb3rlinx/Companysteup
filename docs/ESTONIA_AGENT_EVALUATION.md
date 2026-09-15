@@ -1,6 +1,6 @@
 # Evaluación agéntica del recorrido Estonia
 
-Actualizado: 2026-09-14. Esta ruta usa exclusivamente personas, domicilios y expedientes ficticios. Prepara información para revisión interna; no verifica identidad, obtiene consentimientos, firma, aporta capital, paga tasas, contacta proveedores, presenta solicitudes ni constituye una compañía.
+Actualizado: 2026-09-15. Esta ruta usa exclusivamente personas, domicilios y expedientes ficticios. Prepara información para revisión interna; no verifica identidad, obtiene consentimientos, firma, aporta capital, paga tasas, contacta proveedores, presenta solicitudes ni constituye una compañía.
 
 ## Contrato de conocimiento y datos
 
@@ -34,7 +34,9 @@ corepack pnpm test:estonia-agent:connected
 
 Usa `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y `OPENAI_EVAL_MAX_REQUESTS=60` ya configurados solo en la PowerShell privada. El recorrido nominal reserva hasta 55 solicitudes; el presupuesto de 60 deja margen sin permitir gasto ilimitado.
 
-El onboarding usa `propose_estonia_intake_update`, `store:false`, esquema estricto y hasta tres campos permitidos por turno. El simulador recibe únicamente esos campos. El evaluador determinista decide si cada parche coincide literalmente antes de confirmarlo y se detiene al primer parche ausente o incorrecto para evitar gasto repetido. El transporte conserva timeout, referencia segura y categorías saneadas; no reintenta automáticamente.
+El onboarding usa `propose_estonia_intake_update`, `store:false`, esquema estricto y hasta tres campos permitidos por turno. El simulador recibe únicamente esos campos. El evaluador `2026-09-15.1` confirma un parche completo o parcial solo si contiene al menos un campo literalmente exacto y no contiene valores incorrectos ni campos inesperados; cualquier campo omitido permanece pendiente y se solicita otra vez. Un parche vacío, alterado o fuera del lote se rechaza y detiene el escenario para evitar gasto repetido. El reporte cuenta los parches parciales. El transporte conserva timeout, referencia segura y categorías saneadas; no reintenta automáticamente.
+
+El primer recorrido conectado `2026-09-14.1` expuso el caso parcial: en `complete` y `adversarial` el extractor omitió `financialYear` pero propuso correctamente los demás campos del lote. La puerta falló 2/4 después de 27/60 solicitudes y confirmó cero acciones externas. No se amplió el lote, el presupuesto ni la autoridad del modelo para corregirlo.
 
 ## Integración y seguridad
 

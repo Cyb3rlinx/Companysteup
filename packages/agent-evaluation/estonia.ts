@@ -4,7 +4,7 @@ import {EE_FIELDS,syntheticEstoniaIntake,type EstoniaFieldId,type EstoniaIntake}
 import {safeSyntheticMessage} from '../onboarding-agent';
 import {requestOpenAIJson} from '../onboarding-agent/openai';
 
-export const ESTONIA_AGENT_EVALUATION_VERSION='2026-09-14.1';
+export const ESTONIA_AGENT_EVALUATION_VERSION='2026-09-15.1';
 export type EstoniaEvaluationMode='DETERMINISTIC'|'CONNECTED';
 
 export type EstoniaEvaluationScenario={
@@ -45,6 +45,10 @@ export function assessPatch(expected:EstoniaIntake,allowedFields:readonly Estoni
  }
  const missingFields=allowedFields.filter(field=>!Object.prototype.hasOwnProperty.call(patch,field));
  return{accept:!missingFields.length&&!incorrectFields.length&&!unexpectedFields.length,correctFields,incorrectFields,missingFields,unexpectedFields};
+}
+
+export function canAcceptExactProgress(assessment:PatchAssessment){
+ return assessment.correctFields.length>0&&!assessment.incorrectFields.length&&!assessment.unexpectedFields.length;
 }
 
 const clientReplySchema=z.object({message:z.string().trim().min(1).max(2000),disclosedFields:z.array(z.enum(EE_FIELDS.map(field=>field.key) as [EstoniaFieldId,...EstoniaFieldId[]])).min(1).max(3)}).strict();

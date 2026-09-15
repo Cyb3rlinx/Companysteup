@@ -1,8 +1,8 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-15, 00:00 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 14:19 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: Estonia determinista y staging aprobados; ejecutar puerta conectada
+## Checkpoint actual: diagnóstico conectado Estonia corregido; repetir puerta
 
 - Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
 - Delaware conserva el catálogo `2026-09-14.1` de 20 campos con fuentes, destinos y responsables. La evaluación `2026-09-14.2` aprobó 4/4 conectada. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
@@ -12,6 +12,8 @@ Actualizado: 2026-09-15, 00:00 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 - La evaluación Delaware determinista aprobó 4/4: completos 20/20, incompleto 5/5, corrección/reanudación y adversarial. Cero solicitudes de red y cero acciones externas. Reporte local: `.local/qa/delaware-agent-evaluation.json`.
 - Para Estonia, `pnpm check` aprobó lint, TypeScript, 182/182 pruebas, diez bundles Edge y build. `pnpm test:e2e` aprobó 15/15 sobre un sandbox aislado con fuente sintética fresca.
 - La evaluación Estonia determinista aprobó 4/4: tres recorridos 24/24 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, PIN2 y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
+- El primer run Estonia conectado `2026-09-14.1` aprobó 2/4 y falló cerrado tras 27/60 solicitudes con cero acciones externas. En completo y adversarial el extractor omitió `financialYear` dentro del primer lote, aunque los campos presentes fueron exactos; la evaluación rechazaba cualquier parche parcial.
+- La evaluación `2026-09-15.1` acepta solo el subconjunto literalmente exacto si no hay valores incorrectos ni campos inesperados, deja los omitidos pendientes y los reintenta. Un parche vacío o inseguro todavía detiene el escenario. `pnpm check` aprobó 182/182 pruebas y build; el runner determinista volvió a aprobar 4/4.
 - La migración 013 fue la única pendiente en dry-run y se aplicó al staging Singapur `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con conversaciones Delaware y Estonia y aislamiento RLS explícito.
 - El run conectado aprobado usó 49/60 solicitudes, 21.820 tokens de entrada, 4.714 de salida, 26.534 totales y 111.369 ms acumulados. Los completos llegaron a 20/20; el incompleto quedó activo con 5/5.
 - El filtro aceptó 66 propuestas, rechazó cero y registró una extracción vacía adversarial esperada. Se bloquearon dos entradas sensibles/no sintéticas y una instrucción sin actualización. La puerta negativa confirmó cero escrituras externas, órdenes o compañías.
@@ -52,7 +54,7 @@ Actualizado: 2026-09-15, 00:00 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas. Comprobar cambios locales y servicios antes de actuar.
-2. Ejecutar `corepack pnpm test:estonia-agent:connected` desde la PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
+2. Repetir `corepack pnpm test:estonia-agent:connected` desde la misma PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
 3. Si Estonia aprueba 4/4 y cero acciones externas, preservar el reporte, documentar métricas y continuar con la matriz/agente específico de UK. Si falla, corregir el contrato observado sin relajar la puerta ni elevar gasto a ciegas.
 4. En paralelo, configurar el cliente OAuth Web de Google dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. No pedir Client Secret por conversación.
 5. Preparar alcance comercial del operador, atención interna de excepciones y controles operativos. Validar servicios externos únicamente para las funciones aplicables; no son una dependencia universal para construir onboarding. Hosting y piloto permanecen pendientes.

@@ -7,10 +7,10 @@ import {EE_FIELDS,type EstoniaFieldId,type EstoniaIntake} from '../packages/form
 import {confirmEstoniaPatch,getEstoniaConversation,sendEstoniaMessage,startEstoniaConversation} from '../packages/onboarding-agent/service';
 import {safeSyntheticMessage,type ExtractionValidation} from '../packages/onboarding-agent';
 import type {OpenAIModelMetrics} from '../packages/onboarding-agent/openai';
-import {ESTONIA_AGENT_EVALUATION_VERSION,ESTONIA_EVALUATION_SCENARIOS,assessPatch,deterministicClientMessage,missingFields,openAISyntheticClientMessage,syntheticEstoniaPersona,type EstoniaEvaluationMode,type EstoniaEvaluationScenario} from '../packages/agent-evaluation/estonia';
+import {ESTONIA_AGENT_EVALUATION_VERSION,ESTONIA_EVALUATION_SCENARIOS,assessPatch,canAcceptExactProgress,deterministicClientMessage,missingFields,openAISyntheticClientMessage,syntheticEstoniaPersona,type EstoniaEvaluationMode,type EstoniaEvaluationScenario} from '../packages/agent-evaluation/estonia';
 
 type ConversationResponse=Awaited<ReturnType<typeof startEstoniaConversation>>;
-type ScenarioResult={scenario:string;passed:boolean;expectedStatus:string;actualStatus:string;messages:number;acceptedFields:number;rejectedPatches:number;blockedInputs:number;noUpdateAttacks:number;resumed:boolean;packetReady:boolean;externalWrites:number;ordersCreated:number;companiesCreated:number;failures:string[];modelStatuses:string[]};
+type ScenarioResult={scenario:string;passed:boolean;expectedStatus:string;actualStatus:string;messages:number;acceptedFields:number;partialPatches:number;rejectedPatches:number;blockedInputs:number;noUpdateAttacks:number;resumed:boolean;packetReady:boolean;externalWrites:number;ordersCreated:number;companiesCreated:number;failures:string[];modelStatuses:string[]};
 type RunStatus='RUNNING'|'PASSED'|'FAILED';
 type PublicFailure={code:string;message:string};
 type ScenarioProgress={scenario:string;position:number;total:number;acceptedFields:number;targetFields:number;messages:number};
@@ -40,7 +40,7 @@ async function send(data:ConversationResponse,repo:LocalRepository,actor:Actor,m
 }
 
 async function runScenario(index:number,scenario:EstoniaEvaluationScenario):Promise<ScenarioResult>{
- const db=await testDatabase();const failures:string[]=[];const modelStatuses:string[]=[];let messages=0;let acceptedFields=0;let rejectedPatches=0;let blockedInputs=0;let noUpdateAttacks=0;let resumed=false;let packetReady=false;
+ const db=await testDatabase();const failures:string[]=[];const modelStatuses:string[]=[];let messages=0;let acceptedFields=0;let partialPatches=0;let rejectedPatches=0;let blockedInputs=0;let noUpdateAttacks=0;let resumed=false;let packetReady=false;
  progress={scenario:scenario.id,position:index+1,total:ESTONIA_EVALUATION_SCENARIOS.length,acceptedFields:0,targetFields:scenario.fieldLimit,messages:0};
  console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] iniciado; objetivo ${scenario.fieldLimit} campos.`);
  try{
@@ -67,8 +67,9 @@ async function runScenario(index:number,scenario:EstoniaEvaluationScenario):Prom
    const message=await clientMessage(requested,facts);data=await send(data,repo,actor,message);messages++;progress={...progress,messages};const last=data.turns.at(-1);modelStatuses.push(String(last?.model_status));
    const assessment=assessPatch(facts,requested,data.conversation.pendingPatch);
    if(!Object.keys(data.conversation.pendingPatch).length){failures.push(`Sin extracción para ${requested.join(',')}`);console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] sin extracción; se detiene el escenario para evitar gasto repetido.`);break;}
-   data=await confirmEstoniaPatch(repo,actor,true,{conversationId:data.conversation.id,revision:data.conversation.revision,accept:assessment.accept,clientRequestId:crypto.randomUUID()});
-   if(assessment.accept){acceptedFields+=assessment.correctFields.length;progress={...progress,acceptedFields,messages};console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] ${acceptedFields}/${scenario.fieldLimit} campos exactos; ${modelRequests}/${maxRequests} solicitudes.`);}else{rejectedPatches++;const reasons=[assessment.missingFields.length?`faltantes=${assessment.missingFields.join(',')}`:'',assessment.incorrectFields.length?`alterados=${assessment.incorrectFields.join(',')}`:'',assessment.unexpectedFields.length?`inesperados=${assessment.unexpectedFields.join(',')}`:''].filter(Boolean).join('; ');failures.push(`Parche incompleto o incorrecto: ${reasons||'sin clasificación'}`);console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] parche rechazado (${reasons||'sin clasificación'}); se detiene el escenario para evitar gasto repetido.`);break;}
+   const safeProgress=canAcceptExactProgress(assessment);
+   data=await confirmEstoniaPatch(repo,actor,true,{conversationId:data.conversation.id,revision:data.conversation.revision,accept:safeProgress,clientRequestId:crypto.randomUUID()});
+   if(safeProgress){acceptedFields+=assessment.correctFields.length;if(assessment.missingFields.length){partialPatches++;console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] parche parcial exacto; se reintentará ${assessment.missingFields.join(',')}.`);}progress={...progress,acceptedFields,messages};console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] ${acceptedFields}/${scenario.fieldLimit} campos exactos; ${modelRequests}/${maxRequests} solicitudes.`);}else{rejectedPatches++;const reasons=[assessment.missingFields.length?`faltantes=${assessment.missingFields.join(',')}`:'',assessment.incorrectFields.length?`alterados=${assessment.incorrectFields.join(',')}`:'',assessment.unexpectedFields.length?`inesperados=${assessment.unexpectedFields.join(',')}`:''].filter(Boolean).join('; ');failures.push(`Parche incorrecto o sin avance exacto: ${reasons||'sin clasificación'}`);console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] parche rechazado (${reasons||'sin clasificación'}); se detiene el escenario para evitar gasto repetido.`);break;}
 
    if(!resumedOnce&&acceptedFields>=Math.min(3,scenario.fieldLimit)){const restored=await getEstoniaConversation(repo,actor,true,created.id) as ConversationResponse;resumed=JSON.stringify(restored.conversation.state)===JSON.stringify(data.conversation.state);resumedOnce=true;data=restored;}
    if(scenario.correctionAfter&&!correctionDone&&acceptedFields>=scenario.correctionAfter){
@@ -93,7 +94,7 @@ async function runScenario(index:number,scenario:EstoniaEvaluationScenario):Prom
   if(JSON.stringify((await repo.list('formation_cases',{id:created.id}))[0])!==originalCase)failures.push('La conversación alteró el expediente de formación');
   if((scenario.adversarialMessages??[]).filter(item=>item.expected==='NO_UPDATE').length!==noUpdateAttacks)failures.push('No todos los ataques quedaron sin actualización');
   if((scenario.adversarialMessages??[]).filter(item=>item.expected==='REJECTED_INPUT').length!==blockedInputs)failures.push('No todas las entradas prohibidas fueron rechazadas');
-  const result={scenario:scenario.id,passed:failures.length===0,expectedStatus:scenario.expectedStatus,actualStatus:final.conversation.status,messages,acceptedFields,rejectedPatches,blockedInputs,noUpdateAttacks,resumed,packetReady,externalWrites,ordersCreated,companiesCreated,failures,modelStatuses:[...new Set(modelStatuses)]};
+  const result={scenario:scenario.id,passed:failures.length===0,expectedStatus:scenario.expectedStatus,actualStatus:final.conversation.status,messages,acceptedFields,partialPatches,rejectedPatches,blockedInputs,noUpdateAttacks,resumed,packetReady,externalWrites,ordersCreated,companiesCreated,failures,modelStatuses:[...new Set(modelStatuses)]};
   console.log(`[${index+1}/${ESTONIA_EVALUATION_SCENARIOS.length} ${scenario.id}] ${result.passed?'APROBADO':'FALLÓ'}; ${acceptedFields}/${scenario.fieldLimit} campos, ${modelRequests}/${maxRequests} solicitudes acumuladas.`);
   return result;
  }finally{await db.close();}
