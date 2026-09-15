@@ -38,6 +38,26 @@ test('Estonia tracking exposes bounded progress without intake values',()=>{
 test('UK tracking exposes bounded progress without intake values',()=>{
  const r=record('GB');r.execution_mode='SANDBOX';const conversation={organization_id:r.organization_id,case_id:r.id,status:'active',execution_mode:'OPENAI_RESPONSES',state_json:{companyName:'Private United Kingdom Ltd',nameSearch:'yes'},pending_patch:{principalActivity:'Private activity'},updated_at:now.toISOString()};const tracked=trackCase(r,[],now,conversation);expect(tracked.intake).toMatchObject({available:true,jurisdiction:'GB',status:'ACTIVE',confirmedFields:2,pendingFields:1,totalFields:22,executionMode:'OPENAI_RESPONSES'});expect(JSON.stringify(tracked)).not.toContain('Private United Kingdom Ltd');expect(JSON.stringify(tracked)).not.toContain('Private activity');
 });
+test('operations exposes only the next field label and waits for the customer without an invented SLA',()=>{
+ const r=record('GB');const conversation={organization_id:r.organization_id,case_id:r.id,status:'active',execution_mode:'OPENAI_RESPONSES',state_json:{companyName:'Private United Kingdom Ltd'},pending_patch:{},updated_at:now.toISOString()};const tracked=trackCase(r,[],now,conversation);
+ expect(tracked.operations).toMatchObject({attention:'WAITING_CUSTOMER',owner:'Cliente',nextMissingField:'Actividad principal propuesta',openEscalations:0,slaDueAt:null,slaBreached:false});
+ expect(JSON.stringify(tracked.operations)).not.toContain('Private United Kingdom Ltd');
+});
+test('operations prioritizes an open same-tenant escalation and applies the internal severity SLA',()=>{
+ const r=record('GB');const conversation={organization_id:r.organization_id,case_id:r.id,status:'active',execution_mode:'OPENAI_RESPONSES',state_json:{},pending_patch:{},updated_at:now.toISOString()};
+ const escalations=[
+  {organization_id:r.organization_id,case_id:r.id,status:'open',severity:'HIGH',created_at:now.toISOString(),reason:'private-reason'},
+  {organization_id:r.organization_id,case_id:r.id,status:'resolved',severity:'CRITICAL',created_at:now.toISOString()},
+  {organization_id:'foreign',case_id:r.id,status:'open',severity:'CRITICAL',created_at:now.toISOString()},
+ ];
+ const tracked=trackCase(r,[],new Date(now.getTime()+5*3600000),conversation,escalations);
+ expect(tracked.operations).toMatchObject({attention:'ESCALATED',owner:'Cumplimiento / operaciones',openEscalations:1,highestSeverity:'HIGH',slaDueAt:'2026-09-03T16:00:00.000Z',slaBreached:true});
+ expect(JSON.stringify(tracked.operations)).not.toContain('private-reason');
+});
+test('a packet ready for review receives a bounded internal review SLA',()=>{
+ const r=record('GB');const conversation={organization_id:r.organization_id,case_id:r.id,status:'ready_for_packet_review',execution_mode:'OPENAI_RESPONSES',state_json:{},pending_patch:{},updated_at:now.toISOString()};
+ expect(trackCase(r,[],new Date(now.getTime()+9*3600000),conversation).operations).toMatchObject({attention:'READY_FOR_REVIEW',owner:'Revisor humano',slaDueAt:'2026-09-03T20:00:00.000Z',slaBreached:true});
+});
 test('only a recent matching execution is running; stale clocks and newer case revisions invalidate it',()=>{
  const r=record();const e={id:1,case_id:r.id,organization_id:r.organization_id,event_type:'CASE_BRIEF_STARTED',created_at:now.toISOString(),payload:{agentId:CASE_AGENTS.GB.id,version:CASE_AGENT_VERSION,caseRevision:0}};
  expect(trackCase(r,[e],now).agent.runStatus).toBe('RUNNING');

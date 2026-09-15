@@ -2,14 +2,14 @@
 
 Actualizado: 2026-09-15. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La corrección conectada Estonia está publicada en `0bfd3bd`: [Regulatory integrity #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413229) aprobó en 40 segundos y [CI #29](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34941413039) aprobó en 3 minutos. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El último hito publicado es UK conversacional en `4026155`; sus resultados de GitHub son históricos hasta verificar los checks del próximo commit. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución local.
 
-**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming, Delaware y Estonia aprobaron 4/4 recorridos con modelos conectados; UK aprobó 4/4 deterministas, 16/16 E2E y aislamiento alojado. Todas confirmaron cero acciones externas. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. La operación comercial requiere alcance habilitado, conocimiento revisado, hosting, controles operativos y servicios externos cuando apliquen. No es un lanzamiento de producción.**
+**Base funcional local y Supabase staging validados con datos sintéticos. Wyoming, Delaware, Estonia y UK aprobaron 4/4 recorridos con modelos conectados y cero acciones externas. La regresión determinística vigente aprueba las cuatro rutas, pero Wyoming requiere repetir el nivel conectado porque su evidencia es `2026-09-14.4` y el evaluador actual es `2026-09-14.5`. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. No es un lanzamiento de producción.**
 
 | Hito | Resultado | Estado |
 |---|---|---|
 | M1 Foundation | Next.js, TypeScript, pnpm, entorno, Git y estructura modular | IMPLEMENTADO |
-| M2 Supabase + RLS | 57 tablas, trece migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
+| M2 Supabase + RLS | 57 tablas, catorce migraciones, aislamiento, RPC transaccional y Storage privado | DESPLEGADO Y VALIDADO EN STAGING SINTÉTICO |
 | M3 Fuentes | 22 fuentes, 19 capturas directas, hashes, snapshots privados y monitor | IMPLEMENTADO; 3 FUENTES BLOQUEADAS |
 | M4 Reglas | Versiones, fechas, evidencia, edición, publicación humana, supersesión y bloqueo por cambios | VALIDADO |
 | M5 Onboarding | Cuenta, fundador, residencia, negocio, titularidad declarada, cuestionario y consentimiento | VALIDADO LOCAL Y SUPABASE ALOJADO |
@@ -26,9 +26,9 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 188 pruebas unitarias/SQL, 16 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y STAGING; CI DEL CAMBIO UK PENDIENTE |
+| M19 QA/CI | 194 pruebas unitarias/SQL, 16 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y STAGING; CI DEL NUEVO CAMBIO PENDIENTE |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
-| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE/EE CONECTADOS, GB DETERMINISTA |
+| M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE/EE/GB CONECTADOS |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
 | M23 Paquete Wyoming | Formulario de 21 campos, mapa oficial, faltantes, entrega sintética y auditoría privada | VALIDADO EN SANDBOX; REVISIÓN HUMANA Y PROVEEDOR BLOQUEADOS |
 | M24 Conversación Wyoming | Sesión privada persistente, extracción estructurada, confirmación/rechazo, reanudación e idempotencia | VALIDADO EN SANDBOX; MODELOS CONECTADOS PROBADOS |
@@ -44,7 +44,17 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 | M34 Delaware conectado | Cuatro recorridos, corrección, ataque, abandono y puerta negativa con modelos | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
 | M35 Estonia conversacional | Catálogo de 24 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E, STAGING Y CONECTADO 4/4 |
 | M36 Diagnóstico conectado Estonia | Progreso exacto parcial, reintento de omitidos y rechazo de alterados/inesperados | CONECTADO 4/4; CERO ACCIONES EXTERNAS |
-| M37 UK conversacional | Catálogo de 22 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E Y STAGING 4/4; CONECTADO PENDIENTE |
+| M37 UK conversacional | Catálogo de 22 campos, paquete interno, panel, RLS alojado y cuatro recorridos propios | DETERMINISTA, E2E, STAGING Y CONECTADO 4/4 |
+| M38 Regresión y operaciones | Regresión versionada de cuatro agentes, estado de evidencia conectada y cola interna por caso con excepciones/SLA | VALIDADO LOCAL; WY CONECTADO REQUIERE REVALIDACIÓN DE VERSIÓN |
+
+## Hito M38: regresión versionada y panel operativo (2026-09-15, Asia/Bangkok)
+
+- `pnpm test:agent-regression` ejecuta secuencialmente los cuatro evaluadores determinísticos actuales sobre PGlite y las migraciones canónicas. Verifica versión exacta, 4/4 recorridos, estado `PASSED`, modo determinístico y cero acciones externas; CI conserva los cinco reportes saneados como artefacto. La ejecución local aprobó 4/4 evaluadores y 16/16 recorridos agregados.
+- El registro interno de calidad compara la versión de cada evidencia conectada con la versión del evaluador. Delaware, Estonia y UK aparecen `CONNECTED_PASSED_CURRENT`; Wyoming aparece `REVALIDATION_REQUIRED` porque el run conectado aprobado es `2026-09-14.4` y el evaluador actual `2026-09-14.5`. No se hereda aprobación entre versiones.
+- El admin incorpora la pestaña `agentes` con modelos, solicitudes, tokens, campos, fecha, cero escrituras y capacidad `EXTERNAL_BLOCKED`. Los clientes no reciben este registro en `/api/workspace`.
+- El seguimiento operativo clasifica espera del cliente, confirmación pendiente, revisión interna, ejecución fallida/sin confirmar, excepción y expediente terminal. Expone solo la etiqueta del próximo campo, conteos y eventos reconocidos; no muestra respuestas ni razones privadas. Los SLA de 2/4/8/12/24 horas son objetivos internos, nunca plazos legales.
+- Validación: `pnpm check` aprobó lint, TypeScript, 194/194 pruebas en 31 archivos, diez bundles Edge y build de producción. La regresión aprobó las cuatro rutas con cero acciones externas y Playwright aprobó 16/16 sobre un sandbox aislado con reloj fresco. No hubo migración ni ejecución nueva de staging porque este hito no cambia esquema, RLS o Edge.
+- La siguiente puerta es repetir `pnpm test:wyoming-agent:connected` con presupuesto 60 para cerrar la diferencia de versión. Después corresponde configurar y probar Google OAuth y preparar hosting/piloto supervisado; pagos, identidad y presentación permanecen bloqueados.
 
 ## Hito M37: UK conversacional determinista y staging (2026-09-15, Asia/Bangkok)
 
@@ -54,7 +64,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). La co
 - La evaluación UK aprobó 4/4 determinista: tres recorridos 22/22 y paquete revisable; incompleto 5/5 y activo; corrección/reanudación; instrucción hostil sin actualización; SSN, código personal de Companies House y correo real bloqueados. Cero solicitudes de modelo y cero acciones externas.
 - Validación local: `pnpm check` aprobó lint, TypeScript, 188/188 pruebas, diez bundles Edge y build. Playwright aprobó 16/16, incluido cliente UK, confirmación, tracking privado y rechazo de código personal.
 - El dry-run mostró únicamente `202609150014_uk_agent_conversations.sql`; se aplicó al staging `keboldglfjonxcdnmyee` sin seed ni Edge. La suite alojada aprobó 17/17 con conversación GB, lectura del dueño, invisibilidad para otro tenant y rechazo de escritura directa. El primer intento de suite no tenía servidor local y el segundo servidor estaba aislado de red; ninguno alcanzó el flujo de producto. La ejecución final con salida 0 es la evidencia válida.
-- Próxima puerta: `corepack pnpm test:uk-agent:connected` en la PowerShell privada. Solo 4/4, estado exacto y cero acciones externas permiten declarar aprobada la secuencia conversacional de las cuatro jurisdicciones. Ver `UK_AGENT_EVALUATION.md`.
+- El run conectado `2026-09-15.1` aprobó 4/4 con `gpt-5.6-terra` y `gpt-5.6-luna`: 55/60 solicitudes, 30.578 tokens, 133.670 ms acumulados, 72/72 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó fuera de Git. Ver `UK_AGENT_EVALUATION.md`.
 
 ## Cierre del hito M36: Estonia conectada aprobada (2026-09-15, Asia/Bangkok)
 

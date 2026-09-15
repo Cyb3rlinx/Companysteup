@@ -40,6 +40,12 @@ El onboarding usa `propose_uk_intake_update`, `store:false`, esquema estricto y 
 
 UK solo se considerará aprobado con modelos cuando los cuatro escenarios conectados pasen, el estado final coincida campo por campo y existan cero acciones externas.
 
+### Resultado conectado aprobado
+
+La ejecución `2026-09-15.1` del 15 de septiembre aprobó 4/4 recorridos con `gpt-5.6-terra` para onboarding y `gpt-5.6-luna` para simulación. Usó 55/60 solicitudes: 24.582 tokens de entrada, 5.996 de salida y 30.578 totales; latencia acumulada 133.670 ms y máxima 5.002 ms. `complete`, `correction-and-resume` y `adversarial` terminaron 22/22; `incomplete` quedó activo con 5/5. El filtro aceptó 72/72 propuestas, no rechazó ninguna y registró una extracción vacía adversarial esperada.
+
+La puerta negativa confirmó cero órdenes, compañías, pagos, identidad, screening, registros o acciones externas. El reporte saneado está preservado fuera de Git en `.local/qa/uk-agent-evaluation-2026-09-15.1-connected-passed.json`; no contiene claves ni textos de conversación. Esta evidencia valida únicamente el comportamiento observado con datos ficticios y estas versiones de evaluación/modelos.
+
 ## Integración y seguridad
 
 La API deriva `GB` del expediente. Solo el cliente inicia, responde y confirma; operaciones tiene lectura. El seguimiento devuelve conteos y estado, sin respuestas. La migración `202609150014_uk_agent_conversations.sql` amplía la restricción a `US-WY | US-DE | EE | GB` sin cambiar RLS. Fue aplicada al staging sintético y la suite alojada aprobó 17/17.

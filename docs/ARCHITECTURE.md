@@ -29,6 +29,7 @@ flowchart LR
 - `document-engine`: formatos permitidos, contenido activo, cuarentena, hashes y enlaces breves.
 - `billing` e `integrations`: límites explícitos SANDBOX / STRIPE_TEST / EXTERNAL_BLOCKED.
 - `ai`: el modelo puede solicitar una herramienta. La respuesta factual la genera el motor, no texto libre del modelo.
+- `onboarding-agent` + `agent-evaluation`: entrevistas por ruta, confirmación del cliente, simuladores y puertas exactas. `agent-operations` registra evidencia conectada por versión; `case-tracking` deriva la cola interna sin copiar valores del intake.
 - `edge`: los mismos servicios detrás de diez handlers Supabase. `scripts/build-edge.mjs` empaqueta código compartido, con dependencias npm fijadas en `deno.json`.
 
 ## Consistencia

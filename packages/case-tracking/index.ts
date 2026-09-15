@@ -7,6 +7,7 @@ import { EE_FIELDS } from '../formation-packet/estonia-catalog';
 import { UK_FIELDS } from '../formation-packet/uk-catalog';
 
 export const CASE_AGENT_VERSION = '2026-09-03.1';
+export const OPS_SLA_POLICY_VERSION = '2026-09-15.1';
 export const CASE_AGENTS: Record<Jurisdiction,{id: string; name: string}> = {
   'US-WY': {id: 'case-wyoming', name: 'Asistente Wyoming LLC'},
   'US-DE': {id: 'case-delaware', name: 'Asistente Delaware LLC'},
@@ -31,7 +32,7 @@ const eventLabels: Record<string,string> = {
   AGENT_PATCH_REJECTED: 'Propuesta de onboarding rechazada por el cliente',
 };
 export type ConversationTrackingInput = Pick<Row,'organization_id'|'case_id'|'status'|'execution_mode'|'state_json'|'pending_patch'|'updated_at'>;
-export function trackCase(record: FormationRecord, allEvents: Row[], now = new Date(), conversation?: ConversationTrackingInput | null) {
+export function trackCase(record: FormationRecord, allEvents: Row[], now = new Date(), conversation?: ConversationTrackingInput | null, allEscalations: Row[] = []) {
   const state = record.workflow_state;
   const agent = CASE_AGENTS[record.jurisdiction_code];
   const events = allEvents.filter(e => e.case_id === record.id && e.organization_id === record.organization_id)
@@ -69,6 +70,20 @@ export function trackCase(record: FormationRecord, allEvents: Row[], now = new D
   const confirmedFields=intakeFields.filter(field=>typeof intakeState[field.key]==='string'&&String(intakeState[field.key]).trim().length>0).length;
   const pendingFields=intakeFields.filter(field=>typeof pendingState[field.key]==='string'&&String(pendingState[field.key]).trim().length>0).length;
   const intakeStatus=matchingConversation?(matchingConversation.status==='ready_for_packet_review'?'READY_FOR_REVIEW':'ACTIVE'):'NOT_STARTED';
+  const nextMissingField=intakeFields.find(field=>typeof intakeState[field.key]!=='string'||!String(intakeState[field.key]).trim())?.label??null;
+  const openEscalations=allEscalations.filter(item=>item.organization_id===record.organization_id&&item.case_id===record.id&&item.status==='open');
+  const severityRank:Record<string,number>={LOW:1,MEDIUM:2,HIGH:3,CRITICAL:4};
+  const highestEscalation=openEscalations.sort((a,b)=>(severityRank[String(b.severity)]??0)-(severityRank[String(a.severity)]??0)||new Date(String(a.created_at)).getTime()-new Date(String(b.created_at)).getTime())[0];
+  const addHours=(value:unknown,hours:number)=>{const timestamp=new Date(String(value)).getTime();return Number.isFinite(timestamp)?new Date(timestamp+hours*3600000).toISOString():null;};
+  let attention:'TERMINAL'|'ESCALATED'|'AGENT_ATTENTION'|'READY_FOR_REVIEW'|'WAITING_CUSTOMER_CONFIRMATION'|'WAITING_CUSTOMER'|'MONITOR'='MONITOR';let attentionLabel='Seguimiento operativo';let attentionOwner='Operaciones';let slaDueAt:string|null=null;
+  if(terminal){attention='TERMINAL';attentionLabel='Expediente cerrado';attentionOwner='Sin acciones en curso';}
+  else if(highestEscalation){const hours={CRITICAL:2,HIGH:4,MEDIUM:12,LOW:24}[String(highestEscalation.severity)]??24;attention='ESCALATED';attentionLabel='Excepción abierta para revisión';attentionOwner='Cumplimiento / operaciones';slaDueAt=addHours(highestEscalation.created_at,hours);}
+  else if(['FAILED','UNCONFIRMED'].includes(runStatus)){attention='AGENT_ATTENTION';attentionLabel='Revisar ejecución del preparador';attentionOwner='Operaciones';slaDueAt=addHours(latest?.created_at,4);}
+  else if(intakeStatus==='READY_FOR_REVIEW'){attention='READY_FOR_REVIEW';attentionLabel='Paquete listo para revisión interna';attentionOwner='Revisor humano';slaDueAt=addHours(matchingConversation?.updated_at,8);}
+  else if(pendingFields){attention='WAITING_CUSTOMER_CONFIRMATION';attentionLabel='Esperando confirmación del cliente';attentionOwner='Cliente';}
+  else if(intakeStatus==='ACTIVE'||intakeStatus==='NOT_STARTED'){attention='WAITING_CUSTOMER';attentionLabel=intakeStatus==='ACTIVE'?'Esperando información del cliente':'Esperando inicio del onboarding';attentionOwner='Cliente';}
+  const slaTimestamp=slaDueAt?new Date(slaDueAt).getTime():null;const nowTimestamp=now.getTime();const slaBreached=slaTimestamp!==null&&Number.isFinite(nowTimestamp)&&nowTimestamp>slaTimestamp;
+  const latestActivity=events.find(item=>eventLabels[String(item.event_type)]);
   return {
     caseId: record.id, jurisdiction: record.jurisdiction_code, revision: record.revision,
     mode: sandbox ? 'SANDBOX' as const : 'GUIDED' as const,
@@ -82,6 +97,7 @@ export function trackCase(record: FormationRecord, allEvents: Row[], now = new D
     registrationLabel: sandbox ? state.registered ? 'Registro simulado; sin efecto legal' : 'Sandbox; sin registro real' : 'Sin confirmación oficial de constitución',
     filingLabel: sandbox ? 'Ningún envío real desde este sandbox' : 'Presentación externa no confirmada',
     intake: {available: conversationAvailable, jurisdiction: conversationAvailable?record.jurisdiction_code:null, status: conversationAvailable?intakeStatus:'NOT_AVAILABLE', label: !conversationAvailable?'Agente conversacional aún no implementado para esta ruta':intakeStatus==='READY_FOR_REVIEW'?'Información completa; requiere revisión interna':intakeStatus==='ACTIVE'?'Onboarding iniciado por el cliente':'El cliente aún no inició el onboarding', confirmedFields, pendingFields, totalFields: intakeFields.length, executionMode: matchingConversation?.execution_mode==='OPENAI_RESPONSES'?'OPENAI_RESPONSES':matchingConversation?'DETERMINISTIC_MOCK':null, updatedAt: matchingConversation?.updated_at?String(matchingConversation.updated_at):null},
+    operations:{policyVersion:OPS_SLA_POLICY_VERSION,attention,attentionLabel,owner:attentionOwner,nextMissingField,openEscalations:openEscalations.length,highestSeverity:highestEscalation?String(highestEscalation.severity):null,slaDueAt,slaBreached,latestEvent:latestActivity?{label:eventLabels[String(latestActivity.event_type)],at:String(latestActivity.created_at)}:null},
     requiresEvidenceReview: !sandbox && (state.registered || ['SUBMITTED','REGISTERED','POST_FORMATION','ACTIVE_COMPLIANCE'].includes(record.status)),
     blockers, canPrepare: !terminal,
     activity: events.filter(e => eventLabels[String(e.event_type)]).slice(0,8).map(e => ({id: String(e.id), label: eventLabels[String(e.event_type)], at: String(e.created_at), synthetic: sandbox || String(e.event_type).startsWith('SANDBOX') || e.event_type === 'AGENT_LAB_EVALUATED'})),

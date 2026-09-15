@@ -24,6 +24,7 @@
     "test:estonia-agent:connected": "tsx scripts/test-estonia-agent-evaluation.ts --connected",
     "test:uk-agent": "tsx scripts/test-uk-agent-evaluation.ts",
     "test:uk-agent:connected": "tsx scripts/test-uk-agent-evaluation.ts --connected",
+    "test:agent-regression": "tsx scripts/test-agent-regression.ts",
     "start:staging": "node scripts/start-staging.mjs",
     "test:integrity": "vitest run tests/regulatory",
     "brain:query": "tsx scripts/graph-memory.ts query",

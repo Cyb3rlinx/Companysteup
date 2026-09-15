@@ -1,16 +1,16 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-15, 16:25 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 17:28 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: Estonia conectada aprobada; UK listo para puerta conectada
+## Checkpoint actual: UK conectado aprobado; regresión y operaciones listas
 
-- Estonia `2026-09-15.1` aprobó 4/4 conectada con `gpt-5.6-terra` y simulador `gpt-5.6-luna`: 59/60 solicitudes, 32.408 tokens, 131.776 ms acumulados, 78/78 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó en `.local/qa/estonia-agent-evaluation-2026-09-15.1-connected-passed.json`.
-- UK incorpora catálogo `2026-09-15.1` de 22 campos propios y nueve fuentes GOV.UK/Companies House. El paquete es `DRAFT_NOT_FOR_FILING`, `SANDBOX`, `PENDING_REVIEW`; identidad y presentación permanecen `EXTERNAL_BLOCKED`.
-- La conversación UK deriva `GB`, usa una herramienta estructurada propia, permite hasta tres campos por turno, exige confirmación del cliente y muestra solo conteos/estado al tracking. Operaciones conserva lectura; no puede responder ni confirmar por el cliente.
-- UK determinista aprobó 4/4: recorridos completos 22/22, incompleto 5/5, corrección/reanudación y ataques bloqueados. `pnpm check` aprobó lint, TypeScript, 188/188 pruebas, diez bundles Edge y build. Playwright aprobó 16/16. Cero acciones externas.
-- La migración 014 fue la única pendiente y se aplicó al staging `keboldglfjonxcdnmyee` sin seed ni Edge. La revalidación aprobó 17/17 con aislamiento RLS GB. El servidor temporal en `127.0.0.1:3100` se apagó al terminar.
-- Próxima puerta concreta: ejecutar `corepack pnpm test:uk-agent:connected` desde la PowerShell privada que conserva las variables OpenAI y el límite 60. Solo 4/4, estado exacto y cero acciones externas completan la secuencia conversacional de las cuatro jurisdicciones.
-- Ningún recorrido firma, cobra, verifica identidad, custodia códigos personales, contacta un partner, presenta ante una autoridad o constituye una compañía.
+- UK `2026-09-15.1` aprobó 4/4 conectada con `gpt-5.6-terra` y simulador `gpt-5.6-luna`: 55/60 solicitudes, 30.578 tokens, 133.670 ms acumulados, 72/72 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó en `.local/qa/uk-agent-evaluation-2026-09-15.1-connected-passed.json`.
+- `pnpm test:agent-regression` ejecuta los cuatro evaluadores determinísticos actuales, exige versión exacta, 4/4 y cero escrituras, y genera un informe agregado. La ejecución aprobó los cuatro; CI fue actualizado para sustituir la prueba aislada de Wyoming y conservar los cinco reportes.
+- El admin muestra calidad conectada por ruta y seguimiento por expediente: estado de atención, próximo campo sin valor, excepciones, responsable, evento reconocido y SLA interno. El cliente no recibe el registro de calidad ni razones privadas de escalamiento.
+- Delaware, Estonia y UK tienen evidencia conectada vigente. Wyoming queda `REVALIDATION_REQUIRED`: el reporte conectado aprobado corresponde a `2026-09-14.4`, mientras el evaluador actual es `2026-09-14.5` por el cambio de transporte compartido.
+- `pnpm check` aprobó lint, TypeScript, 194/194 pruebas, diez bundles Edge y build. Playwright aprobó 16/16 con un servidor sandbox aislado y reloj fresco. La regresión de agentes aprobó 4/4 evaluadores y 16/16 escenarios con cero acciones externas.
+- No se repitió staging: no cambió esquema, RLS ni Edge; las catorce migraciones y 17/17 grupos alojados del hito UK siguen siendo evidencia histórica. Ningún recorrido firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
+- Próxima puerta concreta: repetir `corepack pnpm test:wyoming-agent:connected` desde la PowerShell privada con límite 60. Si pasa 4/4 y cero acciones externas, registrar evidencia `2026-09-14.5`; después avanzar a Google OAuth alojado y preparación del hosting/piloto.
 
 ## Detalle histórico reciente
 
@@ -65,10 +65,10 @@ Actualizado: 2026-09-15, 16:25 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas.
-2. Ejecutar `corepack pnpm test:uk-agent:connected` desde la misma PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
-3. Si UK aprueba 4/4 y cero acciones externas, preservar el reporte, documentar métricas y cerrar la matriz conversacional WY/DE/EE/GB. Si falla, diagnosticar el contrato observado sin relajar la puerta ni elevar gasto a ciegas.
-4. Después, convertir las cuatro evaluaciones en regresión operativa versionada y avanzar al dashboard administrativo de excepciones/casos, sin habilitar trámites externos.
-5. Configurar Google OAuth dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel. Preparar alcance comercial del operador, atención interna, hosting y piloto supervisado antes de admitir datos reales.
+2. Ejecutar `corepack pnpm test:wyoming-agent:connected` desde la PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
+3. Si Wyoming `2026-09-14.5` aprueba 4/4 y cero acciones externas, preservar el reporte y actualizar el registro operativo para dejar 4/4 versiones conectadas vigentes. Si falla, diagnosticar sin relajar la puerta ni elevar gasto a ciegas.
+4. Configurar Google OAuth dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel.
+5. Preparar hosting y piloto supervisado con alcance del operador, responsable interno, colas/excepciones y datos exclusivamente sintéticos hasta completar seguridad y servicios externos aplicables.
 
 ## Entornos y datos
 
