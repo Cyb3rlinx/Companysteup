@@ -2,7 +2,7 @@
 
 Actualizado: 2026-09-15. Repositorio inicialmente vacío. Git local inicializado en `main` y publicado en el remoto privado de GitHub.
 
-Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El último hito publicado es UK conversacional en `4026155`; sus resultados de GitHub son históricos hasta verificar los checks del próximo commit. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución local.
+Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El hito M38 está publicado en `71e3708`: [Regulatory integrity #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513173) y [CI #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513171) aprobaron. La evidencia anterior se conserva como historial, pero no sustituye esta ejecución.
 
 **Base funcional local y Supabase staging validados con datos sintéticos. Wyoming, Delaware, Estonia y UK aprobaron 4/4 recorridos con modelos conectados y cero acciones externas. La regresión determinística vigente aprueba las cuatro rutas, pero Wyoming requiere repetir el nivel conectado porque su evidencia es `2026-09-14.4` y el evaluador actual es `2026-09-14.5`. Estas pruebas no demuestran constitución, asesoría ni aceptación externa. No es un lanzamiento de producción.**
 
@@ -26,7 +26,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El ú
 | M16 Asistente | Herramienta estricta, hechos verificados, fallback determinista y escalamiento | VALIDADO; OPENAI REAL SIN CREDENCIAL |
 | M17 Notificaciones | Recordatorios internos 30/7/1/0 días, deduplicación y jobs desplegables | VALIDADO; EMAIL/JOBS REMOTOS BLOQUEADOS |
 | M18 Seguridad | RLS, CSRF, límites, secretos, cuarentena, integridad y fronteras de IA | PRUEBAS LOCALES APROBADAS; HARDENING OPERATIVO PENDIENTE |
-| M19 QA/CI | 194 pruebas unitarias/SQL, 16 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL Y STAGING; CI DEL NUEVO CAMBIO PENDIENTE |
+| M19 QA/CI | 194 pruebas unitarias/SQL, 16 E2E locales y 17 grupos alojados; integración detallada abajo | APROBADO LOCAL, STAGING Y CI |
 | M20 Documentación | README, arquitectura, datos, seguridad, fuentes, jurisdicciones, modelo y runbook | ENTREGADO |
 | M21 Laboratorio por jurisdicción | Ocho perfiles de investigación, 27 escenarios, mapa de campos/enlaces y eventos auditables | VALIDADO LOCAL; WY/DE/EE/GB CONECTADOS |
 | M22 Acceso y seguimiento | Google OAuth preparado; panel cliente/admin con preparación registrada, responsables y actualización automática | PANEL VALIDADO; GOOGLE EXTERNAL_BLOCKED HASTA CONFIGURAR PROVEEDOR |
@@ -54,6 +54,7 @@ Punto de continuidad guardado en [SESSION_HANDOFF.md](SESSION_HANDOFF.md). El ú
 - El admin incorpora la pestaña `agentes` con modelos, solicitudes, tokens, campos, fecha, cero escrituras y capacidad `EXTERNAL_BLOCKED`. Los clientes no reciben este registro en `/api/workspace`.
 - El seguimiento operativo clasifica espera del cliente, confirmación pendiente, revisión interna, ejecución fallida/sin confirmar, excepción y expediente terminal. Expone solo la etiqueta del próximo campo, conteos y eventos reconocidos; no muestra respuestas ni razones privadas. Los SLA de 2/4/8/12/24 horas son objetivos internos, nunca plazos legales.
 - Validación: `pnpm check` aprobó lint, TypeScript, 194/194 pruebas en 31 archivos, diez bundles Edge y build de producción. La regresión aprobó las cuatro rutas con cero acciones externas y Playwright aprobó 16/16 sobre un sandbox aislado con reloj fresco. No hubo migración ni ejecución nueva de staging porque este hito no cambia esquema, RLS o Edge.
+- GitHub: el commit `71e3708` aprobó [CI #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513171) en 3m35s con application, Supabase y Edge; application informó 31/31 archivos y 194/194 pruebas. El artefacto `synthetic-agent-journeys` incluyó los cinco reportes. [Regulatory integrity #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513173) también aprobó.
 - La siguiente puerta es repetir `pnpm test:wyoming-agent:connected` con presupuesto 60 para cerrar la diferencia de versión. Después corresponde configurar y probar Google OAuth y preparar hosting/piloto supervisado; pagos, identidad y presentación permanecen bloqueados.
 
 ## Hito M37: UK conversacional determinista y staging (2026-09-15, Asia/Bangkok)
