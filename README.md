@@ -28,6 +28,7 @@ pnpm lint
 pnpm typecheck
 pnpm test
 pnpm test:wyoming-agent
+pnpm test:agent-regression
 pnpm build
 pnpm test:e2e
 ```
@@ -42,7 +43,7 @@ Consulta [RUNBOOK](docs/RUNBOOK.md) para Auth, Storage, Edge Functions, Stripe, 
 
 Para los próximos pasos del fundador, consulta [roadmap de accesos y servicios](docs/LAUNCH_ROADMAP.md) y [propuesta de nombres de marca](docs/BRAND_NAMING.md). Lovable es opcional y no sustituye este repositorio ni sus migraciones.
 
-El [acceso Google y seguimiento privado](docs/GOOGLE_AUTH.md) incluye configuración pendiente, límites y pruebas. El panel muestra progreso y actividad registrada por ruta; preparar un resumen no constituye una compañía ni ejecuta un agente autónomo. Google permanece bloqueado hasta configurar el proveedor.
+El [acceso Google y seguimiento privado](docs/GOOGLE_AUTH.md) incluye configuración pendiente, límites y pruebas. `pnpm google-auth:status` comprueba el proveedor del staging sin imprimir claves y `pnpm test:google-auth:staging` falla cerrado hasta habilitarlo. El panel muestra progreso y actividad registrada por ruta; preparar un resumen no constituye una compañía ni ejecuta un agente autónomo.
 
 El [paquete de revisión de Wyoming](docs/WYOMING_REVIEW_PACKET.md) permite ensayar 21 campos, mapa de destinos, faltantes y descarga JSON desde el laboratorio. `pnpm test:wyoming` genera 11 escenarios adicionales. Solo datos ficticios y revisión interna: no hay entrega, aceptación ni registro externo.
 
@@ -50,7 +51,7 @@ El mismo laboratorio incluye conversación persistente Wyoming con propuestas qu
 
 La [evaluación agéntica Wyoming](docs/WYOMING_AGENT_EVALUATION.md) ejecuta un cliente ficticio determinista contra esa conversación y deja preparado un segundo nivel con cliente y onboarding conectados a modelos. `pnpm test:wyoming-agent` no usa red; `pnpm test:wyoming-agent:connected` exige credenciales y un límite explícito de solicitudes.
 
-La activación por dominios está definida en [verticales Supabase](docs/SUPABASE_VERTICALS.md); la diferencia entre una simulación completa y una constitución real está en [aceptación de agentes](docs/AGENT_ACCEPTANCE.md). Para evaluar hosting sin reescribir a ciegas, usa el [spike de Lovable](docs/LOVABLE_EVALUATION.md) y el paquete de contexto en `lovable/`.
+La activación por dominios está definida en [verticales Supabase](docs/SUPABASE_VERTICALS.md); la diferencia entre una simulación completa y una constitución real está en [aceptación de agentes](docs/AGENT_ACCEPTANCE.md). El [plan de hosting](docs/HOSTING_PLAN.md) conserva el Next.js canónico; Lovable permanece como [spike visual](docs/LOVABLE_EVALUATION.md) con contexto en `lovable/`.
 
 ## Memoria entre conversaciones
 

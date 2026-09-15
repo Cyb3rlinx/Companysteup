@@ -25,6 +25,8 @@
     "test:uk-agent": "tsx scripts/test-uk-agent-evaluation.ts",
     "test:uk-agent:connected": "tsx scripts/test-uk-agent-evaluation.ts --connected",
     "test:agent-regression": "tsx scripts/test-agent-regression.ts",
+    "google-auth:status": "tsx scripts/check-google-auth-readiness.ts",
+    "test:google-auth:staging": "tsx scripts/check-google-auth-readiness.ts --require-ready",
     "start:staging": "node scripts/start-staging.mjs",
     "test:integrity": "vitest run tests/regulatory",
     "brain:query": "tsx scripts/graph-memory.ts query",

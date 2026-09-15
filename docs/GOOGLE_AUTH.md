@@ -1,6 +1,6 @@
 # Acceso con Google y espacio privado
 
-Fecha: 2026-09-03. Código implementado; conexión externa `EXTERNAL_BLOCKED`. Se consultó `/auth/v1/settings` del staging autorizado `keboldglfjonxcdnmyee`: Google deshabilitado y acceso por correo habilitado. No se modificó la configuración remota ni se creó una cuenta Google.
+Actualizado: 2026-09-15. Código implementado; conexión externa `EXTERNAL_BLOCKED`. La comprobación autenticada con la clave publicable local consultó `/auth/v1/settings` del staging autorizado `keboldglfjonxcdnmyee`: Google continúa deshabilitado, correo está habilitado y el registro permanece disponible. No se imprimió la clave, no se modificó la configuración remota y no se creó una cuenta Google.
 
 ## Funcionamiento implementado
 
@@ -14,7 +14,7 @@ El trigger existente `bootstrap_user` crea perfil y organización propios. El ro
 
 ## Configuración que falta del fundador
 
-1. Elegir un proyecto Google Cloud/Google Auth Platform bajo su control y configurar audiencia/consentimiento. Mientras esté en Testing, limitarlo a cuentas de prueba autorizadas. No usar expedientes ni documentos reales.
+1. Elegir un proyecto Google Cloud/Google Auth Platform bajo su control y configurar Branding, Audience y Data Access. Mientras esté en Testing, limitarlo a cuentas de prueba autorizadas. Mantener únicamente `openid`, email y profile; no usar expedientes ni documentos reales.
 2. Crear un cliente OAuth de tipo **Web application**. Configurar los orígenes de la aplicación que realmente se utilizarán.
 3. Agregar en Google la URI de retorno del proveedor: `https://keboldglfjonxcdnmyee.supabase.co/auth/v1/callback`.
 4. En Supabase → Authentication → Sign In / Providers → Google, guardar Client ID y Client Secret y habilitar Google. El secreto se guarda allí o mediante gestión de secretos autorizada, nunca en Git, `NEXT_PUBLIC_*` o conversación.
@@ -22,7 +22,13 @@ El trigger existente `bootstrap_user` crea perfil y organización propios. El ro
 6. Iniciar el staging con `GOOGLE_AUTH_MODE=SANDBOX` en el entorno del servidor y probar con una cuenta de prueba controlada. El script `start:staging` conserva esa variable, pero no habilita el proveedor por sí solo.
 7. Para hosting definitivo, usar HTTPS, agregar el callback exacto, comprobar cookies Secure, retirar destinos de desarrollo del entorno productivo y revisar restricciones de audiencia. No se requiere comprar un dominio para probar localhost.
 
-La configuración sigue el [flujo Google de Supabase](https://supabase.com/docs/guides/auth/social-login/auth-google) y su [cliente SSR](https://supabase.com/docs/guides/auth/server-side/creating-a-client). La aprobación de la pantalla de consentimiento, si aplica, corresponde al proveedor; no está garantizada por estos cambios.
+La configuración sigue el [flujo Google de Supabase](https://supabase.com/docs/guides/auth/social-login/auth-google), las [redirecciones permitidas](https://supabase.com/docs/guides/auth/redirect-urls) y las [reglas de URI exacta de Google](https://developers.google.com/identity/protocols/oauth2/web-server). La aprobación de Branding o de la pantalla de consentimiento, si aplica, corresponde al proveedor; no está garantizada por estos cambios. Google recomienda una relación de dominio clara antes de abrir el acceso al público.
+
+## Verificación reproducible y saneada
+
+`pnpm google-auth:status` lee la clave publicable desde `.local/staging/credentials.json`, valida que corresponda exclusivamente al staging sintético y consulta los ajustes Auth sin imprimir credenciales. Guarda únicamente proyecto, fecha, booleanos de proveedor/registro y callback en `.local/qa/google-auth-readiness.json`.
+
+`pnpm test:google-auth:staging` usa la misma consulta pero devuelve error mientras Google o el registro estén deshabilitados. Después de configurar el proveedor, esta puerta debe mostrar `READY_FOR_FLOW_TEST`; todavía faltará completar manualmente Google → Supabase → callback → panel con una cuenta de prueba controlada.
 
 ## Evidencia y pruebas pendientes
 

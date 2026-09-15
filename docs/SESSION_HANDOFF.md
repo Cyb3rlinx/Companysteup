@@ -1,21 +1,22 @@
 # Punto de continuidad
 
-Actualizado: 2026-09-15, 17:28 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
+Actualizado: 2026-09-15, 22:48 (Asia/Bangkok, UTC+7). Este archivo conserva el estado de trabajo; no programa tareas futuras ni mantiene servidores activos.
 
-## Checkpoint actual: UK conectado aprobado; regresión y operaciones listas
+## Checkpoint actual: cuatro agentes conectados vigentes; Google externo bloqueado
 
-- UK `2026-09-15.1` aprobó 4/4 conectada con `gpt-5.6-terra` y simulador `gpt-5.6-luna`: 55/60 solicitudes, 30.578 tokens, 133.670 ms acumulados, 72/72 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó en `.local/qa/uk-agent-evaluation-2026-09-15.1-connected-passed.json`.
+- Wyoming `2026-09-14.5` aprobó 4/4 conectada con `gpt-5.6-terra` y simulador `gpt-5.6-luna`: 49/60 solicitudes, 26.988 tokens, 162.614 ms acumulados, 69/69 propuestas aceptadas, una extracción vacía adversarial esperada y cero acciones externas. El reporte saneado se preservó en `.local/qa/wyoming-agent-evaluation-2026-09-14.5-connected-passed.json`.
+- Wyoming, Delaware, Estonia y UK ya tienen evidencia conectada de la misma versión que su evaluador. El admin muestra `4/4 versiones vigentes`; las capacidades de presentación, identidad, firma y pago siguen `EXTERNAL_BLOCKED`.
 - `pnpm test:agent-regression` ejecuta los cuatro evaluadores determinísticos actuales, exige versión exacta, 4/4 y cero escrituras, y genera un informe agregado. La ejecución aprobó los cuatro; CI fue actualizado para sustituir la prueba aislada de Wyoming y conservar los cinco reportes.
 - El admin muestra calidad conectada por ruta y seguimiento por expediente: estado de atención, próximo campo sin valor, excepciones, responsable, evento reconocido y SLA interno. El cliente no recibe el registro de calidad ni razones privadas de escalamiento.
-- Delaware, Estonia y UK tienen evidencia conectada vigente. Wyoming queda `REVALIDATION_REQUIRED`: el reporte conectado aprobado corresponde a `2026-09-14.4`, mientras el evaluador actual es `2026-09-14.5` por el cambio de transporte compartido.
-- `pnpm check` aprobó lint, TypeScript, 194/194 pruebas, diez bundles Edge y build. Playwright aprobó 16/16 con un servidor sandbox aislado y reloj fresco. La regresión de agentes aprobó 4/4 evaluadores y 16/16 escenarios con cero acciones externas.
+- `pnpm google-auth:status` consulta de forma saneada el staging sintético. El 2026-09-15 confirmó Google deshabilitado, correo habilitado y registro disponible; `pnpm test:google-auth:staging` falla cerrado hasta que el proveedor se configure.
+- `pnpm check` aprobó lint, TypeScript, 196/196 pruebas, diez bundles Edge y build. Playwright aprobó 16/16 con un servidor sandbox aislado y reloj fresco. La regresión de agentes aprobó 4/4 evaluadores y 16/16 escenarios con cero acciones externas.
 - El commit `71e3708` está publicado en `main`. [CI #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513171) aprobó application, Supabase y Edge en 3m35s; [Regulatory integrity #32](https://github.com/Cyb3rlinx/Companysteup/actions/runs/34958513173) también aprobó. El artefacto conserva la regresión y los cuatro reportes determinísticos.
 - No se repitió staging: no cambió esquema, RLS ni Edge; las catorce migraciones y 17/17 grupos alojados del hito UK siguen siendo evidencia histórica. Ningún recorrido firma, cobra, verifica identidad, contacta un partner, presenta ante una autoridad o constituye una compañía.
-- Próxima puerta concreta: repetir `corepack pnpm test:wyoming-agent:connected` desde la PowerShell privada con límite 60. Si pasa 4/4 y cero acciones externas, registrar evidencia `2026-09-14.5`; después avanzar a Google OAuth alojado y preparación del hosting/piloto.
+- Próxima puerta concreta: crear un cliente OAuth Web controlado por el fundador, registrar su callback exacto de Supabase, guardar Client ID/Secret directamente en Supabase y ejecutar Google → Supabase → callback → panel con una cuenta de prueba. Después, hosting del repositorio Next.js y piloto supervisado.
 
 ## Detalle histórico reciente
 
-- Wyoming permanece aprobado 4/4 conectado en `2026-09-14.4` e integrado al expediente. El reporte aprobado sigue en `.local/qa/wyoming-agent-evaluation-2026-09-14.4-connected-passed.json`, ignorado por Git.
+- Wyoming permanece aprobado 4/4 conectado en `2026-09-14.5` e integrado al expediente. El reporte aprobado está en `.local/qa/wyoming-agent-evaluation-2026-09-14.5-connected-passed.json`, ignorado por Git; la versión `2026-09-14.4` se conserva solo como historial.
 - Delaware conserva el catálogo `2026-09-14.1` de 20 campos con fuentes, destinos y responsables. La evaluación `2026-09-14.2` aprobó 4/4 conectada. No recopila firmas, TIN, documentos de identidad, cuentas de mensajería o pagos.
 - Estonia incorpora catálogo `2026-09-14.1` de 24 campos propios con fuentes RIK/e-Residency, destinos, responsables y paquete `DRAFT_NOT_FOR_FILING`. Códigos personales, PIN2, credenciales, firma, capital, tasa y presentación quedan fuera del agente.
 - El motor conversacional deriva `US-WY`, `US-DE`, `EE` o `GB` del expediente y selecciona esquema, herramienta estructurada y paquete propios. El cliente inicia, responde, confirma y retoma; operaciones solo lee.
@@ -66,10 +67,10 @@ Actualizado: 2026-09-15, 17:28 (Asia/Bangkok, UTC+7). Este archivo conserva el e
 ## Retomar por aquí
 
 1. Consultar primero `pnpm brain:query "Company Setups punto de continuidad siguiente paso"` (o MCP graphify) y comprobar `pnpm brain:status`. Leer este checkpoint o fuentes puntuales solo si faltan datos o hay cambios; no releer conversaciones completas.
-2. Ejecutar `corepack pnpm test:wyoming-agent:connected` desde la PowerShell privada que conserva `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_SIMULATOR_MODEL` y límite 60. No compartir la clave por chat.
-3. Si Wyoming `2026-09-14.5` aprueba 4/4 y cero acciones externas, preservar el reporte y actualizar el registro operativo para dejar 4/4 versiones conectadas vigentes. Si falla, diagnosticar sin relajar la puerta ni elevar gasto a ciegas.
-4. Configurar Google OAuth dentro de Supabase mediante un canal seguro y probar Google → Supabase → callback → panel.
-5. Preparar hosting y piloto supervisado con alcance del operador, responsable interno, colas/excepciones y datos exclusivamente sintéticos hasta completar seguridad y servicios externos aplicables.
+2. Ejecutar `corepack pnpm google-auth:status`; mientras muestre `EXTERNAL_BLOCKED`, crear/configurar el cliente OAuth Web sin compartir su secreto por chat o Git.
+3. Después de habilitar Google en Supabase, ejecutar `corepack pnpm test:google-auth:staging`; solo `READY_FOR_FLOW_TEST` habilita el ensayo interactivo con una cuenta de prueba.
+4. Probar Google → Supabase → callback → panel, cancelación, reingreso a la misma organización y cierre de sesión. No usar datos personales o expedientes reales.
+5. Preparar hosting del repositorio Next.js y piloto supervisado con alcance del operador, responsable interno, colas/excepciones y datos exclusivamente sintéticos hasta completar seguridad y servicios externos aplicables.
 
 ## Entornos y datos
 

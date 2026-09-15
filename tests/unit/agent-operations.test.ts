@@ -15,8 +15,8 @@ describe('registro operativo de calidad de agentes',()=>{
 
   test('solo marca vigente la evidencia conectada de la misma versión del evaluador',()=>{
     const rows=agentQualityBaselines();
-    expect(rows.filter(row=>row.operationalStatus==='CONNECTED_PASSED_CURRENT').map(row=>row.jurisdiction).sort()).toEqual(['EE','GB','US-DE']);
-    expect(rows.find(row=>row.jurisdiction==='US-WY')).toMatchObject({connectedEvidenceVersion:'2026-09-14.4',currentEvaluationVersion:'2026-09-14.5',operationalStatus:'REVALIDATION_REQUIRED'});
+    expect(rows.filter(row=>row.operationalStatus==='CONNECTED_PASSED_CURRENT').map(row=>row.jurisdiction).sort()).toEqual(['EE','GB','US-DE','US-WY']);
+    expect(rows.find(row=>row.jurisdiction==='US-WY')).toMatchObject({connectedEvidenceVersion:'2026-09-14.5',currentEvaluationVersion:'2026-09-14.5',operationalStatus:'CONNECTED_PASSED_CURRENT',requestCount:49,totalTokens:26988});
   });
 
   test('el registro público no contiene credenciales ni rutas de informes locales',()=>{

@@ -9,7 +9,7 @@
   "infrastructure": "hosted-supabase",
   "applicationMode": "supabase",
   "localFrontendOrigin": "http://127.0.0.1:3100",
-  "migrationsApplied": 10,
+  "migrationsApplied": 14,
   "edgeFunctionsDeployed": 10,
   "excludedProjectRefs": ["uvmijrapoezpvtsyhhoj"],
   "externalPayments": "EXTERNAL_BLOCKED",
